@@ -1,3 +1,12 @@
+      color: inherit !important;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Overlay -->
+<div id="overlay"></div>
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -23,7 +32,7 @@
       margin: 0;
       background-color: #121212;
       font-family: 'Segoe UI', Tahoma, sans-serif;
-      color: #f8f8f8;
+      color: #ffffff;
     }
 
     #overlay {
@@ -42,13 +51,13 @@
       transform: translate(-50%, -50%);
       width: 92%;
       max-width: 440px;
-      background-color: #1e1e1e; /* nền xám đậm */
+      background: linear-gradient(135deg, #4FC3F7, #0288D1); /* nền như nút */
       padding: 25px 20px;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.08);
       z-index: 1000;
       opacity: 0;
+      color: #fff;
     }
 
     .popup-show {
@@ -60,22 +69,22 @@
     }
 
     a {
-      color: #4FC3F7;
-      text-decoration: none;
+      color: #fff;
+      text-decoration: underline;
       font-weight: bold;
       word-break: break-word;
     }
 
     .highlight {
-      color: #4FC3F7;
-      font-weight: 600;
+      color: #fff;
+      font-weight: 700;
     }
 
     .special-box {
-      border: 1px dashed #4FC3F7;
+      border: 1px dashed #fff;
       padding: 12px;
       border-radius: 10px;
-      background-color: #2c2c2c;
+      background-color: rgba(255, 255, 255, 0.1);
       margin: 15px 0;
     }
 
@@ -109,10 +118,8 @@
 </head>
 <body>
 
-<!-- Overlay -->
 <div id="overlay"></div>
 
-<!-- Popup -->
 <div id="popup">
   <h2>🔔 <strong>THÔNG BÁO</strong></h2>
 
@@ -169,6 +176,9 @@
     popup.classList.add('popup-show');
   };
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
