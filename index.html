@@ -5,7 +5,172 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ROBUXVEX</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
-  
+  <style>
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -60%); }
+      to { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translate(-50%, -50%); }
+      to { opacity: 0; transform: translate(-50%, -60%); }
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background-color: #121212;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      color: #f8f8f8;
+    }
+
+    /* Overlay nền mờ */
+    #overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.8); /* đậm hơn */
+      z-index: 999;
+      display: none;
+    }
+
+    /* Popup */
+    #popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 92%;
+  max-width: 440px;
+  background-color: #000 !important;  /* Nền đen đặc, ép cứng */
+  padding: 25px 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 1);
+  z-index: 1000;
+  opacity: 0;
+}
+
+    .popup-show {
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .popup-hide {
+      animation: fadeOut 0.4s ease forwards;
+    }
+
+    a {
+      color: #4FC3F7;
+      text-decoration: none;
+      font-weight: bold;
+      word-break: break-word;
+    }
+
+    .highlight {
+      color: #4FC3F7;
+      font-weight: 600;
+    }
+
+    .special-box {
+      border: 1px dashed #4FC3F7;
+      padding: 12px;
+      border-radius: 10px;
+      background-color: #1a1a1a;
+      margin: 15px 0;
+    }
+
+    .popup-button {
+      background: linear-gradient(135deg, #4FC3F7, #0288D1);
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+
+    .popup-button:hover {
+      filter: brightness(1.1);
+    }
+
+    h2 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 22px;
+    }
+
+    p, h2, span, strong, div {
+      background: none !important;
+      color: inherit !important;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Overlay -->
+<div id="overlay"></div>
+
+<!-- Popup -->
+<div id="popup">
+  <h2>🔔 <strong>THÔNG BÁO</strong></h2>
+
+  <p>
+    Robux sẽ cung cấp liên tục cho mọi người mỗi 
+    <span class="highlight">25 - 29 ngày</span> với số lượng từ 
+    <span class="highlight">2000 - 10000 robux</span> tùy theo lượng khách. 
+    Chúng tôi sẽ cố gắng tăng thêm nếu cần.
+  </p>
+
+  <p>
+    Link shop chính thức: 
+    <a href="https://robuxvex.vercel.app" target="_blank">robuxvex.vercel.app</a>
+  </p>
+
+  <div class="special-box">
+    <strong class="highlight">🎁 GÓI ĐẶC BIỆT:</strong><br>
+    Nhận robux chỉ trong <span class="highlight">5 - 30 phút</span> (không cần đợi 3-5 ngày).<br>
+    Giá: <span class="highlight">120.000đ</span> → <span class="highlight">400 robux</span>
+  </div>
+
+  <p>
+    Cảm ơn bạn đã tin tưởng và chọn <strong class="highlight">ROBUXVEX</strong> ❤️
+  </p>
+
+  <p>
+    <strong>📞 Liên hệ & mua hàng:</strong><br>
+    Zalo: <a href="tel:0907486634">0907486634</a><br>
+    Gmail: <a href="mailto:vochuoi86@gmail.com">vochuoi86@gmail.com</a>
+  </p>
+
+  <div style="text-align: center;">
+    <button onclick="closePopup()" class="popup-button">Đóng thông báo</button>
+  </div>
+</div>
+
+<script>
+  function closePopup() {
+    const popup = document.getElementById('popup');
+    const overlay = document.getElementById('overlay');
+    popup.classList.remove('popup-show');
+    popup.classList.add('popup-hide');
+    setTimeout(() => {
+      popup.style.display = 'none';
+      overlay.style.display = 'none';
+    }, 400);
+  }
+
+  window.onload = function () {
+    const popup = document.getElementById('popup');
+    const overlay = document.getElementById('overlay');
+    overlay.style.display = 'block';
+    popup.style.display = 'block';
+    popup.classList.add('popup-show');
+  };
+</script>
   <style>
     * {
       box-sizing: border-box;
