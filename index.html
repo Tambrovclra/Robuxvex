@@ -426,19 +426,19 @@
       document.getElementById("logoutButton").style.display = "inline-block";
     } else {
       // Chưa đăng nhập, có thể chuyển về trang đăng nhập
-      window.location.href = "dangnhap.html";
+      window.location.href = "https://register-login-wheat.vercel.app/";
     }
   });
 
   function logOut() {
     firebase.auth().signOut().then(() => {
-      window.location.href = "dangnhap.html";
+      window.location.href = "https://register-login-wheat.vercel.app/";
     });
   }
 </script>
 </script>
 </script>
-<a href="H.html" class="login-btn">
+<a href="https://register-login-wheat.vercel.app/" class="login-btn">
   <img src="https://cdn-icons-png.flaticon.com/512/1828/1828490.png" />
   <span>Register / Login</span>
 </a>
