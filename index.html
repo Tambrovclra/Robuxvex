@@ -805,4 +805,94 @@
         THANH TOÁN - <strong>0đ</strong>
       </div>
     </div>
-    <
+    <div class="toggle">
+      <div class="toggle-header">5. N/A</div>
+      <div class="toggle-content">
+        <strong>NẠP 0 ROBUX</strong> - TRẠNG THÁI: <strong>THÀNH CÔNG</strong><br>
+        THÔNG TIN ROBUX - <strong>ĐÃ VỀ</strong><br>
+        THỜI GIAN NHẬN - <strong>0 NGÀY</strong><br>
+        THANH TOÁN - <strong>0đ</strong>
+      </div>
+    </div>
+    <div class="toggle">
+      <div class="toggle-header">6. N/A</div>
+      <div class="toggle-content">
+        <strong>NẠP 0 ROBUX</strong> - TRẠNG THÁI: <strong>THÀNH CÔNG</strong><br>
+        THÔNG TIN ROBUX - <strong>ĐÃ VỀ</strong><br>
+        THỜI GIAN NHẬN - <strong>0 NGÀY</strong><br>
+        THANH TOÁN - <strong>0đ</strong>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mở/đóng toggle
+    document.querySelectorAll('.toggle-header').forEach(header => {
+      header.addEventListener('click', () => {
+        header.parentElement.classList.toggle('active');
+      });
+    });
+
+    // Hiệu ứng rơi coin
+    const headers = document.querySelectorAll('.toggle-header');
+
+    function spawnCoinOverHeader(header) {
+      const rect = header.getBoundingClientRect();
+      const coin = document.createElement('div');
+      coin.className = 'coin';
+
+      const leftOffset = Math.random() * rect.width;
+      coin.style.left = (rect.left + leftOffset) + 'px';
+      coin.style.top = (rect.top + window.scrollY - 30) + 'px';
+
+      const duration = Math.random() * 4 + 8; // 8–12 giây
+      const xMove = (Math.random() - 0.5) * 60; // trái hoặc phải 30px
+
+      coin.style.setProperty('--x-move', `${xMove}px`);
+      coin.style.animationDuration = duration + 's';
+
+      document.body.appendChild(coin);
+      setTimeout(() => coin.remove(), duration * 1000 + 1000);
+    }
+
+    function dropRandomCoin() {
+      const randomHeader = headers[Math.floor(Math.random() * headers.length)];
+      spawnCoinOverHeader(randomHeader);
+
+      const nextDrop = Math.random() * 3000 + 3000; // mỗi 3–6 giây
+      setTimeout(dropRandomCoin, nextDrop);
+    }
+
+    dropRandomCoin();
+  </script>
+  <script>
+function spawnCoinFromBuyTitle() {
+  const title = document.getElementById('buy-title');
+  const rect = title.getBoundingClientRect();
+  const coin = document.createElement('div');
+  coin.className = 'coin';
+
+  const leftOffset = Math.random() * rect.width;
+  coin.style.left = (rect.left + leftOffset) + 'px';
+  coin.style.top = (rect.top + window.scrollY) + 'px';
+
+  const duration = Math.random() * 3 + 6; // 6–9 giây
+  const xMove = (Math.random() - 0.5) * 80; // lệch trái/phải 40px
+
+  coin.style.setProperty('--x-move', `${xMove}px`);
+  coin.style.animationDuration = `${duration}s`;
+
+  document.body.appendChild(coin);
+  setTimeout(() => coin.remove(), duration * 1000 + 1000);
+}
+
+function loopCoinDropFromBuyTitle() {
+  spawnCoinFromBuyTitle();
+  const next = Math.random() * 3000 + 3000; // 3–6 giây
+  setTimeout(loopCoinDropFromBuyTitle, next);
+}
+
+loopCoinDropFromBuyTitle();
+</script>
+</body>
+</html>
