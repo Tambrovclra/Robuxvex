@@ -3,25 +3,34 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="google" content="notranslate">
   <title>Thông báo RobuxVex</title>
   <style>
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, -60%); }
-      to { opacity: 1; transform: translate(-50%, -50%); }
-    }
-
-    @keyframes fadeOut {
-      from { opacity: 1; transform: translate(-50%, -50%); }
-      to { opacity: 0; transform: translate(-50%, -60%); }
-    }
-
     * {
       box-sizing: border-box;
     }
 
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translate(-50%, -55%); }
+      to   { opacity: 1; transform: translate(-50%, -50%); }
+    }
+
+    @keyframes fadeOut {
+      from { opacity: 1; transform: translate(-50%, -50%); }
+      to   { opacity: 0; transform: translate(-50%, -45%); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .fade-out {
+      animation: fadeOut 0.3s ease forwards;
+    }
+
     body {
       margin: 0;
-      background-color: #90caf9; /* Màu nền xanh dương nhạt */
+      background-color: #90caf9;
       font-family: 'Segoe UI', Tahoma, sans-serif;
       color: #000;
     }
@@ -30,57 +39,53 @@
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
-      background-color: #bbdefb; /* Nền xanh dương nhạt, không trong suốt */
+      background-color: rgba(0, 0, 0, 0.3);
       z-index: 999;
       display: none;
     }
 
     #popup {
       position: fixed;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
       width: 92%;
       max-width: 440px;
-      background: #90caf9; /* Popup nền xanh dương nhạt */
+      background-color: #C0C0C0;
       padding: 25px 20px;
       border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
       z-index: 1000;
-      opacity: 0;
+      display: none;
       color: #000;
     }
 
-    .popup-show {
-      animation: fadeIn 0.5s ease forwards;
+    h2 {
+      text-align: center;
+      font-size: 22px;
+      margin: 0 0 15px;
     }
 
-    .popup-hide {
-      animation: fadeOut 0.4s ease forwards;
+    .highlightin {
+      color: #ff9800;
+      font-weight: bold;
     }
 
     a {
       color: #0d47a1;
       text-decoration: underline;
       font-weight: bold;
-      word-break: break-word;
-    }
-
-    .highlight {
-      color: #0d47a1;
-      font-weight: 700;
     }
 
     .special-box {
       border: 1px dashed #0d47a1;
+      background-color: #e3f2fd;
       padding: 12px;
       border-radius: 10px;
-      background-color: #64b5f6;
       margin: 15px 0;
     }
 
     .popup-button {
-      background: #1976d2;
+      background-color: #1976d2;
       color: white;
       border: none;
       padding: 10px 22px;
@@ -88,85 +93,107 @@
       cursor: pointer;
       font-size: 15px;
       margin-top: 20px;
-      transition: 0.3s;
+      transition: background-color 0.3s;
     }
 
     .popup-button:hover {
-      filter: brightness(1.1);
+      background-color: #1565c0;
     }
 
-    h2 {
+    .contact {
+      margin-top: 10px;
+    }
+
+    .center {
       text-align: center;
-      margin-top: 0;
-      font-size: 22px;
     }
 
-    p, h2, span, strong, div {
-      background: none !important;
-      color: inherit !important;
+    .glow-title {
+      text-shadow: 0 0 6px rgba(255, 152, 0, 0.8);
     }
   </style>
 </head>
-<body>
+<body translate="no">
 
-<div id="overlay"></div>
+<div id="overlay" onclick="closePopup()"></div>
 
 <div id="popup">
   <h2>🔔 <strong>THÔNG BÁO</strong></h2>
 
   <p>
-    Robux sẽ cung cấp liên tục cho mọi người mỗi 
-    <span class="highlight">25 - 29 ngày</span> với số lượng từ 
-    <span class="highlight">2000 - 10000 robux</span> tùy theo lượng khách. 
-    Chúng tôi sẽ cố gắng tăng thêm nếu cần.
+    Robux sẽ được cung cấp mỗi 
+    <span class="highlightin" translate="no">25 - 29 ngày</span> với số lượng từ 
+    <span class="highlightin" translate="no">2000 - 10000 robux</span> tùy theo lượng khách.
   </p>
 
   <p>
     Link shop chính thức: 
-    <a href="https://robuxvex.vercel.app" target="_blank">robuxvex.vercel.app</a>
+    <a href="https://robuxvex.vercel.app" target="_blank" rel="noopener">robuxvex.vercel.app</a>
   </p>
 
   <div class="special-box">
-    <strong class="highlight">🎁 GÓI ĐẶC BIỆT:</strong><br>
-    Nhận robux chỉ trong <span class="highlight">5 - 30 phút</span> (không cần đợi 3-5 ngày).<br>
-    Giá: <span class="highlight">120.000đ</span> → <span class="highlight">400 robux</span>
+    <strong class="highlightin">🎁 GÓI ĐẶC BIỆT:</strong><br>
+    Nhận robux chỉ trong 
+    <span class="highlightin" translate="no">5 - 30 phút</span><br>
+    Giá: 
+    <span class="highlightin" translate="no">120.000đ</span> → 
+    <span class="highlightin" translate="no">400 robux</span>
   </div>
 
-  <p>
-    Cảm ơn bạn đã tin tưởng và chọn <strong class="highlight">ROBUXVEX</strong> ❤️
+  <p class="center">
+    Cảm ơn bạn đã tin tưởng và chọn 
+    <strong class="glow-title">ROBUXVEX</strong> ❤️
   </p>
 
-  <p>
+  <div class="contact">
     <strong>📞 Liên hệ & mua hàng:</strong><br>
-    Zalo: <a href="tel:0907486634">0907486634</a><br>
-    Gmail: <a href="mailto:vochuoi86@gmail.com">vochuoi86@gmail.com</a>
-  </p>
+    Zalo: <a href="tel:0907486634" translate="no">0907486634</a><br>
+    Gmail: <a href="mailto:vochuoi86@gmail.com" translate="no">vochuoi86@gmail.com</a>
+  </div>
 
-  <div style="text-align: center;">
+  <div class="center">
     <button onclick="closePopup()" class="popup-button">Đóng thông báo</button>
   </div>
 </div>
 
 <script>
+  function showPopup() {
+    const popup = document.getElementById('popup');
+    const overlay = document.getElementById('overlay');
+
+    popup.classList.remove('fade-out');
+    popup.style.display = 'block';
+    overlay.style.display = 'block';
+    popup.classList.add('fade-in');
+  }
+
   function closePopup() {
     const popup = document.getElementById('popup');
     const overlay = document.getElementById('overlay');
-    popup.classList.remove('popup-show');
-    popup.classList.add('popup-hide');
+
+    popup.classList.remove('fade-in');
+    popup.classList.add('fade-out');
+
     setTimeout(() => {
       popup.style.display = 'none';
       overlay.style.display = 'none';
-    }, 400);
+    }, 300);
   }
 
-  window.onload = function () {
-    const popup = document.getElementById('popup');
-    const overlay = document.getElementById('overlay');
-    overlay.style.display = 'block';
-    popup.style.display = 'block';
-    popup.classList.add('popup-show');
-  };
+  window.onload = showPopup;
+
+  document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+      closePopup();
+    }
+  });
 </script>
+
+</body>
+</html>
+
+</body>
+</html>
 
 </body>
 </html>
@@ -778,94 +805,4 @@
         THANH TOÁN - <strong>0đ</strong>
       </div>
     </div>
-    <div class="toggle">
-      <div class="toggle-header">5. N/A</div>
-      <div class="toggle-content">
-        <strong>NẠP 0 ROBUX</strong> - TRẠNG THÁI: <strong>THÀNH CÔNG</strong><br>
-        THÔNG TIN ROBUX - <strong>ĐÃ VỀ</strong><br>
-        THỜI GIAN NHẬN - <strong>0 NGÀY</strong><br>
-        THANH TOÁN - <strong>0đ</strong>
-      </div>
-    </div>
-    <div class="toggle">
-      <div class="toggle-header">6. N/A</div>
-      <div class="toggle-content">
-        <strong>NẠP 0 ROBUX</strong> - TRẠNG THÁI: <strong>THÀNH CÔNG</strong><br>
-        THÔNG TIN ROBUX - <strong>ĐÃ VỀ</strong><br>
-        THỜI GIAN NHẬN - <strong>0 NGÀY</strong><br>
-        THANH TOÁN - <strong>0đ</strong>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Mở/đóng toggle
-    document.querySelectorAll('.toggle-header').forEach(header => {
-      header.addEventListener('click', () => {
-        header.parentElement.classList.toggle('active');
-      });
-    });
-
-    // Hiệu ứng rơi coin
-    const headers = document.querySelectorAll('.toggle-header');
-
-    function spawnCoinOverHeader(header) {
-      const rect = header.getBoundingClientRect();
-      const coin = document.createElement('div');
-      coin.className = 'coin';
-
-      const leftOffset = Math.random() * rect.width;
-      coin.style.left = (rect.left + leftOffset) + 'px';
-      coin.style.top = (rect.top + window.scrollY - 30) + 'px';
-
-      const duration = Math.random() * 4 + 8; // 8–12 giây
-      const xMove = (Math.random() - 0.5) * 60; // trái hoặc phải 30px
-
-      coin.style.setProperty('--x-move', `${xMove}px`);
-      coin.style.animationDuration = duration + 's';
-
-      document.body.appendChild(coin);
-      setTimeout(() => coin.remove(), duration * 1000 + 1000);
-    }
-
-    function dropRandomCoin() {
-      const randomHeader = headers[Math.floor(Math.random() * headers.length)];
-      spawnCoinOverHeader(randomHeader);
-
-      const nextDrop = Math.random() * 3000 + 3000; // mỗi 3–6 giây
-      setTimeout(dropRandomCoin, nextDrop);
-    }
-
-    dropRandomCoin();
-  </script>
-  <script>
-function spawnCoinFromBuyTitle() {
-  const title = document.getElementById('buy-title');
-  const rect = title.getBoundingClientRect();
-  const coin = document.createElement('div');
-  coin.className = 'coin';
-
-  const leftOffset = Math.random() * rect.width;
-  coin.style.left = (rect.left + leftOffset) + 'px';
-  coin.style.top = (rect.top + window.scrollY) + 'px';
-
-  const duration = Math.random() * 3 + 6; // 6–9 giây
-  const xMove = (Math.random() - 0.5) * 80; // lệch trái/phải 40px
-
-  coin.style.setProperty('--x-move', `${xMove}px`);
-  coin.style.animationDuration = `${duration}s`;
-
-  document.body.appendChild(coin);
-  setTimeout(() => coin.remove(), duration * 1000 + 1000);
-}
-
-function loopCoinDropFromBuyTitle() {
-  spawnCoinFromBuyTitle();
-  const next = Math.random() * 3000 + 3000; // 3–6 giây
-  setTimeout(loopCoinDropFromBuyTitle, next);
-}
-
-loopCoinDropFromBuyTitle();
-</script>
-</body>
-</html>
+    <
