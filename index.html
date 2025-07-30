@@ -1,45 +1,446 @@
-<!Robux.html>
-<html>
+<!DOCTYPE html>
+<html lang="vi">
 <head>
-  <title>Nạp Robux</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ROBUXVEX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: sans-serif;
-      padding: 20px;
-      background-color: #111;
-      color: white;
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: url('https://i.postimg.cc/6y9cq67m/background.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+      text-align: center;
+      padding-bottom: 40px;
     }
-    .form-box {
-      background: #222;
+   .login-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(6px);
+  padding: 8px 14px;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  transition: background 0.3s ease, transform 0.2s ease;
+  z-index: 999;
+}
+
+.login-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.login-btn img {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
+  object-fit: contain;
+}
+
+    .container {
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
+      max-width: 600px;
+      margin: auto;
     }
-    input, select, button {
-      width: 100%;
-      padding: 12px;
+
+    .profile-img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      border: 4px solid white;
+      margin-top: 20px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    h2, h3 {
       margin: 10px 0;
-      border-radius: 8px;
-      border: none;
-      font-size: 16px;
     }
-    button {
-      background-color: #4CAF50;
-      color: white;
+
+    .bold {
+      font-weight: 700;
+    }
+
+    .section {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 16px;
+      margin: 20px 0;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .highlight {
+      background: #ffffffdd;
+      color: #111;
+      border-radius: 12px;
+      padding: 14px;
+      font-weight: bold;
+      margin-top: 16px;
+      font-size: 1.1rem;
+    }
+
+    .price-list, .note {
+      font-size: 15px;
+      line-height: 1.6;
+      margin-top: 10px;
+    }
+    .money-rain {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.money {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background-image: url('https://i.imgur.com/Z3fN5Dj.png'); /* robux icon */
+  background-size: contain;
+  background-repeat: no-repeat;
+  animation: fall linear infinite;
+  opacity: 0.8;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-50px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(600px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 16px;
+      border-radius: 20px;
+      margin: 20px 0;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    }
+    .top-item {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 14px;
+  padding: 12px 16px;
+  margin: 10px 0;
+  color: white;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.top-item:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: bold;
+  font-size: 1.05rem;
+}
+.top-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease, opacity 0.4s ease;
+  opacity: 0;
+}
+
+.top-item.open .top-content {
+  max-height: 500px; /* Đủ lớn để chứa nội dung */
+  opacity: 1;
+}
+
+.top-item .arrow {
+  transition: transform 0.3s ease;
+}
+
+.top-item.open .arrow {
+  transform: rotate(180deg);
+}
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .stock-amount {
+      font-size: 1.2rem;
+      margin-top: 10px;
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .stock-number {
+      font-weight: bold;
+      color: #ffe600;
+    }
+
+    .slider {
+      display: flex;
+      overflow-x: auto;
+      gap: 12px;
+      padding: 16px 0;
+    }
+
+    .item {
+      flex: 0 0 auto;
+      width: 185px;
+      min-height: 280px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #FF33FF;
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(255, 230, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .item img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 0 5px #ffe600;
+    }
+
+    .item .label {
+      font-size: 0.9rem;
+      margin: 8px 0 4px;
+      color: #ff33ff;
+      font-weight: bold;
+    }
+    .item .VIP {
+      font-size: 0.9rem;
+      color: #FF3300;
+      font-weight: rainbowGlass;
+    }
+
+    .item .bonus {
+      font-size: 0.8rem;
+      color: #16f1e4;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+    .top-item {
+  margin-top: 20px; /* Tạo khoảng cách phía trên */
+}
+    .item button,
+.item .button {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  background: linear-gradient(
+    270deg,
+    #ff0000,
+    #ff9900,
+    #ffff00,
+    #00ff00,
+    #0000ff,
+    #8b00ff,
+    #ff0000
+  );
+  background-size: 400% 400%;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: bold;
+  padding: 10px 20px;
+  cursor: pointer;
+  animation: rainbowGlass 6s linear infinite;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  z-index: 10;
+  position: relative;
+}
+@keyframes rainbowGlass {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+
+
+
+
+    #buy h3 {
+      color: #ffe600;
+      margin-bottom: 16px;
+    }
+
+    .glow-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #ffe600;
+      text-shadow: 0 0 5px #ffe600, 0 0 10px #ffea00;
+      animation: flicker 1.8s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 1; }
+      50% { opacity: 0.85; }
+      100% { opacity: 1; }
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <!-- Avatar & giới thiệu -->
+    <img src="https://i.postimg.cc/4n9C234M/robuxvex-avt.jpg" alt="Avatar" class="profile-img" />
+    <h2 class="bold">ROBUXVEX</h2>
+    <p>Shop robux uy tín | 100% robux chính hãng<br />Owner – Vex</p>
 
-  <h2>🟩 NẠP ROBUX LẬU</h2>
+    <!-- Banner -->
+    <div class="section">
+      <img src="https://i.postimg.cc/4n9C234M/robuxvex-avt.jpg" alt="Banner ROBUXVEX" />
+      <h3 class="bold">ROBUXVEX</h3>
+      <p>UY TÍN – CHẤT LƯỢNG – AN TOÀN</p>
+    </div>
 
-  <div class="form-box">
-    <label>👤 Tên đăng nhập Roblox:</label>
-    <input type="text" placeholder="Ví dụ: roblox_no1">
+    <!-- Khai trương -->
+    <div class="section">
+      <div class="highlight">CHÍNH THỨC KHAI TRƯƠNG VÀO NGÀY 7/8/2025</div>
+    </div>
 
-    <label>📦 Chọn gói Robux:</label>
-    <select>
-      <option>4,950 Robux – 100,000 VND</option>
-      <option>71,000 Robux – 500,000 VND</option>
-      <option>163
+    <!-- Robux trong kho -->
+    <div class="card">
+      <h2 class="section-title">ROBUX TRONG KHO</h2>
+      <p class="stock-amount">Hiện còn: <span class="stock-number">25</span> robux</p>
+    </div>
+
+    
+  <!-- Mua hàng (nằm ngoài container, rộng hơn) -->
+  <section id="buy">
+<h3 class="glow-title">🎁 Mua hàng</h3>
+    <div class="slider">
+      <div class="item">
+        <img src="https://i.postimg.cc/gwbGyhqs/robux.jpg" alt="10k - 32 robux">
+        <div class="label rainbow-text">10.000₫ ⇒ 32 robux<br>VIP – 35 robux</div>
+        <div class="bonus">🎉 Mua lần đầu: +0 robux</div>
+        <a href="https://zalo.me/0907486634" class="button">Mua 32 robux</a>
+</div>
+      <div class="item">
+        <img src="https://i.postimg.cc/gwbGyhqs/robux.jpg" alt="20k - 65 robux">
+        <div class="label">20.000₫ ⇒ 65 robux<br>VIP – 71 robux</div>
+        <div class="bonus">🎉 Mua lần đầu: +5 robux</div>
+        <a href="https://zalo.me/0907486634" class="button">Mua 65 robux</a>
+      </div>
+      <div class="item">
+        <img src="https://i.postimg.cc/gwbGyhqs/robux.jpg" alt="50k - 165 robux">
+        <div class="label">50.000₫ ⇒ 165 robux<br>VIP – 181 robux</div>
+        <div class="bonus">🎉 Mua lần đầu: +20 robux</div>
+        <a href="https://zalo.me/0907486634" class="button">Mua 165 robux</a>
+      </div>
+      <div class="item">
+        <img src="https://i.postimg.cc/gwbGyhqs/robux.jpg" alt="100k - 335 robux">
+        <div class="label">100.000₫ ⇒ 335 robux<br>VIP – 368 robux</div>
+        <div class="bonus">🎉 Mua lần đầu: +30 robux</div>
+        <a href="https://zalo.me/0907486634" class="button">Mua 335 robux</a>
+      </div>
+      <div class="item">
+        <img src="https://i.postimg.cc/gwbGyhqs/robux.jpg" alt="200k - 680 robux">
+        <div class="label">200.000₫ ⇒ 680 robux<br>VIP – 748 robux</div>
+        <div class="bonus">🎉 Mua lần đầu: +50 robux</div>
+        <a href="https://zalo.me/0907486634" class="button">Mua 680 robux</a>
+      </div>
+      <div class="item">
+        <img src="https://i.postimg.cc/gwbGyhqs/robux.jpg" alt="500k - 1710 robux">
+        <div class="label">500.000₫ ⇒ 1710 robux<br>VIP – 1880 robux</div>
+        <div class="bonus">🎉 Mua lần đầu: +100 robux</div>
+        <a href="https://zalo.me/0907486634" class="button">Mua 1710 robux</a>
+      </div>
+    </div>
+  </section>
+</body>
+</html>
+
+  <!-- VIP -->
+    <div class="section">
+      <h3 class="glow-title">⚡ BVIP</h3>
+      <div class="price-list">
+      Khách hàng đã mua robux với tổng tiền 99.000đ trở lên sẽ được nhận thêm 10% robux chỉ trong tháng đầu tiên "30 ngày" (Các tháng sau mỗi tháng cần mua ít nhất 99.000đ để duy trì VIP)
+      </div>
+    </div>
+
+    <!-- Lưu ý -->
+    <div class="section">
+      <h3 class="glow-title">⚠️ Lưu ý khi mua hàng</h3>
+      <div class="note">
+        ROBUXVEX có 2 dịch vụ • Mua robux • Mua acc roblox có sẵn robux<br />
+        Ưu điểm và nhược điểm:<br />
+        - Mua robux: phải đợi nhưng rẻ hơn<br />
+        - Mua acc sẵn: không cần đợi nhưng giá cao<br />
+        
+        ROBUXVEX đảm bảo đây không phải "robux lậu" và sẽ không "bị ban"<br />
+        - Robux mua sẽ về đúng số lượng (mua 50 robux thì acc nhận 50 robux) -       
+        
+        
+        Cảm ơn quý khách ❤️
+        <div>
+          
+        </div>
+      
+   
+  </div>
+</div>
+    
+  <script>
+  function toggleTop(item) {
+    item.classList.toggle('open');
+  }
+  <script>
+  firebase.auth().onAuthStateChanged(user => {
+    if (user) {
+      // Đã đăng nhập
+      document.getElementById("userInfo").innerText = `👋 Xin chào, ${user.email}`;
+      document.getElementById("loginButton").style.display = "none";
+      document.getElementById("logoutButton").style.display = "inline-block";
+    } else {
+      // Chưa đăng nhập, có thể chuyển về trang đăng nhập
+      window.location.href = "dangnhap.html";
+    }
+  });
+
+  function logOut() {
+    firebase.auth().signOut().then(() => {
+      window.location.href = "dangnhap.html";
+    });
+  }
+</script>
+</script>
+</script>
+<a href="H.html" class="login-btn">
+  <img src="https://cdn-icons-png.flaticon.com/512/1828/1828490.png" />
+  <span>Register / Login</span>
+</a>
+</body>
+</html>
