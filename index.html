@@ -224,10 +224,12 @@
 </div>
 
 <div class="dropdown-box" id="dropdownBox">
-  <a href="#">🔑 Đăng nhập</a>
-  <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
+  <div id="userInfo" style="padding: 10px 16px;">
+    <strong>Tên: </strong><span id="username">...</span><br/>
+    <strong>Đã nạp: </strong><span id="robuxNaped">0</span> Robux
+  </div>
   <div class="dropdown-divider"></div>
-  <a href="#">🔁 Quên mật khẩu?</a>
+  <a href="#" onclick="logout()">🚪 Đăng xuất</a>
 </div>
 
 <div class="notify-box" id="notifyBox">
@@ -1172,6 +1174,29 @@ function loopCoinDropFromBuyTitle() {
 }
 
 loopCoinDropFromBuyTitle();
+</script>
+<script>
+window.onload = function() {
+  const userData = localStorage.getItem("userData");
+  if (userData) {
+    const user = JSON.parse(userData);
+    document.getElementById("username").textContent = user.username;
+    document.getElementById("robuxNaped").textContent = user.robuxNaped;
+  } else {
+    // Nếu không có user, đổi dropdown thành đăng nhập / đăng ký
+    document.getElementById("dropdownBox").innerHTML = `
+      <a href="#">🔑 Đăng nhập</a>
+      <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
+      <div class="dropdown-divider"></div>
+      <a href="#">🔁 Quên mật khẩu?</a>
+    `;
+  }
+};
+
+function logout() {
+  localStorage.removeItem("userData");
+  location.reload();
+}
 </script>
 </body>
 </html>
