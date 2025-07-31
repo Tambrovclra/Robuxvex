@@ -321,7 +321,7 @@
   pointer-events: none;
   opacity: 0.8;
       }
-    money {
+    .money {
   position: absolute;
   width: 24px;
   height: 24px;
@@ -462,11 +462,11 @@
     <a href="#">🔑 Đăng nhập</a>
     <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
     <div class="dropdown-divider"></div>
-    <a href="#">Mục này vẫn chưa thể sử dụng.</a>
+    <strong class="highlightin">Mục này vẫn chưa thể sử dụng.</strong>
   </div>
   <div class="notify-box" id="notifyBox">
     <strong>🔔 Thông báo</strong>
-    <p> <div class="hightlightin">no yet </p>
+    <
   </div>
   <!-- Popup -->
   <div id="overlayPopup" class="overlay" onclick="closePopup()"></div>
@@ -698,7 +698,7 @@
       for (let i = 0; i < 20; i++) {
         const coin = document.createElement("div");
         coin.classList.add("coin");
-        coin.textContent = "🟢";
+        coin.textContent = "💸";
         coin.style.left = Math.random() * 160 + "px";
         coin.style.animationDuration = (2 + Math.random() * 2) + "s";
         coin.style.fontSize = (18 + Math.random() * 6) + "px";
