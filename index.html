@@ -206,8 +206,7 @@
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: url('https://i.postimg.cc/6y9cq67m/background.jpg') no-repeat 
-center center fixed;
+      background: url('https://i.postimg.cc/6y9cq67m/background.jpg') no-repeat center center fixed;
       background-size: cover;
       color: #fff;
       text-align: center;
@@ -445,7 +444,7 @@ center center fixed;
   </div>
   <div class="notify-box" id="notifyBox">
     <strong>🔔 Thông báo</strong>
-    <p>Ngắn hạn</p>
+    <p>No yết</p>
   </div>
   <!-- Popup -->
   <div id="overlayPopup" class="overlay" onclick="closePopup()"></div>
@@ -453,8 +452,7 @@ center center fixed;
     <h2>🔔 <strong>THÔNG BÁO</strong></h2>
     <p>
       Robux sẽ được cung cấp mỗi 
-      <span class="highlightin" translate="no">25 - 29 ngày</span> với số lượng 
-      từ
+      <span class="highlightin" translate="no">25 - 29 ngày</span> với số lượng từ
       <span class="highlightin" translate="no">2000 - 10000 robux</span> tùy theo lượng khách.
     </p>
     <p>
@@ -485,10 +483,6 @@ center center fixed;
   <!-- Main Content -->
   <div class="container">
     <img src="https://i.postimg.cc/4n9C234M/robuxvex-avt.jpg" alt="Avatar" class="profile-img" />
-    <div id="user-info" class="card">
-      <p><strong>Tên:</strong> <span id="username-text">Chưa đăng nhập</span></p>
-      <p><strong>Robux:</strong> <span id="robux-text">0</span> robux</p>
-    </div>
     <section id="kho-robux">
       <h2 class="bold">ROBUXVEX</h2>
       <p>Shop robux uy tín | 100% robux chính hãng<br>Owner – Vex</p>
@@ -557,9 +551,7 @@ center center fixed;
   <div class="section">
     <h3 class="glow-title">⚡ BVIP</h3>
     <div class="price-list">
-      Khách hàng đã mua robux với tổng tiền 99.000đ trở lên sẽ được nhận thêm 
-      10% robux chỉ trong tháng đầu tiên (30 ngày) (Các tháng sau mỗi tháng cần mua ít
-      nhất 99.000đ để duy trì VIP)
+      Khách hàng đã mua robux với tổng tiền 99.000đ trở lên sẽ được nhận thêm 10% robux chỉ trong tháng đầu tiên (30 ngày) (Các tháng sau mỗi tháng cần mua ít nhất 99.000đ để duy trì VIP)
     </div>
   </div>
   <div class="section">
@@ -718,6 +710,7 @@ center center fixed;
       });
     });
 
+    const headers = document.querySelectorAll(".toggle-header");
     function spawnCoinOverHeader(header) {
       const rect = header.getBoundingClientRect();
       const coin = document.createElement("div");
@@ -733,7 +726,6 @@ center center fixed;
       setTimeout(() => coin.remove(), duration * 1000 + 1000);
     }
     function dropRandomCoin() {
-      const headers = document.querySelectorAll(".toggle-header");
       const randomHeader = headers[Math.floor(Math.random() * headers.length)];
       spawnCoinOverHeader(randomHeader);
       const nextDrop = Math.random() * 3000 + 3000;
@@ -763,20 +755,5 @@ center center fixed;
     }
     loopCoinDropFromBuyTitle();
   </script>
-
-  <script>
-    // Update user info from localStorage
-    const username = localStorage.getItem("username");
-    const robux = localStorage.getItem("robux") || "0";
-    const usernameSpan = document.getElementById("username-text");
-    const robuxSpan = document.getElementById("robux-text");
-    if (username) {
-      usernameSpan.textContent = username;
-    } else {
-      usernameSpan.textContent = "Chưa đăng nhập";
-    }
-    robuxSpan.textContent = robux;
-  </script>
 </body>
 </html>
-
