@@ -3,116 +3,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Navbar cải tiến</title>
+  <meta name="google" content="notranslate">
+  <title>ROBUXVEX - Shop robux chính hãng</title>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      height: 2000px;
+    /* ======= STYLE CHUNG ======= */
+    * { box-sizing: border-box; }
+    body { margin:0; font-family:Poppins, sans-serif; background:#90caf9; color:#000; }
+    a { text-decoration:none; }
+    /* ======= NAVBAR & DROPDOWN ======= */
+    .navbar { position:fixed; top:0; left:0; right:0; height:60px; background:#fff;
+      display:flex; align-items:center; justify-content:space-between; padding:0 20px;
+      box-shadow:0 2px 10px rgba(0,0,0,0.1); z-index:1000;
     }
-    *:focus {
-      outline: none;
+    .icon-btn { width:36px;height:36px;border-radius:50%;background:#eee;
+      display:flex;align-items:center;justify-content:center;cursor:pointer;
+      transition:background .3s;
     }
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      background: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      z-index: 1000;
+    .icon-btn:hover { background:#ddd; }
+    .icon-btn.active { background:#4CAF50; }
+    .dropdown-box { position:absolute; top:65px; right:20px; width:220px;
+      background:#fff;border-radius:10px;box-shadow:0 6px 16px rgba(0,0,0,0.25);
+      padding:10px 0; display:none; z-index:1001;
     }
-    .navbar-left, .navbar-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
+    .dropdown-box a { display:flex;align-items:center;gap:10px;
+      padding:10px 16px;color:#333;border-radius:8px;transition:all .3s;
     }
-    .icon-btn {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #eee;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.3s;
+    .dropdown-box a:hover { background:#f0f0f0;transform:scale(1.02); }
+    .dropdown-divider { height:1px;background:#ddd;margin:8px 0; }
+    /* ======= POPUP THÔNG BÁO ======= */
+    @keyframes fadeIn { from{opacity:0;transform:translate(-50%,-55%);} to{opacity:1;transform:translate(-50%,-50%);} }
+    @keyframes fadeOut{ from{opacity:1;transform:translate(-50%,-50%);} to{opacity:0;transform:translate(-50%,-45%);} }
+    .fade-in{animation:fadeIn .3s ease forwards;} .fade-out{animation:fadeOut .3s ease forwards;}
+    #overlay, #popup-overlay { position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,.3); display:none; z-index:999;
     }
-    .icon-btn:hover {
-      background: #ddd;
+    #popup { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+      width:92%;max-width:440px;background:#C0C0C0;padding:25px 20px;border-radius:16px;
+      box-shadow:0 10px 25px rgba(0,0,0,.4); display:none; z-index:1000; color:#000;
     }
-    .icon-btn svg {
-      width: 20px;
-      height: 20px;
-      fill: #333;
-      transition: transform 0.3s ease;
+    .popup-button{ background:#1976d2;color:#fff;border:none;padding:10px 22px;
+      border-radius:10px;cursor:pointer;margin-top:20px;
     }
-    .icon-btn:active svg {
-      transform: rotate(90deg);
-    }
-    .icon-btn.active {
-      background: #4CAF50;
-    }
-    .icon-btn.active svg {
-      fill: white;
-    }
-    .dropdown-box {
-      position: absolute;
-      top: 65px;
-      right: 20px;
-      width: 220px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-      padding: 10px 0;
-      display: none;
-      z-index: 1001;
-    }
-    .dropdown-box a {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 16px;
-      text-decoration: none;
-      color: #333;
-      transition: all 0.3s ease;
-      border-radius: 8px;
-    }
-    .dropdown-box a:hover {
-      background: #f0f0f0;
-      transform: scale(1.02);
-    }
-    .dropdown-divider {
-      height: 1px;
-      background: #ddd;
-      margin: 8px 0;
-    }
+    /* ======= PHẦN NỘI DUNG BÊN DƯỚI ======= */
+    /* ... giữ nguyên toàn bộ style và HTML gốc của bạn tại đây ... */
   </style>
 </head>
-<body>
+<body translate="no">
+  <!-- NAVBAR -->
   <div class="navbar">
-    <div class="navbar-left">
-      <strong>ROBUXVEX</strong>
-    </div>
-    <div class="navbar-right">
-      <div class="icon-btn" id="accountIcon" onclick="toggleDropdown()">👤</div>
-    </div>
+    <strong>ROBUXVEX</strong>
+    <div class="icon-btn" id="accountIcon" onclick="toggleDropdown()">👤</div>
   </div>
 
+  <!-- DROPDOWN -->
   <div class="dropdown-box" id="dropdownBox">
-    <!-- Khi chưa đăng nhập -->
     <div id="loginContainer">
       <a href="#" onclick="doLogin()">🔑 Đăng nhập</a>
       <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
       <div class="dropdown-divider"></div>
       <a href="#">🔁 Quên mật khẩu?</a>
     </div>
-    <!-- Khi đã đăng nhập -->
     <div id="userContainer" style="display:none; padding:10px 16px; color:#333;">
       <div>👤 <strong id="displayName"></strong></div>
       <div>💎 Robux đã nạp: <strong id="displayRobux"></strong></div>
@@ -120,591 +70,78 @@
       <a href="#" onclick="doLogout()">🚪 Đăng xuất</a>
     </div>
   </div>
+  <div id="overlay" onclick="closeAll()"></div>
 
-  <div id="overlay" style="display:none; position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;" onclick="closeAll()"></div>
+  <!-- POPUP THÔNG BÁO (giữ nguyên của bạn) -->
+  <div id="popup-overlay" onclick="closePopup()"></div>
+  <div id="popup">
+    <h2>🔔 <strong>THÔNG BÁO</strong></h2>
+    <!-- ... nội dung popup ... -->
+    <button class="popup-button" onclick="closePopup()">Đóng thông báo</button>
+  </div>
+
+  <!-- ======= PHẦN CONTENT GỐC CỦA BẠN ======= -->
+  <div class="container">
+    <!-- giữ nguyên mọi thẻ, section, style, script từ file gốc Ggggh.html sau đây -->
+    <!-- ... -->
+  </div>
 
   <script>
+    // Các biến trạng thái user
+    let isLoggedIn = false, userName = "", userRobux = 0;
     const dropdown = document.getElementById("dropdownBox");
-    const overlay = document.getElementById("overlay");
-    const accountIcon = document.getElementById("accountIcon");
+    const overlay  = document.getElementById("overlay");
+    const icon     = document.getElementById("accountIcon");
 
-    let isLoggedIn = false;
-    let userName = "";
-    let userRobux = 0;
-
-    function toggleDropdown() {
-      const isOpen = dropdown.style.display === "block";
+    function toggleDropdown(){
+      const open = dropdown.style.display==="block";
       closeAll();
-      if (!isOpen) {
-        if (isLoggedIn) {
-          document.getElementById("loginContainer").style.display = "none";
-          document.getElementById("userContainer").style.display = "block";
+      if(!open){
+        if(isLoggedIn){
+          document.getElementById("loginContainer").style.display="none";
+          document.getElementById("userContainer").style.display="block";
           document.getElementById("displayName").textContent = userName;
           document.getElementById("displayRobux").textContent = userRobux;
         } else {
-          document.getElementById("loginContainer").style.display = "block";
-          document.getElementById("userContainer").style.display = "none";
+          document.getElementById("loginContainer").style.display="block";
+          document.getElementById("userContainer").style.display="none";
         }
-        dropdown.style.display = "block";
-        overlay.style.display = "block";
-        accountIcon.classList.add("active");
+        dropdown.style.display="block"; overlay.style.display="block";
+        icon.classList.add("active");
       }
     }
-
-    function closeAll() {
-      dropdown.style.display = "none";
-      overlay.style.display = "none";
-      accountIcon.classList.remove("active");
+    function closeAll(){
+      dropdown.style.display="none"; overlay.style.display="none";
+      icon.classList.remove("active");
     }
-
-    function doLogin() {
+    function doLogin(){
       isLoggedIn = true;
-      userName = "vexbeerks";
-      userRobux = 292;
+      userName   = "vexbeerks";   // sau này bạn bind động từ API
+      userRobux  = 292;           // lấy từ API
+      closeAll();
+    }
+    function doLogout(){
+      isLoggedIn = false; userName=""; userRobux=0;
       closeAll();
     }
 
-    function doLogout() {
-      isLoggedIn = false;
-      userName = "";
-      userRobux = 0;
-      closeAll();
+    // Popup thông báo
+    function showPopup(){
+      const p=document.getElementById("popup"), o=document.getElementById("popup-overlay");
+      p.classList.remove("fade-out"); p.style.display="block"; o.style.display="block";
+      p.classList.add("fade-in");
     }
+    function closePopup(){
+      const p=document.getElementById("popup"), o=document.getElementById("popup-overlay");
+      p.classList.remove("fade-in"); p.classList.add("fade-out");
+      setTimeout(()=>{ p.style.display="none"; o.style.display="none"; },300);
+    }
+    window.onload = showPopup;
+    document.addEventListener("keydown", e=>{ if(e.key==="Escape") closePopup(); });
   </script>
+  <!-- ======= CUỐI CÙNG: GIỮ NGUYÊN CÁC <script> KHÁC CỦA BẠN ========= -->
 </body>
 </html>
-
-</body>
-</html>
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="google" content="notranslate">
-  <title>ROBUXVEX - Shop robux chính hãng</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translate(-50%, -55%); }
-      to   { opacity: 1; transform: translate(-50%, -50%); }
-    }
-
-    @keyframes fadeOut {
-      from { opacity: 1; transform: translate(-50%, -50%); }
-      to   { opacity: 0; transform: translate(-50%, -45%); }
-    }
-
-    .fade-in {
-      animation: fadeIn 0.3s ease forwards;
-    }
-
-    .fade-out {
-      animation: fadeOut 0.3s ease forwards;
-    }
-
-    body {
-      margin: 0;
-      background-color: #90caf9;
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      color: #000;
-    }
-
-    #overlay {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background-color: rgba(0, 0, 0, 0.3);
-      z-index: 999;
-      display: none;
-    }
-
-    #popup {
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 92%;
-      max-width: 440px;
-      background-color: #C0C0C0;
-      padding: 25px 20px;
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-      z-index: 1000;
-      display: none;
-      color: #000;
-    }
-
-    h2 {
-      text-align: center;
-      font-size: 22px;
-      margin: 0 0 15px;
-    }
-
-    .highlightin {
-      color: #ff9800;
-      font-weight: bold;
-    }
-
-    a {
-      color: #0d47a1;
-      text-decoration: underline;
-      font-weight: bold;
-    }
-
-    .special-box {
-      border: 1px dashed #0d47a1;
-      background-color: #e3f2fd;
-      padding: 12px;
-      border-radius: 10px;
-      margin: 15px 0;
-    }
-
-    .popup-button {
-      background-color: #1976d2;
-      color: white;
-      border: none;
-      padding: 10px 22px;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 15px;
-      margin-top: 20px;
-      transition: background-color 0.3s;
-    }
-
-    .popup-button:hover {
-      background-color: #1565c0;
-    }
-
-    .contact {
-      margin-top: 10px;
-    }
-
-    .center {
-      text-align: center;
-    }
-
-    .glow-title {
-      text-shadow: 0 0 6px rgba(255, 152, 0, 0.8);
-    }
-  </style>
-</head>
-<body translate="no">
-
-<div id="overlay" onclick="closePopup()"></div>
-
-<div id="popup">
-  <h2>🔔 <strong>THÔNG BÁO</strong></h2>
-
-  <p>
-    Robux sẽ được cung cấp mỗi 
-    <span class="highlightin" translate="no">25 - 29 ngày</span> với số lượng từ 
-    <span class="highlightin" translate="no">2000 - 10000 robux</span> tùy theo lượng khách.
-  </p>
-
-  <p>
-    Link shop chính thức: 
-    <a href="https://robuxvex.vercel.app" target="_blank" rel="noopener">robuxvex.vercel.app</a>
-  </p>
-
-  <div class="special-box">
-    <strong class="highlightin">🎁 GÓI ĐẶC BIỆT: </strong>(SOLD OUT)</strong><br>
-    Nhận robux chỉ trong 
-    <span class="highlightin" translate="no">5 - 30 phút</span><br>
-    Giá: 
-    <span class="highlightin" translate="no">120.000đ</span> → 
-    <span class="highlightin" translate="no">400 robux</span>
-  </div>
-
-  <p class="center">
-    Cảm ơn bạn đã tin tưởng và chọn 
-    <strong class="glow-title">ROBUXVEX</strong> ❤️
-  </p>
-
-  <div class="contact">
-    <strong>📞 Liên hệ & mua hàng:</strong><br>
-    Zalo: <a href="tel:0907486634" translate="no">0907486634</a><br>
-    Gmail: <a href="mailto:vochuoi86@gmail.com" translate="no">vochuoi86@gmail.com</a>
-  </div>
-
-  <div class="center">
-    <button onclick="closePopup()" class="popup-button">Đóng thông báo</button>
-  </div>
-</div>
-
-<script>
-  function showPopup() {
-    const popup = document.getElementById('popup');
-    const overlay = document.getElementById('overlay');
-
-    popup.classList.remove('fade-out');
-    popup.style.display = 'block';
-    overlay.style.display = 'block';
-    popup.classList.add('fade-in');
-  }
-
-  function closePopup() {
-    const popup = document.getElementById('popup');
-    const overlay = document.getElementById('overlay');
-
-    popup.classList.remove('fade-in');
-    popup.classList.add('fade-out');
-
-    setTimeout(() => {
-      popup.style.display = 'none';
-      overlay.style.display = 'none';
-    }, 300);
-  }
-
-  window.onload = showPopup;
-
-  document.addEventListener('keydown', function(event) {
-    if (event.key === 'Escape') {
-      closePopup();
-    }
-  });
-</script>
-
-</body>
-</html>
-
-</body>
-</html>
-
-</body>
-</html>
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ROBUXVEX</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
-  
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: url('https://i.postimg.cc/6y9cq67m/background.jpg') no-repeat center center fixed;
-      background-size: cover;
-      color: #fff;
-      text-align: center;
-      padding-bottom: 40px;
-    }
-   .login-btn {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(6px);
-  padding: 8px 14px;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  text-decoration: none;
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  transition: background 0.3s ease, transform 0.2s ease;
-  z-index: 999;
-}
-
-.login-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  transform: scale(1.05);
-}
-
-.login-btn img {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
-  object-fit: contain;
-}
-
-    .container {
-      padding: 20px;
-      max-width: 600px;
-      margin: auto;
-    }
-
-    .profile-img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 4px solid white;
-      margin-top: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    h2, h3 {
-      margin: 10px 0;
-    }
-
-    .bold {
-      font-weight: 700;
-    }
-
-    .section {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 16px;
-      margin: 20px 0;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
-     .coin {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  background-image: url('https://i.postimg.cc/wtj7Mn2d/robux.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  animation: fall linear;
-  z-index: 3;
-  pointer-events: none;
-  opacity: 0.8;
-    }
-
-@keyframes fall {
-  0% {
-    transform: translateY(0) translateX(0) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) translateX(var(--x-move, 0px)) rotate(720deg);
-    opacity: 0;
-  }
-}
-    .highlight {
-      background: #ffffffdd;
-      color: #111;
-      border-radius: 12px;
-      padding: 14px;
-      font-weight: bold;
-      margin-top: 16px;
-      font-size: 1.1rem;
-    }
-
-    .price-list, .note {
-      font-size: 15px;
-      line-height: 1.6;
-      margin-top: 10px;
-    }
-    .money-rain {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 2;
-}
-
-.money {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  background-image: url('https://i.imgur.com/Z3fN5Dj.png'); /* robux icon */
-  background-size: contain;
-  background-repeat: no-repeat;
-  animation: fall linear infinite;
-  opacity: 0.8;
-}
-
-@keyframes fall {
-  0% {
-    transform: translateY(-50px) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(600px) rotate(360deg);
-    opacity: 0;
-  }
-}
-
-    .card {
-      background: rgba(255, 255, 255, 0.15);
-      padding: 16px;
-      border-radius: 20px;
-      margin: 20px 0;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-    }
-    .top-item {
-  background: rgba(255, 255, 255, 0.15);
-  border-radius: 14px;
-  padding: 12px 16px;
-  margin: 10px 0;
-  color: white;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.top-item:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.top-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: bold;
-  font-size: 1.05rem;
-}
-.top-content {
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.4s ease, opacity 0.4s ease;
-  opacity: 0;
-}
-
-.top-item.open .top-content {
-  max-height: 500px; /* Đủ lớn để chứa nội dung */
-  opacity: 1;
-}
-
-.top-item .arrow {
-  transition: transform 0.3s ease;
-}
-
-.top-item.open .arrow {
-  transform: rotate(180deg);
-}
-
-    .section-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #fff;
-    }
-
-    .stock-amount {
-      font-size: 1.2rem;
-      margin-top: 10px;
-      font-weight: 500;
-      color: #fff;
-    }
-
-    .stock-number {
-      font-weight: bold;
-      color: #ffe600;
-    }
-
-    .slider {
-      display: flex;
-      overflow-x: auto;
-      gap: 12px;
-      padding: 16px 0;
-    }
-
-    .item {
-      flex: 0 0 auto;
-      width: 185px;
-      min-height: 280px;
-      background: rgba(255, 255, 255, 0.1);
-      color: #FF33FF;
-      border-radius: 12px;
-      padding: 12px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(255, 230, 0, 0.3);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .item img {
-      width: 100%;
-      border-radius: 8px;
-      box-shadow: 0 0 5px #ffe600;
-    }
-
-    .item .label {
-      font-size: 0.9rem;
-      margin: 8px 0 4px;
-      color: #ff33ff;
-      font-weight: bold;
-    }
-    .item .VIP {
-      font-size: 0.9rem;
-      color: #FF3300;
-      font-weight: rainbowGlass;
-    }
-
-    .item .bonus {
-      font-size: 0.8rem;
-      color: #16f1e4;
-      font-weight: bold;
-      margin-bottom: 6px;
-    }
-    .top-item {
-  margin-top: 20px; /* Tạo khoảng cách phía trên */
-}
-    .item button,
-.item .button {
-  display: block;
-  text-align: center;
-  text-decoration: none;
-  background: linear-gradient(
-    270deg,
-    #ff0000,
-    #ff9900,
-    #ffff00,
-    #00ff00,
-    #0000ff,
-    #8b00ff,
-    #ff0000
-  );
-  background-size: 400% 400%;
-  color: white;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: bold;
-  padding: 10px 20px;
-  cursor: pointer;
-  animation: rainbowGlass 6s linear infinite;
-  text-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  z-index: 10;
-  position: relative;
-}
-@keyframes rainbowGlass {
-  0% {
-    background-position: 0% 50%;
-  }
-  100% {
-    background-position: 100% 50%;
-  }
-}
-
-
-
-
-
-    #buy h3 {
-      color: #ffe600;
-      margin-bottom: 16px;
-    }
-
-    .glow-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #ffe600;
-      text-shadow: 0 0 5px #ffe600, 0 0 10px #ffea00;
-      animation: flicker 1.8s infinite alternate;
-    }
-
-    @keyframes flicker {
-      0% { opacity: 1; }
-      50% { opacity: 0.85; }
-      100% { opacity: 1; }
-    }
   </style>
 </head>
 <body>
