@@ -3,6 +3,430 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Trang chính người dùng</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      background: #f0f2f5;
+    }
+
+    .header {
+      background: white;
+      padding: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .menu-btn {
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px 15px;
+    }
+
+    .menu-panel {
+      display: none;
+      background: #fff;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      position: absolute;
+      top: 60px;
+      left: 10px;
+      right: 10px;
+      border-radius: 12px;
+      z-index: 10;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .info-row {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+
+    .info-row span {
+      font-weight: bold;
+      color: #007bff;
+    }
+
+    .menu-panel.show {
+      display: block;
+    }
+
+    .user-block {
+      margin-top: 15px;
+      padding: 10px;
+      border-top: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="menu-btn" onclick="toggleMenu()">☰</div>
+    <div><strong>Trang chính người dùng</strong></div>
+    <div>👤</div>
+  </div>
+
+  <div id="menu" class="menu-panel">
+    <div class="info-row">🏠 Trang chủ</div>
+    <div class="info-row">📦 Kho robux</div>
+
+    <div id="userInfo" class="user-block" style="display: none;">
+      <div class="info-row">👤 <span id="username">Chưa đăng nhập</span></div>
+      <div class="info-row">💰 Số dư: <span id="balance">0</span> đ</div>
+      <div class="info-row">🪙 Đã nạp: <span id="deposited">0</span> đ</div>
+      <div class="info-row">💸 Đã dùng: <span id="used">0</span> đ</div>
+      <div class="info-row">🎮 Robux đã mua: <span id="robux">0</span> robux</div>
+      <div class="info-row">⚙️ <a href="#">Cài đặt tài khoản</a></div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      const menu = document.getElementById('menu');
+      menu.classList.toggle('show');
+
+      const username = localStorage.getItem('username');
+      if (username) {
+        document.getElementById('username').innerText = username;
+        document.getElementById('balance').innerText = localStorage.getItem('balance') || '0';
+        document.getElementById('deposited').innerText = localStorage.getItem('deposited') || '0';
+        document.getElementById('used').innerText = localStorage.getItem('used') || '0';
+        document.getElementById('robux').innerText = localStorage.getItem('robux') || '0';
+
+        document.getElementById('userInfo').style.display = 'block';
+      } else {
+        document.getElementById('userInfo').style.display = 'none';
+      }
+    }
+
+    // Ví dụ tự động lưu thông tin sau đăng ký (test tạm)
+    // Xoá dòng này khi bạn dùng backend thực tế
+    if (!localStorage.getItem('username')) {
+      localStorage.setItem('username', 'vexuser');
+      localStorage.setItem('balance', '50000');
+      localStorage.setItem('deposited', '100000');
+      localStorage.setItem('used', '50000');
+      localStorage.setItem('robux', '1200');
+    }
+  </script>
+
+</body>
+</html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Navbar cải tiến</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      height: 2000px;
+    }
+
+    *:focus {
+      outline: none; /* ❌ Bỏ viền vàng khi bấm */
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      z-index: 1000;
+    }
+
+    .navbar-left, .navbar-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .icon-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #eee;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .icon-btn:hover {
+      background: #ddd;
+    }
+
+    .icon-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: #333;
+      transition: transform 0.3s ease;
+    }
+
+    .icon-btn:active svg {
+      transform: rotate(90deg);
+    }
+
+    .icon-btn.active {
+      background: #4CAF50;
+    }
+
+    .icon-btn.active svg {
+      fill: white;
+    }
+
+    .dropdown-box, .notify-box {
+      position: absolute;
+      top: 65px;
+      right: 20px;
+      width: 220px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+      padding: 10px 0;
+      display: none;
+      z-index: 1001;
+    }
+
+    .dropdown-box a, .menu-drawer a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      text-decoration: none;
+      color: #333;
+      transition: all 0.3s ease;
+      border-radius: 8px;
+    }
+
+    .dropdown-box a:hover, .menu-drawer a:hover {
+      background: #f0f0f0;
+      transform: scale(1.02);
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: #ddd;
+      margin: 4px 0;
+    }
+
+    .notify-box {
+      text-align: center;
+      padding: 16px;
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.2);
+      backdrop-filter: blur(2px);
+      z-index: 999;
+      display: none;
+    }
+
+    .menu-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 180px;
+      height: 100%;
+      background: linear-gradient(135deg, #ffffff, #f4f4f4);
+      box-shadow: 4px 0 10px rgba(0,0,0,0.2);
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      padding: 20px 10px;
+      z-index: 1002;
+      border-top-right-radius: 20px;
+      border-bottom-right-radius: 20px;
+      overflow: hidden;
+    }
+
+    .menu-drawer.open {
+      transform: translateX(0);
+    }
+
+    .menu-title {
+      font-weight: bold;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      padding-left: 10px;
+      font-size: 15px;
+      color: #888;
+    }
+
+    .menu-support a {
+      color: #4CAF50;
+      font-size: 14px;
+      text-decoration: underline;
+      display: block;
+      margin-top: 6px;
+      padding-left: 10px;
+    }
+
+    section {
+      scroll-margin-top: 80px;
+    }
+
+    /* 💸 Coin rain animation */
+    .coin {
+      position: absolute;
+      top: -40px;
+      font-size: 20px;
+      animation: fall 4s ease-in forwards;
+      pointer-events: none;
+      user-select: none;
+      z-index: 9999;
+      transform: rotate(0deg);
+      opacity: 1;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+<div class="navbar">
+  <div class="navbar-left">
+    <div class="icon-btn" onclick="openMenu()">
+      <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+    </div>
+  </div>
+
+  <div class="navbar-right">
+    <div class="icon-btn" onclick="toggleNotify()">
+      <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7v4.5L4 17v1h16v-1l-1-3.5V9a7 7 0 0 0-7-7zm0 20a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2z"/></svg>
+    </div>
+
+    <div class="icon-btn" id="accountIcon" onclick="toggleDropdown()">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V22h19.2v-2.8c0-3.2-6.4-4.8-9.6-4.8z"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div class="menu-drawer" id="menuDrawer">
+  <a href="#kho-robux" onclick="scrollToSection('kho-robux')">📦 Kho Robux</a>
+  <a href="#mua-hang" onclick="scrollToSection('buy')">🛒 Mua hàng</a>
+
+  <div class="menu-title">📞 Hỗ trợ</div>
+  <div class="menu-support">
+    <a href="tel:0907486634">Zalo</a>
+    <a href="mailto:vochuoi86@gmail.com">Gmail</a>
+  </div>
+</div>
+
+<div class="dropdown-box" id="dropdownBox">
+  <a href="#">🔑 Đăng nhập</a>
+  <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
+  <div class="dropdown-divider"></div>
+  <a href="#">🔁 Quên mật khẩu?</a>
+</div>
+
+<div class="notify-box" id="notifyBox">
+  <strong>🔔 Thông báo</strong>
+  <p>No yết</p>
+</div>
+
+<script>
+  const overlay = document.getElementById("overlay");
+  const dropdown = document.getElementById("dropdownBox");
+  const notifyBox = document.getElementById("notifyBox");
+  const accountIcon = document.getElementById("accountIcon");
+  const menuDrawer = document.getElementById("menuDrawer");
+
+  function closeAll() {
+    dropdown.style.display = "none";
+    notifyBox.style.display = "none";
+    menuDrawer.classList.remove("open");
+    overlay.style.display = "none";
+    accountIcon.classList.remove("active");
+  }
+
+  function toggleDropdown() {
+    const isOpen = dropdown.style.display === "block";
+    closeAll();
+    if (!isOpen) {
+      dropdown.style.display = "block";
+      overlay.style.display = "block";
+      accountIcon.classList.add("active");
+    }
+  }
+
+  function toggleNotify() {
+    const isOpen = notifyBox.style.display === "block";
+    closeAll();
+    if (!isOpen) {
+      notifyBox.style.display = "block";
+      overlay.style.display = "block";
+    }
+  }
+
+  function openMenu() {
+    closeAll();
+    menuDrawer.classList.add("open");
+    overlay.style.display = "block";
+    createCoinRain();
+  }
+
+  function scrollToSection(id) {
+    closeAll();
+    const section = document.getElementById(id);
+    if (section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
+  function createCoinRain() {
+    const menu = document.getElementById("menuDrawer");
+    for (let i = 0; i < 20; i++) {
+      const coin = document.createElement("div");
+      coin.classList.add("coin");
+      coin.textContent = "🟢";
+      coin.style.left = Math.random() * 160 + "px";
+      coin.style.animationDuration = (2 + Math.random() * 2) + "s";
+      coin.style.fontSize = (18 + Math.random() * 6) + "px";
+      menu.appendChild(coin);
+      setTimeout(() => coin.remove(), 5000);
+    }
+  }
+</script>
+</body>
+</html>
+
+</body>
+</html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="google" content="notranslate">
   <title>ROBUXVEX - Shop robux chính hãng</title>
   <style>
@@ -535,6 +959,7 @@
   <div class="container">
     <!-- Avatar & giới thiệu -->
     <img src="https://i.postimg.cc/4n9C234M/robuxvex-avt.jpg" alt="Avatar" class="profile-img" />
+    <section id="kho-robux"
     <h2 class="bold">ROBUXVEX</h2>
     <p>Shop robux uy tín | 100% robux chính hãng<br />Owner – Vex</p>
 
@@ -641,35 +1066,10 @@
   </div>
 </div>
     
-  <script>
-  function toggleTop(item) {
-    item.classList.toggle('open');
-  }
-  <script>
-  firebase.auth().onAuthStateChanged(user => {
-    if (user) {
-      // Đã đăng nhập
-      document.getElementById("userInfo").innerText = `👋 Xin chào, ${user.email}`;
-      document.getElementById("loginButton").style.display = "none";
-      document.getElementById("logoutButton").style.display = "inline-block";
-    } else {
-      // Chưa đăng nhập, có thể chuyển về trang đăng nhập
-      window.location.href = "https://rbxvexauth.vercel.app/";
-    }
-  });
 
-  function logOut() {
-    firebase.auth().signOut().then(() => {
-      window.location.href = "https://rbxvexauth.vercel.app/";
-    });
-  }
 </script>
 </script>
-</script>
-<a href="https://rbxvexauth.vercel.app/" class="login-btn">
-  <img src="https://cdn-icons-png.flaticon.com/512/1828/1828490.png" />
-  <span>Register / Login</span>
-</a>
+
 </body>
 </html>
 
