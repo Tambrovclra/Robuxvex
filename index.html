@@ -10,11 +10,9 @@
       font-family: 'Poppins', sans-serif;
       height: 2000px;
     }
-
     *:focus {
-      outline: none; /* ❌ Bỏ viền vàng khi bấm */
+      outline: none;
     }
-
     .navbar {
       position: fixed;
       top: 0;
@@ -29,13 +27,11 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       z-index: 1000;
     }
-
     .navbar-left, .navbar-right {
       display: flex;
       align-items: center;
       gap: 16px;
     }
-
     .icon-btn {
       width: 36px;
       height: 36px;
@@ -47,31 +43,25 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-
     .icon-btn:hover {
       background: #ddd;
     }
-
     .icon-btn svg {
       width: 20px;
       height: 20px;
       fill: #333;
       transition: transform 0.3s ease;
     }
-
     .icon-btn:active svg {
       transform: rotate(90deg);
     }
-
     .icon-btn.active {
       background: #4CAF50;
     }
-
     .icon-btn.active svg {
       fill: white;
     }
-
-    .dropdown-box, .notify-box {
+    .dropdown-box {
       position: absolute;
       top: 65px;
       right: 20px;
@@ -83,8 +73,7 @@
       display: none;
       z-index: 1001;
     }
-
-    .dropdown-box a, .menu-drawer a {
+    .dropdown-box a {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -94,212 +83,94 @@
       transition: all 0.3s ease;
       border-radius: 8px;
     }
-
-    .dropdown-box a:hover, .menu-drawer a:hover {
+    .dropdown-box a:hover {
       background: #f0f0f0;
       transform: scale(1.02);
     }
-
     .dropdown-divider {
       height: 1px;
       background: #ddd;
-      margin: 4px 0;
-    }
-
-    .notify-box {
-      text-align: center;
-      padding: 16px;
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.2);
-      backdrop-filter: blur(2px);
-      z-index: 999;
-      display: none;
-    }
-
-    .menu-drawer {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 180px;
-      height: 100%;
-      background: linear-gradient(135deg, #ffffff, #f4f4f4);
-      box-shadow: 4px 0 10px rgba(0,0,0,0.2);
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      padding: 20px 10px;
-      z-index: 1002;
-      border-top-right-radius: 20px;
-      border-bottom-right-radius: 20px;
-      overflow: hidden;
-    }
-
-    .menu-drawer.open {
-      transform: translateX(0);
-    }
-
-    .menu-title {
-      font-weight: bold;
-      margin-top: 20px;
-      margin-bottom: 8px;
-      padding-left: 10px;
-      font-size: 15px;
-      color: #888;
-    }
-
-    .menu-support a {
-      color: #4CAF50;
-      font-size: 14px;
-      text-decoration: underline;
-      display: block;
-      margin-top: 6px;
-      padding-left: 10px;
-    }
-
-    section {
-      scroll-margin-top: 80px;
-    }
-
-    /* 💸 Coin rain animation */
-    .coin {
-      position: absolute;
-      top: -40px;
-      font-size: 20px;
-      animation: fall 4s ease-in forwards;
-      pointer-events: none;
-      user-select: none;
-      z-index: 9999;
-      transform: rotate(0deg);
-      opacity: 1;
-    }
-
-    @keyframes fall {
-      0% {
-        transform: translateY(0) rotate(0deg);
-        opacity: 1;
-      }
-      100% {
-        transform: translateY(100vh) rotate(360deg);
-        opacity: 0;
-      }
+      margin: 8px 0;
     }
   </style>
 </head>
 <body>
-
-<div class="overlay" id="overlay" onclick="closeAll()"></div>
-
-<div class="navbar">
-  <div class="navbar-left">
-    <div class="icon-btn" onclick="openMenu()">
-      <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+  <div class="navbar">
+    <div class="navbar-left">
+      <strong>ROBUXVEX</strong>
+    </div>
+    <div class="navbar-right">
+      <div class="icon-btn" id="accountIcon" onclick="toggleDropdown()">👤</div>
     </div>
   </div>
 
-  <div class="navbar-right">
-    <div class="icon-btn" onclick="toggleNotify()">
-      <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7v4.5L4 17v1h16v-1l-1-3.5V9a7 7 0 0 0-7-7zm0 20a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2z"/></svg>
+  <div class="dropdown-box" id="dropdownBox">
+    <!-- Khi chưa đăng nhập -->
+    <div id="loginContainer">
+      <a href="#" onclick="doLogin()">🔑 Đăng nhập</a>
+      <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
+      <div class="dropdown-divider"></div>
+      <a href="#">🔁 Quên mật khẩu?</a>
     </div>
-
-    <div class="icon-btn" id="accountIcon" onclick="toggleDropdown()">
-      <svg viewBox="0 0 24 24">
-        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V22h19.2v-2.8c0-3.2-6.4-4.8-9.6-4.8z"/>
-      </svg>
+    <!-- Khi đã đăng nhập -->
+    <div id="userContainer" style="display:none; padding:10px 16px; color:#333;">
+      <div>👤 <strong id="displayName"></strong></div>
+      <div>💎 Robux đã nạp: <strong id="displayRobux"></strong></div>
+      <div class="dropdown-divider" style="margin:8px 0;"></div>
+      <a href="#" onclick="doLogout()">🚪 Đăng xuất</a>
     </div>
   </div>
-</div>
 
-<div class="menu-drawer" id="menuDrawer">
-  <a href="#kho-robux" onclick="scrollToSection('kho-robux')">📦 Kho Robux</a>
-  <a href="#mua-hang" onclick="scrollToSection('buy')">🛒 Mua hàng</a>
+  <div id="overlay" style="display:none; position:fixed;top:0;left:0;right:0;bottom:0;z-index:1000;" onclick="closeAll()"></div>
 
-  <div class="menu-title">📞 Hỗ trợ</div>
-  <div class="menu-support">
-    <a href="tel:0907486634">Zalo</a>
-    <a href="mailto:vochuoi86@gmail.com">Gmail</a>
-  </div>
-</div>
+  <script>
+    const dropdown = document.getElementById("dropdownBox");
+    const overlay = document.getElementById("overlay");
+    const accountIcon = document.getElementById("accountIcon");
 
-<div class="dropdown-box" id="dropdownBox">
-  <div id="userInfo" style="padding: 10px 16px;">
-    <strong>Tên: </strong><span id="username">...</span><br/>
-    <strong>Đã nạp: </strong><span id="robuxNaped">0</span> Robux
-  </div>
-  <div class="dropdown-divider"></div>
-  <a href="#" onclick="logout()">🚪 Đăng xuất</a>
-</div>
+    let isLoggedIn = false;
+    let userName = "";
+    let userRobux = 0;
 
-<div class="notify-box" id="notifyBox">
-  <strong>🔔 Thông báo</strong>
-  <p>No yết</p>
-</div>
-
-<script>
-  const overlay = document.getElementById("overlay");
-  const dropdown = document.getElementById("dropdownBox");
-  const notifyBox = document.getElementById("notifyBox");
-  const accountIcon = document.getElementById("accountIcon");
-  const menuDrawer = document.getElementById("menuDrawer");
-
-  function closeAll() {
-    dropdown.style.display = "none";
-    notifyBox.style.display = "none";
-    menuDrawer.classList.remove("open");
-    overlay.style.display = "none";
-    accountIcon.classList.remove("active");
-  }
-
-  function toggleDropdown() {
-    const isOpen = dropdown.style.display === "block";
-    closeAll();
-    if (!isOpen) {
-      dropdown.style.display = "block";
-      overlay.style.display = "block";
-      accountIcon.classList.add("active");
+    function toggleDropdown() {
+      const isOpen = dropdown.style.display === "block";
+      closeAll();
+      if (!isOpen) {
+        if (isLoggedIn) {
+          document.getElementById("loginContainer").style.display = "none";
+          document.getElementById("userContainer").style.display = "block";
+          document.getElementById("displayName").textContent = userName;
+          document.getElementById("displayRobux").textContent = userRobux;
+        } else {
+          document.getElementById("loginContainer").style.display = "block";
+          document.getElementById("userContainer").style.display = "none";
+        }
+        dropdown.style.display = "block";
+        overlay.style.display = "block";
+        accountIcon.classList.add("active");
+      }
     }
-  }
 
-  function toggleNotify() {
-    const isOpen = notifyBox.style.display === "block";
-    closeAll();
-    if (!isOpen) {
-      notifyBox.style.display = "block";
-      overlay.style.display = "block";
+    function closeAll() {
+      dropdown.style.display = "none";
+      overlay.style.display = "none";
+      accountIcon.classList.remove("active");
     }
-  }
 
-  function openMenu() {
-    closeAll();
-    menuDrawer.classList.add("open");
-    overlay.style.display = "block";
-    createCoinRain();
-  }
-
-  function scrollToSection(id) {
-    closeAll();
-    const section = document.getElementById(id);
-    if (section) {
-      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    function doLogin() {
+      isLoggedIn = true;
+      userName = "vexbeerks";
+      userRobux = 292;
+      closeAll();
     }
-  }
 
-  function createCoinRain() {
-    const menu = document.getElementById("menuDrawer");
-    for (let i = 0; i < 20; i++) {
-      const coin = document.createElement("div");
-      coin.classList.add("coin");
-      coin.textContent = "🟢";
-      coin.style.left = Math.random() * 160 + "px";
-      coin.style.animationDuration = (2 + Math.random() * 2) + "s";
-      coin.style.fontSize = (18 + Math.random() * 6) + "px";
-      menu.appendChild(coin);
-      setTimeout(() => coin.remove(), 5000);
+    function doLogout() {
+      isLoggedIn = false;
+      userName = "";
+      userRobux = 0;
+      closeAll();
     }
-  }
-</script>
+  </script>
 </body>
 </html>
 
@@ -1174,29 +1045,6 @@ function loopCoinDropFromBuyTitle() {
 }
 
 loopCoinDropFromBuyTitle();
-</script>
-<script>
-window.onload = function() {
-  const userData = localStorage.getItem("userData");
-  if (userData) {
-    const user = JSON.parse(userData);
-    document.getElementById("username").textContent = user.username;
-    document.getElementById("robuxNaped").textContent = user.robuxNaped;
-  } else {
-    // Nếu không có user, đổi dropdown thành đăng nhập / đăng ký
-    document.getElementById("dropdownBox").innerHTML = `
-      <a href="#">🔑 Đăng nhập</a>
-      <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
-      <div class="dropdown-divider"></div>
-      <a href="#">🔁 Quên mật khẩu?</a>
-    `;
-  }
-};
-
-function logout() {
-  localStorage.removeItem("userData");
-  location.reload();
-}
 </script>
 </body>
 </html>
