@@ -801,28 +801,33 @@
 
 <script>
   // Kiểm tra trạng thái đăng nhập
-  firebase.auth().onAuthStateChanged(async (user) => {
-    const dropdownBox = document.getElementById("dropdownBox");
+  
+firebase.auth().onAuthStateChanged(async (user) => {
+  const dropdownBox = document.getElementById("dropdownBox");
 
-    if (user) {
-      let userName = user.displayName || "Người dùng";
-      let balance = "0đ";
+  if (user) {
+    let userName = user.displayName || "Người dùng";
+    let balance = "0đ";
+    let role = "Member";
 
-      try {
-        const docRef = db.collection("users").doc(user.uid);
-        const docSnap = await docRef.get();
-        if (docSnap.exists) {
-          balance = docSnap.data().balance + "đ";
-        }
-      } catch (e) {
-        console.error("Lỗi Firestore:", e);
+    try {
+      const docSnap = await firebase.firestore().collection("users").doc(user.uid).get();
+      if (docSnap.exists) {
+        const data = docSnap.data();
+        balance = (data.balance ?? 0) + "đ";
+        role = data.role ?? "Member";
       }
+    } catch (e) {
+      console.error("Lỗi Firestore:", e);
+    }
 
-      dropdownBox.innerHTML = `
-        <div style="padding: 10px 16px; color: black;">
-          👤 <strong>${userName}</strong><br>
-          💰 Số dư: <strong>${balance}</strong>
-        </div>
+    dropdownBox.innerHTML = `
+      <div style="padding: 10px 16px; color: black;">
+        👤 <strong>${userName}</strong><br>
+        💰 Số dư: <strong>${balance}</strong><br>
+        🏷️ Vai trò: <strong>${role}</strong>
+      </div>
+    
         <div class="dropdown-divider"></div>
         <a href="#">⚙️ Cài đặt</a>
         <a href="#" onclick="logout()">🚪 Đăng xuất</a>
