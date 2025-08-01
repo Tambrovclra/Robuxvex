@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Đăng nhập</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+    .container {
+      max-width: 400px;
+      background: white;
+      padding: 25px;
+      margin: 0 auto;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      text-align: center;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1976D2;
+    }
+    .status {
+      text-align: center;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Đăng nhập</h2>
+  <form id="loginForm">
+    <label>Địa chỉ Email *</label>
+    <input type="email" name="email" required>
+
+    <label>Mật khẩu *</label>
+    <input type="password" name="password" required>
+
+    <button type="submit">Đăng nhập</button>
+    <div class="status" id="statusMsg"></div>
+  </form>
+</div>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
+    authDomain: "robuxvex.firebaseapp.com",
+    projectId: "robuxvex",
+    storageBucket: "robuxvex.firebasestorage.app",
+    messagingSenderId: "291500837886",
+    appId: "1:291500837886:web:08ae60ca6454c209328eaf",
+    measurementId: "G-LWRKTMPXEN"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+</script>
+
+<script>
+  const form = document.getElementById("loginForm");
+  const statusMsg = document.getElementById("statusMsg");
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const email = form.email.value.trim();
+    const password = form.password.value.trim();
+
+    try {
+      await auth.signInWithEmailAndPassword(email, password);
+      statusMsg.style.color = "green";
+      statusMsg.innerText = "✅ Đăng nhập thành công!";
+
+      // Chuyển hướng sau 1.5s
+      setTimeout(() => {
+        window.location.href = "https://robuxvex.vercel.app";
+      }, 1500);
+    } catch (error) {
+      statusMsg.style.color = "red";
+      statusMsg.innerText = "❌ Lỗi: " + error.message;
+    }
+  });
+</script>
+
+</body>
+</html>
