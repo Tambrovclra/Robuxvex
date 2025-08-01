@@ -796,46 +796,46 @@
       
 <script>
   document.addEventListener("DOMContentLoaded", () => {
-    const dropdownBox = document.getElementById("dropdownBox");
+  const dropdownBox = document.getElementById("dropdownBox");
 
-    firebase.auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        let userName = user.displayName || "Người dùng";
-        let balance = "0đ";
+  // Chờ Firebase xác định trạng thái đăng nhập
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (user) {
+      let userName = user.displayName || "Người dùng";
+      let balance = "0đ";
 
-        try {
-          const docRef = db.collection("users").doc(user.uid);
-          const docSnap = await docRef.get();
-          if (docSnap.exists) {
-            balance = docSnap.data().balance + "đ";
-          }
-        } catch (e) {
-          console.error("Lỗi Firestore:", e);
+      try {
+        const docRef = db.collection("users").doc(user.uid);
+        const docSnap = await docRef.get();
+        if (docSnap.exists) {
+          balance = docSnap.data().balance + "đ";
         }
-
-        dropdownBox.innerHTML = `
-          <div style="padding: 10px 16px; color: black;">
-            👤 <strong>${userName}</strong><br>
-            💰 Số dư: <strong>${balance}</strong>
-          </div>
-          <div class="dropdown-divider"></div>
-          <a href="#">⚙️ Cài đặt</a>
-          <a href="https://rbxauthreg.vercel.app/" onclick="logout()">🚪 Đăng xuất</a>
-        `;
-      } else {
-        dropdownBox.innerHTML = `
-          <a href="https://rbxauthreg.vercel.app/Dangnhap.html">🔑 Đăng nhập</a>
-          <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
-          <div class="dropdown-divider"></div>
-          <strong class="highlightin"></strong>
-        `;
+      } catch (e) {
+        console.error("Lỗi Firestore:", e);
       }
-    });
 
-    window.logout = function () {
-      firebase.auth().signOut().then(() => window.location.reload());
-    };
+      dropdownBox.innerHTML = `
+        <div style="padding: 10px 16px; color: black;">
+          👤 <strong>${userName}</strong><br>
+          💰 Số dư: <strong>${balance}</strong>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a href="#">⚙️ Cài đặt</a>
+        <a href="#" onclick="logout()">🚪 Đăng xuất</a>
+      `;
+    } else {
+      dropdownBox.innerHTML = `
+        <a href="https://rbxauthreg.vercel.app/Dangnhap.html">🔑 Đăng nhập</a>
+        <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
+        <div class="dropdown-divider"></div>
+      `;
+    }
   });
+
+  window.logout = function () {
+    firebase.auth().signOut().then(() => window.location.reload());
+  };
+});
 </script>
 </body>
 </html>
