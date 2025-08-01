@@ -3,77 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Đăng nhập</title>
+  <title>Đăng ký tài khoản</title>
+
+  <!-- Google Fonts + Firebase SDK -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
   <style>
     body {
       font-family: 'Roboto', sans-serif;
-      background-color: #f2f2f2;
-      padding: 20px;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
-    .container {
-      max-width: 400px;
+    .form-box {
       background: white;
-      padding: 25px;
-      margin: 0 auto;
+      padding: 25px 30px;
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
     }
     h2 {
+      margin-bottom: 20px;
       text-align: center;
     }
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-    input[type="email"], input[type="password"] {
+    input {
       width: 100%;
       padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
+      margin: 8px 0;
       border-radius: 5px;
+      border: 1px solid #ccc;
     }
     button {
       width: 100%;
       padding: 10px;
-      background-color: #2196F3;
-      color: white;
+      background-color: #28a745;
       border: none;
+      color: white;
       font-size: 16px;
       border-radius: 5px;
+      margin-top: 10px;
       cursor: pointer;
     }
     button:hover {
-      background-color: #1976D2;
+      background-color: #218838;
     }
-    .status {
+    .message {
       text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
+      margin-top: 10px;
+      color: red;
     }
   </style>
 </head>
 <body>
 
-<div class="container">
-  <h2>Đăng nhập</h2>
-  <form id="loginForm">
-    <label>Địa chỉ Email *</label>
-    <input type="email" name="email" required>
-
-    <label>Mật khẩu *</label>
-    <input type="password" name="password" required>
-
-    <button type="submit">Đăng nhập</button>
-    <div class="status" id="statusMsg"></div>
+<div class="form-box">
+  <h2>Đăng ký</h2>
+  <form id="registerForm">
+    <input type="text" id="username" placeholder="Tên đăng nhập" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Mật khẩu" required>
+    <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+    <button type="submit">Tạo tài khoản</button>
+    <div class="message" id="message"></div>
   </form>
 </div>
 
 <script>
+  // Firebase config (robuxvex)
   const firebaseConfig = {
     apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
     authDomain: "robuxvex.firebaseapp.com",
@@ -85,29 +87,43 @@
   };
   firebase.initializeApp(firebaseConfig);
   const auth = firebase.auth();
-</script>
+  const db = firebase.firestore();
 
-<script>
-  const form = document.getElementById("loginForm");
-  const statusMsg = document.getElementById("statusMsg");
-
-  form.addEventListener("submit", async function (e) {
+  // Xử lý đăng ký
+  document.getElementById('registerForm').addEventListener('submit', async function (e) {
     e.preventDefault();
-    const email = form.email.value.trim();
-    const password = form.password.value.trim();
+    const email = document.getElementById('email').value.trim();
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const confirmPassword = document.getElementById('confirmPassword').value.trim();
+    const messageEl = document.getElementById('message');
+
+    if (password !== confirmPassword) {
+      messageEl.textContent = "❌ Mật khẩu không khớp!";
+      return;
+    }
 
     try {
-      await auth.signInWithEmailAndPassword(email, password);
-      statusMsg.style.color = "green";
-      statusMsg.innerText = "✅ Đăng nhập thành công!";
+      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const uid = userCredential.user.uid;
 
-      // Chuyển hướng sau 1.5s
+      // Ghi vào Firestore
+      await db.collection("users").doc(uid).set({
+        email: email,
+        username: username,
+        balance: 0
+      });
+
+      localStorage.setItem("username", username);
+      messageEl.style.color = "green";
+      messageEl.textContent = "✅ Đăng ký thành công!";
+
       setTimeout(() => {
         window.location.href = "index.html";
       }, 1500);
     } catch (error) {
-      statusMsg.style.color = "red";
-      statusMsg.innerText = "❌ Lỗi: " + error.message;
+      messageEl.style.color = "red";
+      messageEl.textContent = "❌ " + error.message;
     }
   });
 </script>
