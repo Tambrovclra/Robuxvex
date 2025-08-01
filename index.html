@@ -779,7 +779,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-  <script>
+
+<script>
   const firebaseConfig = {
     apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
     authDomain: "robuxvex.firebaseapp.com",
@@ -790,16 +791,19 @@
     measurementId: "G-LWRKTMPXEN"
   };
 
+  // Khởi tạo Firebase
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
-</script>
-      
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-  const dropdownBox = document.getElementById("dropdownBox");
 
-  // Chờ Firebase xác định trạng thái đăng nhập
+  // Đảm bảo trạng thái đăng nhập được giữ lại khi reload
+  firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+</script>
+
+<script>
+  // Kiểm tra trạng thái đăng nhập
   firebase.auth().onAuthStateChanged(async (user) => {
+    const dropdownBox = document.getElementById("dropdownBox");
+
     if (user) {
       let userName = user.displayName || "Người dùng";
       let balance = "0đ";
@@ -828,14 +832,17 @@
         <a href="https://rbxauthreg.vercel.app/Dangnhap.html">🔑 Đăng nhập</a>
         <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
         <div class="dropdown-divider"></div>
+        <strong class="highlightin">Mục này vẫn chưa thể sử dụng.</strong>
       `;
     }
   });
 
-  window.logout = function () {
-    firebase.auth().signOut().then(() => window.location.reload());
-  };
-});
+  // Hàm đăng xuất
+  function logout() {
+    firebase.auth().signOut().then(() => {
+      window.location.reload();
+    });
+  }
 </script>
 </body>
 </html>
