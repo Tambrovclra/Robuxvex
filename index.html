@@ -885,5 +885,21 @@ firebase.auth().onAuthStateChanged(async (user) => {
     });
   }
 </script>
+  
+        <script>
+  const userIcon = document.getElementById("userIcon");
+  const dropdownBox = document.getElementById("dropdownBox");
+
+  userIcon.addEventListener("click", () => {
+    dropdownBox.style.display = dropdownBox.style.display === "block" ? "none" : "block";
+  });
+
+  // Đóng khi click bên ngoài
+  document.addEventListener("click", function (e) {
+    if (!userIcon.contains(e.target) && !dropdownBox.contains(e.target)) {
+      dropdownBox.style.display = "none";
+    }
+  });
+</script>
 </body>
 </html>
