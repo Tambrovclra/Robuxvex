@@ -1,28 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-<style>
-    .user-icon {
-        font-size: 24px;
-        cursor: pointer;
-    }
-    .balance {
-        display: none;
-        margin-top: 10px;
-        padding: 10px;
-        background: #e9ecef;
-        border-radius: 4px;
-    }
-    .nav a, .nav span {
-        margin: 0 10px;
-        text-decoration: none;
-        color: #007bff;
-        cursor: pointer;
-    }
-</style>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="google" content="notranslate">
@@ -481,10 +459,8 @@
     </div>
   </div>
   <div class="dropdown-box" id="dropdownBox">
-    <a href="Login.html" id="loginLink">🔑 Đăng nhập</a>
-    <a href="Reg.html">📝 Đăng ký</a>
-    <span class="user-icon" id="userIcon">👤</span>
-<div class="balance" id="balanceDisplay">Số dư: 0</div>
+    <a href="#">🔑 Đăng nhập</a>
+    <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
     <div class="dropdown-divider"></div>
     <strong class="highlightin">Mục này vẫn chưa thể sử dụng.</strong>
   </div>
@@ -801,42 +777,5 @@
     }
     loopCoinDropFromBuyTitle();
   </script>
-  <script>
-    // Khởi tạo Firebase
-    const firebaseConfig = {
-        apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
-        authDomain: "robuxvex.firebaseapp.com",
-        projectId: "robuxvex",
-        storageBucket: "robuxvex.firebasestorage.app",
-        messagingSenderId: "291500837886",
-        appId: "1:291500837886:web:08ae60ca6454c209328eaf",
-        measurementId: "G-LWRKTMPXEN"
-    };
-    firebase.initializeApp(firebaseConfig);
-
-    const auth = firebase.auth();
-    const userIcon = document.getElementById('userIcon');
-    const balanceDisplay = document.getElementById('balanceDisplay');
-    const loginLink = document.getElementById('loginLink');
-
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            loginLink.style.display = 'none';
-            userIcon.style.display = 'inline';
-        } else {
-            loginLink.style.display = 'inline';
-            userIcon.style.display = 'inline';
-        }
-    });
-
-    userIcon.addEventListener('click', () => {
-        const user = auth.currentUser;
-        if (user) {
-            balanceDisplay.style.display = balanceDisplay.style.display === 'none' ? 'block' : 'none';
-        } else {
-            window.location.href = 'login.html';
-        }
-    });
-</script>
 </body>
 </html>
