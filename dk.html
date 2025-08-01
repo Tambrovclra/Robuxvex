@@ -61,7 +61,7 @@
                     <span class="visually-hidden">Loading...</span>
                   </div>
                   <div class="text-primary mb-2" id="loadingMessage" style="display: none;">
-                    ⏳ Chờ chút, yêu cầu đăng ký đang được duyệt...)
+                    ⏳ Chờ chút, yêu cầu đăng ký đang được duyệt...
                   </div>
                   <div class="text-success mb-2" id="successMessage" style="display: none;">
                     ✅ Đăng ký thành công!
@@ -178,24 +178,21 @@
                   displayName: name,
                   balance: 0,
                   createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
+                }).then(() => user.sendEmailVerification()); // Gửi xác minh email
               });
             })
             .then(() => {
               spinner.classList.add("d-none");
               loadingMessage.style.display = "none";
+              successMessage.innerHTML = "📩 Đăng ký thành công! Vui lòng kiểm tra email để xác minh trước khi đăng nhập.";
               successMessage.style.display = "block";
-
-              setTimeout(() => {
-                window.location.href = "https://robuxvex.vercel.app";
-              }, 1500);
             })
             .catch((error) => {
               spinner.classList.add("d-none");
               loadingMessage.style.display = "none";
               alert("Đăng ký lỗi: " + error.message);
             });
-        }, 1000); // Hiện loading ít nhất 1 giây
+        }, 1000);
       });
     });
   </script>
