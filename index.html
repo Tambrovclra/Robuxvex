@@ -458,11 +458,9 @@
       <a href="mailto:vochuoi86@gmail.com">Gmail</a>
     </div>
   </div>
-  <div class="dropdown-box" id="dropdownBox">
-    <a href="#">🔑 Đăng nhập</a>
-    <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
-    <div class="dropdown-divider"></div>
-    <strong class="highlightin">Mục này vẫn chưa thể sử dụng.</strong>
+<div class="dropdown-box" id="dropdownBox">
+  <!-- Sẽ được JS tự động tạo -->
+</div>
   </div>
   <div class="notify-box" id="notifyBox">
     <strong>🔔 <class="bonus">Thông báo</strong>
@@ -776,6 +774,51 @@
       setTimeout(loopCoinDropFromBuyTitle, next);
     }
     loopCoinDropFromBuyTitle();
+  </script>
+  <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const dropdownBox = document.getElementById('dropdownBox');
+  const userData = localStorage.getItem('user');
+
+  if (userData) {
+    // Đã đăng nhập
+    const user = JSON.parse(userData);
+    dropdownBox.innerHTML = `
+      <a href="#">👤 ${user.name}</a>
+      <a href="#">💰 ${user.balance} robux</a>
+      <div class="dropdown-divider"></div>
+      <a href="#">⚙️ Cài đặt</a>
+      <a href="#" id="logoutLink">🚪 Đăng xuất</a>
+    `;
+    document.getElementById('logoutLink').addEventListener('click', function (e) {
+      e.preventDefault();
+      localStorage.removeItem('user');
+      location.reload();
+    });
+  } else {
+    // Chưa đăng nhập
+    dropdownBox.innerHTML = `
+      <a href="#" id="loginBtn">🔑 Đăng nhập</a>
+      <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
+    `;
+    // Khi bấm Đăng nhập thì tạo user giả định
+    document.getElementById('loginBtn').addEventListener('click', function (e) {
+      e.preventDefault();
+      const dummyUser = { name: "User", balance: 0 };
+      localStorage.setItem('user', JSON.stringify(dummyUser));
+      location.reload();
+    });
+  }
+});
+</script>
+
+  </script>
+  <script>
+    const userData = localStorage.getItem("user");
+if (userData) {
+  const user = JSON.parse(userData);
+  // Hiển thị 👤 tên, 💰 số dư, v.v.
+}
   </script>
 </body>
 </html>
