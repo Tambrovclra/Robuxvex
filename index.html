@@ -775,12 +775,15 @@
     }
     loopCoinDropFromBuyTitle();
   </script>
-<!-- Firebase v8 - Dành cho HTML thông thường -->
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<!-- Firebase App (required) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
+<!-- Firebase Auth -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
+<!-- Firebase Firestore -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
 
 <script>
-  // Cấu hình Firebase
+  // Cấu hình Firebase của bạn
   const firebaseConfig = {
     apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
     authDomain: "robuxvex.firebaseapp.com",
@@ -793,7 +796,7 @@
 
   // Khởi tạo Firebase
   firebase.initializeApp(firebaseConfig);
-
+  const db = firebase.firestore(); // Khởi tạo Firestore
   // Xử lý hiển thị người dùng
   firebase.auth().onAuthStateChanged((user) => {
     const dropdownBox = document.getElementById("dropdownBox");
