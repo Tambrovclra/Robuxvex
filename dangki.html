@@ -77,6 +77,24 @@
     button[type="submit"]:hover {
       background-color: #45a049;
     }
+
+    /* Spinner */
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid white;
+      border-radius: 50%;
+      width: 16px;
+      height: 16px;
+      animation: spin 1s linear infinite;
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
@@ -106,12 +124,12 @@
 
     <div class="g-recaptcha" data-sitekey="6Lfea5UrAAAAAIkljlGhTRzgUjKJy9axYPl2u04-"></div>
 
-    <button type="submit">Đăng ký</button>
+    <button type="submit" id="submitBtn">Đăng ký</button>
   </form>
 </div>
 
-<!-- Firebase config -->
 <script>
+  // Firebase config
   const firebaseConfig = {
     apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
     authDomain: "robuxvex.firebaseapp.com",
@@ -157,6 +175,10 @@
       return;
     }
 
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `Đang xử lý <span class="spinner"></span>`;
+
     try {
       const userCredential = await auth.createUserWithEmailAndPassword(email, password);
       const uid = userCredential.user.uid;
@@ -168,14 +190,21 @@
       });
 
       localStorage.setItem("username", username);
-
       alert("Đăng ký thành công!");
-window.location.href = "https://robuxvex.vercel.app";
+
+      auth.onAuthStateChanged((user) => {
+        if (user) {
+          window.location.href = "trangchinh.html";
+        }
+      });
 
     } catch (error) {
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = "Đăng ký";
       alert("Lỗi đăng ký: " + error.message);
     }
   });
 </script>
+
 </body>
-</html>html>
+</html>
