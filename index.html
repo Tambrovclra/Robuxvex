@@ -309,28 +309,6 @@
       gap: 12px;
       padding: 16px 0;
     }
-      .coin {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  background-image: url('https://i.postimg.cc/wtj7Mn2d/robux.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  animation: fall linear;
-  z-index: 3;
-  pointer-events: none;
-  opacity: 0.8;
-      }
-    .money {
-  position: absolute;
-  width: 24px;
-  height: 24px;
-  background-image: url('https://i.imgur.com/Z3fN5Dj.png'); /* robux icon */
-  background-size: contain;
-  background-repeat: no-repeat;
-  animation: fall linear infinite;
-  opacity: 0.8;
-    }
     .item {
       flex: 0 0 auto;
       width: 185px; min-height: 280px;
@@ -460,13 +438,13 @@
   </div>
   <div class="dropdown-box" id="dropdownBox">
     <a href="#">🔑 Đăng nhập</a>
-    <a href="https://rbxauthreg.vercel.app/">📝 Đăng ký</a>
+    <a href="dangki.html">📝 Đăng ký</a>
     <div class="dropdown-divider"></div>
-    <strong class="highlightin">Mục này vẫn chưa thể sử dụng.</strong>
+    <a href="#">🔁 Quên mật khẩu?</a>
   </div>
   <div class="notify-box" id="notifyBox">
-    <strong>🔔 <class="bonus">Thông báo</strong>
-    <class="highlightin">No yet<
+    <strong>🔔 Thông báo</strong>
+    <p>No yết</p>
   </div>
   <!-- Popup -->
   <div id="overlayPopup" class="overlay" onclick="closePopup()"></div>
@@ -698,7 +676,7 @@
       for (let i = 0; i < 20; i++) {
         const coin = document.createElement("div");
         coin.classList.add("coin");
-        coin.textContent = "💸";
+        coin.textContent = "🟢";
         coin.style.left = Math.random() * 160 + "px";
         coin.style.animationDuration = (2 + Math.random() * 2) + "s";
         coin.style.fontSize = (18 + Math.random() * 6) + "px";
@@ -777,5 +755,57 @@
     }
     loopCoinDropFromBuyTitle();
   </script>
+  <body>
+    <!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+<script>
+  // Cấu hình Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
+    authDomain: "robuxvex.firebaseapp.com",
+    projectId: "robuxvex",
+    storageBucket: "robuxvex.firebasestorage.app",
+    messagingSenderId: "291500837886",
+    appId: "1:291500837886:web:08ae60ca6454c209328eaf",
+    measurementId: "G-LWRKTMPXEN"
+  };
+
+  // Khởi tạo Firebase
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+  const db = firebase.firestore();
+
+  // Kiểm tra trạng thái đăng nhập
+  auth.onAuthStateChanged(async (user) => {
+    if (user) {
+      const uid = user.uid;
+      const userDoc = await db.collection("users").doc(uid).get();
+      const data = userDoc.data();
+      const username = data.username || "Người dùng";
+      const balance = data.balance || 0;
+
+      // Ẩn dropdown đăng ký/đăng nhập
+      document.getElementById("dropdownBox").innerHTML = `
+        <div style="padding:10px;">
+          👋 Xin chào, <strong>${username}</strong><br>
+          💰 Số dư: <strong>${balance} robux</strong><br><br>
+          <a href="#" onclick="logout()">🚪 Đăng xuất</a>
+        </div>
+      `;
+    }
+  });
+
+  function logout() {
+    firebase.auth().signOut().then(() => {
+      location.reload();
+    });
+  }
+</script>
+  </body>
+</body>
+</html>dy>
 </body>
 </html>
