@@ -5,6 +5,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="google" content="notranslate">
   <title>ROBUXVEX - Shop robux chính hãng</title>
+  <style>
+  #userIcon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+  }
+
+  #dropdownBox {
+    position: fixed;
+    top: 60px; /* ngay dưới icon */
+    right: 20px;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: none;
+    min-width: 200px;
+    z-index: 999;
+    padding: 8px 0;
+  }
+
+  #dropdownBox a {
+    display: block;
+    padding: 8px 16px;
+    color: black;
+    text-decoration: none;
+  }
+
+  #dropdownBox a:hover {
+    background-color: #f1f1f1;
+  }
+  </style>
 
   <style>
     /* Navbar and menu styles */
