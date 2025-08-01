@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Muhamad Nauval Azhar">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Đăng ký người dùng ROBUXVEX">
+  <title>Đăng ký người dùng</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+</head>
+
+<body>
+  <section class="h-100">
+    <div class="container h-100">
+      <div class="row justify-content-sm-center h-100">
+        <div class="col-xxl-4 col-xl-5 col-lg-5 col-md-7 col-sm-9">
+          <div class="text-center my-4">
+            <img src="https://i.postimg.cc/8kMgGvCF/Screenshot-20250729-192919-Gallery.png" alt="logo" width="100" style="border-radius: 12px;">
+          </div>
+          <div class="card shadow-lg">
+            <div class="card-body p-5">
+              <h1 class="fs-4 card-title fw-bold mb-4">Register</h1>
+
+              <form id="registerForm" autocomplete="off" novalidate>
+                <div class="mb-3">
+                  <label class="mb-2 text-muted" for="name">Name</label>
+                  <input id="name" type="text" class="form-control" required autofocus>
+                  <div class="form-text text-danger" id="nameError"></div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="mb-2 text-muted" for="email">E-Mail Address</label>
+                  <input id="email" type="email" class="form-control" required>
+                  <div class="form-text text-danger" id="emailError"></div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="mb-2 text-muted" for="password">Password</label>
+                  <div class="input-group">
+                    <input id="password" type="password" class="form-control" required>
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('password', this)">👁️</button>
+                  </div>
+                  <div class="form-text text-danger" id="passwordError"></div>
+                </div>
+
+                <div class="mb-3">
+                  <label class="mb-2 text-muted" for="confirmPassword">Confirm Password</label>
+                  <div class="input-group">
+                    <input id="confirmPassword" type="password" class="form-control" required>
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirmPassword', this)">👁️</button>
+                  </div>
+                  <div class="form-text text-danger" id="confirmError"></div>
+                </div>
+
+                <p class="form-text text-muted mb-3 text-center">
+                  Cảm ơn bạn vì đã chấp nhận cùng đồng hành với <strong>ROBUXVEX</strong> 💸
+                </p>
+
+                <div class="align-items-center d-flex flex-column">
+                  <div class="spinner-border text-primary mb-2 d-none" role="status" id="spinner">
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <div class="text-primary mb-2" id="loadingMessage" style="display: none;">
+                    ⏳ Chờ chút, yêu cầu đăng ký đang được duyệt...
+                  </div>
+                  <div class="text-success mb-2" id="successMessage" style="display: none;">
+                    ✅ Đăng ký thành công!
+                  </div>
+                  <button type="submit" class="btn btn-primary w-100">Register</button>
+                </div>
+              </form>
+
+            </div>
+            <div class="card-footer py-3 border-0">
+              <div class="text-center">
+                Bạn đã có tài khoản? <a href="Dangnhap.html" class="text-dark">Đăng nhập ngay</a>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-4 text-muted"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
+      authDomain: "robuxvex.firebaseapp.com",
+      projectId: "robuxvex",
+      storageBucket: "robuxvex.firebasestorage.app",
+      messagingSenderId: "291500837886",
+      appId: "1:291500837886:web:08ae60ca6454c209328eaf",
+      measurementId: "G-LWRKTMPXEN"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
+
+  <script>
+    function togglePassword(id, btn) {
+      const input = document.getElementById(id);
+      const isHidden = input.type === "password";
+      input.type = isHidden ? "text" : "password";
+      btn.textContent = isHidden ? "🙈" : "👁️";
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("registerForm");
+      const nameInput = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+      const confirmPasswordInput = document.getElementById("confirmPassword");
+
+      const nameError = document.getElementById("nameError");
+      const emailError = document.getElementById("emailError");
+      const passwordError = document.getElementById("passwordError");
+      const confirmError = document.getElementById("confirmError");
+
+      const spinner = document.getElementById("spinner");
+      const successMessage = document.getElementById("successMessage");
+      const loadingMessage = document.getElementById("loadingMessage");
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        nameError.textContent = "";
+        emailError.textContent = "";
+        passwordError.textContent = "";
+        confirmError.textContent = "";
+        successMessage.style.display = "none";
+        loadingMessage.style.display = "none";
+
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        let isValid = true;
+
+        if (name === "") {
+          nameError.textContent = "Tên không được để trống.";
+          isValid = false;
+        }
+
+        if (!email.includes("@") || !email.includes(".")) {
+          emailError.textContent = "Email không hợp lệ.";
+          isValid = false;
+        }
+
+        if (password.length < 6) {
+          passwordError.textContent = "Mật khẩu tối thiểu 6 ký tự.";
+          isValid = false;
+        }
+
+        if (password !== confirmPassword) {
+          confirmError.textContent = "Mật khẩu xác nhận không khớp.";
+          isValid = false;
+        }
+
+        if (!isValid) return;
+
+        spinner.classList.remove("d-none");
+        loadingMessage.style.display = "block";
+
+        setTimeout(() => {
+          firebase.auth().createUserWithEmailAndPassword(email, password)
+            .then((userCredential) => {
+              const user = userCredential.user;
+              return user.updateProfile({ displayName: name }).then(() => {
+                return db.collection("users").doc(user.uid).set({
+                  email: user.email,
+                  displayName: name,
+                  balance: 0,
+                  createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+              });
+            })
+            .then(() => {
+              spinner.classList.add("d-none");
+              loadingMessage.style.display = "none";
+              successMessage.style.display = "block";
+
+              setTimeout(() => {
+                window.location.href = "https://robuxvex.vercel.app";
+              }, 1500);
+            })
+            .catch((error) => {
+              spinner.classList.add("d-none");
+              loadingMessage.style.display = "none";
+              alert("Đăng ký lỗi: " + error.message);
+            });
+        }, 1000); // Hiện loading ít nhất 1 giây
+      });
+    });
+  </script>
+</body>
+</html>
