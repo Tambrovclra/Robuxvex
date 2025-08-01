@@ -774,16 +774,12 @@
       setTimeout(loopCoinDropFromBuyTitle, next);
     }
     loopCoinDropFromBuyTitle();
-  </script>
-<!-- Firebase App (required) -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js"></script>
-<!-- Firebase Auth -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js"></script>
-<!-- Firebase Firestore -->
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js"></script>
-
-<script>
-  // Cấu hình Firebase của bạn
+      
+  <script>
   const firebaseConfig = {
     apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
     authDomain: "robuxvex.firebaseapp.com",
@@ -794,45 +790,53 @@
     measurementId: "G-LWRKTMPXEN"
   };
 
-  // Khởi tạo Firebase
   firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore(); // Khởi tạo Firestore
+  const db = firebase.firestore();
 </script>
-  <script>    
-  firebase.auth().onAuthStateChanged((user) => {
-  const dropdownBox = document.getElementById("dropdownBox");
-  if (user) {
-    // Lấy dữ liệu từ Firestore
-    firebase.firestore().collection("users").doc(user.uid).get()
-      .then(doc => {
-        const data = doc.data();
-        const name = data.displayName || "Người dùng";
-        const balance = data.balance || 0;
+      
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const dropdownBox = document.getElementById("dropdownBox");
+
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        let userName = user.displayName || "Người dùng";
+        let balance = "0đ";
+
+        try {
+          const docRef = db.collection("users").doc(user.uid);
+          const docSnap = await docRef.get();
+          if (docSnap.exists) {
+            balance = docSnap.data().balance + "đ";
+          }
+        } catch (e) {
+          console.error("Lỗi Firestore:", e);
+        }
 
         dropdownBox.innerHTML = `
-          <div style="padding: 10px 16px; color: #000;">
-            👤 <strong>${name}</strong><br>
-            💰 Số dư: <strong>${balance}đ</strong>
+          <div style="padding: 10px 16px; color: black;">
+            👤 <strong>${userName}</strong><br>
+            💰 Số dư: <strong>${balance}</strong>
           </div>
           <div class="dropdown-divider"></div>
           <a href="#">⚙️ Cài đặt</a>
           <a href="#" onclick="logout()">🚪 Đăng xuất</a>
         `;
-      });
-  } else {
-    dropdownBox.innerHTML = `
-      <a href="login.html">🔑 Đăng nhập</a>
-      <a href="register.html">📝 Đăng ký</a>
-      <div class="dropdown-divider"></div>
-      <strong class="highlightin">Mục này vẫn chưa thể sử dụng.</strong>
-    `;
-  }
-});
-  function logout() {
-    firebase.auth().signOut().then(() => {
-      window.location.reload();
+      } else {
+        dropdownBox.innerHTML = `
+          <a href="login.html">🔑 Đăng nhập</a>
+          <a href="register.html">📝 Đăng ký</a>
+          <div class="dropdown-divider"></div>
+          <strong class="highlightin">Mục này vẫn chưa thể sử dụng.</strong>
+        `;
+      }
     });
-  }
+
+    window.logout = function () {
+      firebase.auth().signOut().then(() => window.location.reload());
+    };
+  });
 </script>
-</body>
+    </script>     
+    </body>
 </html>
