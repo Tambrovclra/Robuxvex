@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mua Robux bằng Thẻ Cào | RobuxVEX</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-image: url('https://i.postimg.cc/tRtmYJHd/Screenshot-20250729-192919-Gallery.png');
+      background-size: cover;
+      background-position: center;
+      backdrop-filter: blur(3px);
+    }
+    .form-wrapper {
+      max-width: 400px;
+      margin: 80px auto;
+      background: url('https://i.postimg.cc/P5HHYrXz/Pngtree-shining-vast-fantasy-universe-cloud-1445881.png') center/cover;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      color: white;
+    }
+    h2 { text-align: center; margin-bottom: 24px; }
+    label { display: block; margin-top: 12px; }
+    input, select {
+      width: 100%; padding: 10px; margin-top: 4px;
+      border: none; border-radius: 8px;
+    }
+    button {
+      margin-top: 20px; width: 100%;
+      padding: 12px; background-color: #ff9800;
+      border: none; border-radius: 8px;
+      color: white; font-size: 16px;
+      cursor: pointer;
+    }
+    .warning {
+      margin-top: 20px; font-size: 14px;
+      background: rgba(255, 0, 0, 0.6);
+      padding: 10px; border-radius: 8px;
+    }
+    .error {
+      color: #ff4b4b;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+    #loading {
+      text-align: center;
+      display: none;
+      margin-top: 10px;
+      font-style: italic;
+    }
+    .custom-modal {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6);
+      animation: fadeIn 0.4s ease;
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px 30px;
+      border: 1px solid #888;
+      width: 80%; max-width: 400px;
+      border-radius: 10px;
+      animation: slideDown 0.4s ease;
+      font-family: 'Segoe UI', sans-serif;
+      color: #333;
+      line-height: 1.6;
+    }
+    .modal-buttons {
+      margin-top: 20px;
+      text-align: right;
+    }
+    .modal-buttons button {
+      margin-left: 10px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .confirm-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .cancel-btn {
+      background-color: #f44336;
+      color: white;
+    }
+    @keyframes slideDown {
+      from {transform: translateY(-50px); opacity: 0;}
+      to {transform: translateY(0); opacity: 1;}
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+  <div class="form-wrapper">
+    <h2>Mua robux - RobuxVEX</h2>
+    <button id="loginBtn">Đăng nhập bằng Google</button>
+    <p id="userInfo"></p>
+    <form id="cardForm" style="display:none">
+      <label for="cardType">Loại thẻ</label>
+      <select id="cardType" name="cardType">
+        <option value="Viettel">Viettel</option>
+        <option value="Mobifone">Mobifone</option>
+        <option value="Vinaphone">Vinaphone</option>
+        <option value="Vietnamobile">Vietnamobile</option>
+        <option value="Zing">Zing</option>
+        <option value="Vcoin">Vcoin</option>
+        <option value="Garena">Garena</option>
+        <option value="Gate">Gate</option>
+      </select>
+
+      <label for="amount">Mệnh giá</label>
+      <select id="amount" name="amount">
+        <option value="10000">10.000đ - 32 robux (120h)</option>
+        <option value="20000">20.000đ - 65 robux (120h)</option>
+        <option value="50000">50.000đ - 165 robux (120h)</option>
+        <option value="100000">100.000đ - 335 robux (120h)</option>
+        <option value="120000">120.000đ - 400 robux (1-5p)</option>
+        <option value="200000">200.000đ - 680 robux (120h)</option>
+        <option value="500000">500.000đ - 1710 robux (120h)</option>
+      </select>
+
+      <label for="serial">Mã serial</label>
+      <input type="text" id="serial" name="serial" required />
+      <div id="serialError" class="error"></div>
+
+      <label for="pin">Mã thẻ</label>
+      <input type="text" id="pin" name="pin" required />
+      <div id="pinError" class="error"></div>
+
+      <label for="uid">Tên Roblox</label>
+      <input type="text" id="uid" name="uid" required />
+
+      <label for="contact">Thông tin liên lạc (Zalo, TikTok, Mess...)</label>
+      <input type="text" id="contact" name="contact" required />
+      <div id="contactError" class="error"></div>
+
+      <div id="loading">Đang gửi...</div>
+      <button type="submit">Gửi thẻ</button>
+      <div id="successMsg" style="color:limegreen; text-align:center; margin-top:15px;"></div>
+
+      <div class="warning">
+        ⚠️ Vui lòng chọn đúng mệnh giá bạn nhé!<br>
+        Nếu sai mệnh giá thẻ sẽ bị trừ 50% số tiền.<br>
+        Không gửi thẻ sai hoặc không tồn tại tài khoản — vi phạm sẽ bị <strong>cấm vĩnh viễn</strong>.
+      </div>
+    </form>
+  </div>
+
+  <!-- Modal -->
+  <div id="customModal" class="custom-modal">
+    <div class="modal-content">
+      <p><strong>QUAN TRỌNG:</strong><br><br>
+      - Đảm bảo card đúng serial + mã + mệnh giá card | sai mệnh giá - 50% (50k còn 25k)<br><br>
+      - Đảm bảo đã thêm thông tin liên lạc của bạn chẳng hạn như: zalo, tiktok, mess, mail...vv <br>(Không thêm sẽ không thể nhận được vì admin không liên lạc xác nhận đơn được!)<br><br>
+      - Sẽ có gọi robux 120h và 1-5p lưu ý kĩ trước khi chọn nhé<br><br>
+      <em>Shop đã tính thuế cho anh em rồi nha</em><br><br>
+      <strong>--Không chịu trách nhiệm nếu các bạn để thồn tin liên lạc sai! có thể để nhiều thông tin liên lạc nếu sợ sai💸--</strong></p>
+      <div class="modal-buttons">
+        <button id="cancelBtn" class="cancel-btn">Ok sẽ sửa lại💔</button>
+        <button id="confirmBtn" class="confirm-btn">OK, đã đọc💸</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
+      authDomain: "robuxvex.firebaseapp.com",
+      projectId: "robuxvex",
+      storageBucket: "robuxvex.firebasestorage.app",
+      messagingSenderId: "291500837886",
+      appId: "1:291500837886:web:08ae60ca6454c209328eaf",
+      measurementId: "G-LWRKTMPXEN"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const loginBtn = document.getElementById("loginBtn");
+    const cardForm = document.getElementById("cardForm");
+    const userInfo = document.getElementById("userInfo");
+    const loading = document.getElementById("loading");
+
+    loginBtn.addEventListener("click", () => {
+      auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+    });
+
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        cardForm.style.display = "block";
+        loginBtn.style.display = "none";
+        userInfo.innerText = `Đăng nhập với: ${user.email}`;
+      }
+    });
+
+    function validateFields(type, serial, pin, contact) {
+      const rules = {
+        Viettel: { serial: 11, pin: 13 },
+        Mobifone: { serial: 15, pin: 12 },
+        Vinaphone: { serial: 14, pin: 14 },
+        Vietnamobile: { serial: 11, pin: 12 },
+        Zing: { serial: 12, pin: 9 },
+        Vcoin: { serial: 10, pin: 12 },
+        Garena: { serial: 9, pin: 16 },
+        Gate: { serial: 10, pin: 12 }
+      };
+      let valid = true;
+      const sErr = document.getElementById("serialError");
+      const pErr = document.getElementById("pinError");
+      const cErr = document.getElementById("contactError");
+      sErr.textContent = "";
+      pErr.textContent = "";
+      cErr.textContent = "";
+
+      if (!/^\d+$/.test(serial)) {
+        sErr.textContent = "Serial chỉ được chứa số";
+        valid = false;
+      } else if (serial.length !== rules[type]?.serial) {
+        sErr.textContent = `Serial phải có ${rules[type]?.serial} chữ số`;
+        valid = false;
+      }
+
+      if (!/^\d+$/.test(pin)) {
+        pErr.textContent = "Mã thẻ chỉ được chứa số";
+        valid = false;
+      } else if (pin.length !== rules[type]?.pin) {
+        pErr.textContent = `Mã thẻ phải có ${rules[type]?.pin} chữ số`;
+        valid = false;
+      }
+
+      if (contact.trim() === "") {
+        cErr.textContent = "Vui lòng nhập thông tin liên lạc";
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    function showModal() {
+      return new Promise((resolve) => {
+        document.getElementById("customModal").style.display = "block";
+        document.getElementById("confirmBtn").onclick = () => {
+          document.getElementById("customModal").style.display = "none";
+          resolve(true);
+        };
+        document.getElementById("cancelBtn").onclick = () => {
+          document.getElementById("customModal").style.display = "none";
+          resolve(false);
+        };
+      });
+    }
+
+    cardForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const user = auth.currentUser;
+      if (!user) return alert("Bạn cần đăng nhập trước.");
+      const cardType = cardForm.cardType.value;
+      const amount = cardForm.amount.value;
+      const serial = cardForm.serial.value.trim();
+      const pin = cardForm.pin.value.trim();
+      const uid = cardForm.uid.value.trim();
+      const contact = cardForm.contact.value.trim();
+      if (!validateFields(cardType, serial, pin, contact)) return;
+
+      showModal().then(result => {
+        if (!result) return;
+        loading.style.display = "block";
+        setTimeout(() => {
+          db.collection("users").doc(user.uid).collection("transactions").add({
+            cardType, amount, serial, pin, robloxUid: uid, contact,
+            time: new Date().toISOString()
+          }).then(() => {
+    
+            document.getElementById("successMsg").innerText = "🎉 Mua hàng thành công!";
+            cardForm.reset();
+          }).catch((err) => {
+            alert("Lỗi: " + err.message);
+          }).finally(() => {
+            loading.style.display = "none";
+          });
+        }, 600);
+      });
+    });
+  </script>
+</body>
+</html>
