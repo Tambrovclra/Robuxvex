@@ -87,13 +87,23 @@
       apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
       authDomain: "robuxvex.firebaseapp.com",
       projectId: "robuxvex",
-      storageBucket: "robuxvex.firebasestorage.app",
+      storageBucket: "robuxvex.appspot.com",
       messagingSenderId: "291500837886",
       appId: "1:291500837886:web:08ae60ca6454c209328eaf",
       measurementId: "G-LWRKTMPXEN"
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+
+    const robuxRates = {
+      "10000": 32,
+      "20000": 65,
+      "50000": 165,
+      "100000": 335,
+      "120000": 400,
+      "200000": 680,
+      "500000": 1710
+    };
 
     firebase.auth().onAuthStateChanged(async (user) => {
       const orderList = document.getElementById("orderList");
@@ -105,25 +115,29 @@
       loadOrderHistory(user.uid);
     });
 
-    async function loadOrderHistory(userId) {
+    async function loadOrderHistory(uid) {
       const orderList = document.getElementById("orderList");
       orderList.innerHTML = "";
       try {
-        const q = db.collection("orders")
-                    .where("userId", "==", userId)
-                    .orderBy("createdAt", "desc");
-        const snapshot = await q.get();
-        if (snapshot.empty) {
+        const querySnapshot = await db.collection("orders")
+          .where("uid", "==", uid)
+          .orderBy("createdAt", "desc")
+          .get();
+
+        if (querySnapshot.empty) {
           orderList.innerHTML = "<li>Chưa có đơn hàng nào.</li>";
           return;
         }
-        snapshot.forEach(doc => {
+
+        querySnapshot.forEach(doc => {
           const data = doc.data();
-          const date = data.createdAt?.toDate().toLocaleString() || "Không rõ";
+          const date = data.createdAt?.toDate().toLocaleString("vi-VN") || "Không rõ";
+          const robux = robuxRates[data.amount] || "?";
           const li = document.createElement("li");
-          li.innerHTML = `✅ <span class="robux">${data.robuxAmount}</span> robux - <span class="price">${data.price}đ</span><br><span class="date">🕒 ${date}</span>`;
+          li.innerHTML = `✅ <span class="robux">${robux}</span> robux - <span class="price">${data.amount}đ</span><br><span class="date">🕒 ${date}</span>`;
           orderList.appendChild(li);
         });
+
       } catch (err) {
         console.error("Lỗi khi tải đơn hàng:", err);
         orderList.innerHTML = "<li>❌ Lỗi khi tải dữ liệu. Vui lòng thử lại sau.</li>";
