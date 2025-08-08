@@ -144,14 +144,14 @@
             statusColor = "#ff9800"; // cam
           } else if (data.status === "completed") {
             const deliveredAt = data.deliveredAt?.toDate()?.toLocaleString("vi-VN") || "–";
-            statusText = `✅ Đã gửi ${robux} robux – lúc ${deliveredAt}`;
+            statusText = `🎁 Đã gửi ${robux} robux – ✅ Đã hoàn thành đơn lúc ${deliveredAt}`;
             statusColor = "#4caf50"; // xanh lá
             
           } else if (data.status === "giftcard") {
   const deliveredAt = data.deliveredAT?.toDate()?.toLocaleString("vi-VN") || "–";
   const giftcard = data.giftcard || "Không có mã";
 
-  statusText = `🎁 Đã gửi ${robux} robux - mã card Roblox: <strong>${giftcard}</strong> <br><small>🕒 Lúc ${deliveredAt}</small>`;
+  statusText = `🎁 Đã gửi ${robux} robux - mã card Roblox: <strong>${giftcard}</strong> <br><small>✅ Đã hoàn thành đơn lúc${deliveredAt}</small>`;
   statusColor = "#4caf50"; // xanh lá
 }
 
