@@ -148,10 +148,12 @@
             statusColor = "#4caf50"; // xanh lá
             
           } else if (data.status === "giftcard") {
-            const deliveredAT = data.deliveredAT?.toDate()?.tolocaleString("vi-VN") ||
-              statusText = `✅Đã gửi ${robux} robux - mã card roblox - ${giftcard}`;
-              statusColor = "#4caf50" // xanh lá
-          
+  const deliveredAt = data.deliveredAT?.toDate()?.toLocaleString("vi-VN") || "–";
+  const giftcard = data.giftcard || "Không có mã";
+
+  statusText = `🎁 Đã gửi ${robux} robux - mã card Roblox: <strong>${giftcard}</strong> <br><small>🕒 Lúc ${deliveredAt}</small>`;
+  statusColor = "#4caf50"; // xanh lá
+}
 
           const li = document.createElement("li");
           li.innerHTML = `
