@@ -153,7 +153,10 @@
 
   statusText = `🎁 Đã gửi ${robux} robux - mã card Roblox: <strong>${giftcard}</strong> <br><small>✅ Đã hoàn thành đơn lúc - ${deliveredAt}</small>`;
   statusColor = "#4caf50"; // xanh lá
-}
+         } else if (data.status === "10kwait") 
+            statusText = `🚚 Đã duyệt - Vui lòng vào roblox tạo một gamepass với giá 41 robux để tiếp tục!`
+            statusColor = "#66FFFF"; // xanh dương nhẹ
+            
 
           const li = document.createElement("li");
           li.innerHTML = `
