@@ -140,7 +140,7 @@
 
           if (data.status === "processing") {
             const daysLeft = data.expectedDays || "?";
-            statusText = `🚚 Đã duyệt – đang gửi robux | còn ${daysLeft} ngày`;
+            statusText = `🚚 Đã duyệt – đang gửi robux | còn ${daysLeft} ngày | nhớ thường xuyên kiểm tra tin nhắn mới trong thông tin liên lạc mà bạn đã để lúc mua hàng!!`;
             statusColor = "#ff9800"; // cam
           } else if (data.status === "completed") {
             const deliveredAt = data.deliveredAt?.toDate()?.toLocaleString("vi-VN") || "–";
