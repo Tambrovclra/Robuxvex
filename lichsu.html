@@ -83,6 +83,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
   <script>
+    // Cấu hình Firebase
     const firebaseConfig = {
       apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
       authDomain: "robuxvex.firebaseapp.com",
@@ -95,6 +96,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // Bảng quy đổi amount -> robux
     const robuxRates = {
       "10000": 32,
       "20000": 65,
@@ -105,6 +107,7 @@
       "500000": 1710
     };
 
+    // Đợi người dùng đăng nhập
     firebase.auth().onAuthStateChanged(async (user) => {
       const orderList = document.getElementById("orderList");
       orderList.innerHTML = "";
@@ -115,6 +118,7 @@
       loadOrderHistory(user.uid);
     });
 
+    // Tải đơn hàng
     async function loadOrderHistory(uid) {
       const orderList = document.getElementById("orderList");
       orderList.innerHTML = "";
