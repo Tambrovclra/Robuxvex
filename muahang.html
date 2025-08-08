@@ -61,6 +61,7 @@
     <h2>Mua robux - RobuxVEX</h2>
     <button id="loginBtn">Vui lòng đăng nhập trước</button>
     <p id="userInfo"></p>
+
     <form id="cardForm" style="display:none">
       <label for="cardType">Loại thẻ</label>
       <select id="cardType" name="cardType">
@@ -146,20 +147,30 @@
       }
     });
 
-    function validateFields(type, serial, pin, contact) {
+    function clearErrors() {
+      document.getElementById("serialError").innerText = "";
+      document.getElementById("pinError").innerText = "";
+      document.getElementById("contactError").innerText = "";
+    }
+
+    function validateFields(serial, pin, contact) {
+      clearErrors();
+      let isValid = true;
+
       if (!/^\d+$/.test(serial)) {
         document.getElementById("serialError").innerText = "Serial phải là số";
-        return false;
+        isValid = false;
       }
       if (!/^\d+$/.test(pin)) {
         document.getElementById("pinError").innerText = "Mã thẻ phải là số";
-        return false;
+        isValid = false;
       }
       if (contact.trim() === "") {
         document.getElementById("contactError").innerText = "Nhập liên lạc";
-        return false;
+        isValid = false;
       }
-      return true;
+
+      return isValid;
     }
 
     document.getElementById("cardForm").addEventListener("submit", function (e) {
@@ -174,36 +185,55 @@
       const uid = document.getElementById("uid").value.trim();
       const contact = document.getElementById("contact").value.trim();
 
-      if (!validateFields(cardType, serial, pin, contact)) return;
+      if (!validateFields(serial, pin, contact)) return;
 
       loading.style.display = "block";
 
-      // Gửi dữ liệu lên Firestore
-      db.collection("users").doc(user.uid).collection("transactions").add({
-        cardType, amount, serial, pin, robloxUid: uid, contact,
-        time: new Date().toISOString()
-      });
+      // Kiểm tra xem thẻ đã được gửi chưa
+      db.collection("orders")
+        .where("serial", "==", serial)
+        .where("pin", "==", pin)
+        .get()
+        .then(snapshot => {
+          if (!snapshot.empty) {
+            loading.style.display = "none";
+            return alert("⚠️ Thẻ này đã được gửi trước đó.");
+          }
 
-      db.collection("orders").add({
-        uid: user.uid,
-        robloxUid: uid,
-        cardType,
-        amount,
-        serial,
-        pin,
-        contact,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      }).then(() => {
-        document.getElementById("successMsg").innerText = "🎉 Mua hàng thành công!";
-        cardForm.reset();
-        setTimeout(() => {
-          window.location.href = "lichsu.html";
-        }, 1000);
-      }).catch((err) => {
-        alert("Lỗi: " + err.message);
-      }).finally(() => {
-        loading.style.display = "none";
-      });
+          const orderData = {
+            uid: user.uid,
+            robloxUid: uid,
+            cardType,
+            amount,
+            serial,
+            pin,
+            contact,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          };
+
+          const userTransactionData = {
+            cardType, amount, serial, pin, robloxUid: uid, contact,
+            time: new Date().toISOString()
+          };
+
+          const addOrder = db.collection("orders").add(orderData);
+          const addTransaction = db.collection("users").doc(user.uid).collection("transactions").add(userTransactionData);
+
+          return Promise.all([addOrder, addTransaction]);
+        })
+        .then(() => {
+          document.getElementById("successMsg").innerText = "🎉 Mua hàng thành công!";
+          cardForm.reset();
+          setTimeout(() => {
+            window.location.href = "lichsu.html";
+          }, 1000);
+        })
+        .catch(err => {
+          alert("Đã có lỗi xảy ra: " + err.message);
+        })
+        .finally(() => {
+          loading.style.display = "none";
+        });
     });
   </script>
 </body>
