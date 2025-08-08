@@ -96,13 +96,13 @@
     const db = firebase.firestore();
 
     const robuxRates = {
-      "10000": 💲32,
-      "20000": 💲65,
-      "50000": 💲165,
-      "100000": 💲335,
-      "120000": 💲400,
-      "200000": 💲680,
-      "500000": 💲1710
+      "10000": 32,
+      "20000": 65,
+      "50000": 165,
+      "100000": 335,
+      "120000": 400,
+      "200000": 680,
+      "500000": 1710
     };
 
     firebase.auth().onAuthStateChanged(async (user) => {
@@ -157,7 +157,7 @@
 
           const li = document.createElement("li");
           li.innerHTML = `
-            ✅ <span class="robux">💲 ${robux}</span> robux - 
+            💲 <span class="robux">${robux}</span> robux - 
             <span class="price">${data.amount}đ</span><br>
             <span class="date">🕒 ${date}</span><br>
             <span style="color: ${statusColor}; font-weight: 600;">${statusText}</span>
