@@ -96,13 +96,13 @@
     const db = firebase.firestore();
 
     const robuxRates = {
-      "10000": 32,
-      "20000": 65,
-      "50000": 165,
-      "100000": 335,
-      "120000": 400,
-      "200000": 680,
-      "500000": 1710
+      "10000": 💲32,
+      "20000": 💲65,
+      "50000": 💲165,
+      "100000": 💲335,
+      "120000": 💲400,
+      "200000": 💲680,
+      "500000": 💲1710
     };
 
     firebase.auth().onAuthStateChanged(async (user) => {
@@ -144,20 +144,20 @@
             statusColor = "#ff9800"; // cam
           } else if (data.status === "completed") {
             const deliveredAt = data.deliveredAt?.toDate()?.toLocaleString("vi-VN") || "–";
-            statusText = `🎁 Đã gửi ${robux} robux – ✅ Đã hoàn thành đơn lúc ${deliveredAt}`;
+            statusText = `🎁 Đã gửi ${robux} robux – ✅ Đã hoàn thành đơn lúc - ${deliveredAt}`;
             statusColor = "#4caf50"; // xanh lá
             
           } else if (data.status === "giftcard") {
   const deliveredAt = data.deliveredAT?.toDate()?.toLocaleString("vi-VN") || "–";
   const giftcard = data.giftcard || "Không có mã";
 
-  statusText = `🎁 Đã gửi ${robux} robux - mã card Roblox: <strong>${giftcard}</strong> <br><small>✅ Đã hoàn thành đơn lúc${deliveredAt}</small>`;
+  statusText = `🎁 Đã gửi ${robux} robux - mã card Roblox: <strong>${giftcard}</strong> <br><small>✅ Đã hoàn thành đơn lúc - ${deliveredAt}</small>`;
   statusColor = "#4caf50"; // xanh lá
 }
 
           const li = document.createElement("li");
           li.innerHTML = `
-            ✅ <span class="robux">${robux}</span> robux - 
+            ✅ <span class="robux">💲 ${robux}</span> robux - 
             <span class="price">${data.amount}đ</span><br>
             <span class="date">🕒 ${date}</span><br>
             <span style="color: ${statusColor}; font-weight: 600;">${statusText}</span>
