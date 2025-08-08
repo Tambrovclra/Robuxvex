@@ -146,7 +146,12 @@
             const deliveredAt = data.deliveredAt?.toDate()?.toLocaleString("vi-VN") || "–";
             statusText = `✅ Đã gửi ${robux} robux – lúc ${deliveredAt}`;
             statusColor = "#4caf50"; // xanh lá
-          }
+            
+          } else if (data.status === "giftcard") {
+            const deliveredAT = data.deliveredAT?.toDate()?.tolocaleString("vi-VN") ||
+              statusText = `✅Đã gửi ${robux} robux - mã card roblox - ${giftcard}`;
+              statusColor = "#4caf50" // xanh lá
+          
 
           const li = document.createElement("li");
           li.innerHTML = `
