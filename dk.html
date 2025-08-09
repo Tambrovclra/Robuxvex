@@ -90,6 +90,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app-check-compat.js"></script>
 
   <script>
     const firebaseConfig = {
@@ -102,6 +103,14 @@
       measurementId: "G-LWRKTMPXEN"
     };
     firebase.initializeApp(firebaseConfig);
+
+    // Kích hoạt App Check với reCAPTCHA v3
+    const appCheck = firebase.appCheck();
+    appCheck.activate(
+      '6Lfb2J8rAAAAAAIjhbZyid92-_Bm_jJ1fvlzcGJE', // Site key của bạn
+      true // bật tự refresh token
+    );
+
     const db = firebase.firestore();
   </script>
 
@@ -181,7 +190,7 @@
                   displayName: name,
                   balance: 0,
                   createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => user.sendEmailVerification()); // Gửi xác minh email
+                }).then(() => user.sendEmailVerification());
               });
             })
             .then(() => {
