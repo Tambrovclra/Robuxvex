@@ -13,7 +13,7 @@
     z-index: 1000;
   }
 
-  #dropdownBox {
+  #dropnotifydownBox {
     position: fixed;
     top: 60px; /* ngay dưới icon */
     right: 20px;
@@ -467,23 +467,22 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     /* ====== Notification specific styles (kept minimal and integrated) ====== */
-    .notify-box {
-      position: absolute;
-      top: 65px;
-      right: 20px;
-      width: 260px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-      padding: 10px;
-      display: none;
-      z-index: 1001;
-      color: #111;
-      max-height: 340px;
-      overflow-y: auto;
-      font-size: 14px;
-      text-align: left;
-    }
+   .notify-box {
+  position: fixed;
+  top: 65px;
+  right: 70px;
+  width: 260px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+  padding: 10px;
+  display: none;
+  z-index: 1001;
+  color: black;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 14px;
+}
     .notify-header {
       font-weight: bold;
       display: flex;
