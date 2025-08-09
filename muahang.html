@@ -54,6 +54,53 @@
       margin-top: 10px;
       font-style: italic;
     }
+    /* Modal styles */
+    #confirmModal {
+      display: flex;
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center; align-items: center;
+      padding: 20px;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    #confirmModal.show {
+      opacity: 1; pointer-events: auto;
+    }
+    #confirmModal .modal-content {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      color: #222;
+      padding: 20px; border-radius: 12px;
+      max-width: 500px; width: 100%;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      max-height: 90%; overflow-y: auto;
+      transform: scale(0.95);
+      transition: transform 0.3s ease;
+    }
+    #confirmModal.show .modal-content {
+      transform: scale(1);
+    }
+    #confirmModal h3 {
+      text-align: center;
+      margin-bottom: 15px;
+      color: #ff9800;
+    }
+    #confirmModal ol {
+      font-size: 14px; line-height: 1.6; padding-left: 18px;
+    }
+    #confirmModal ol li {
+      margin-bottom: 8px;
+    }
+    #confirmModal button {
+      flex: 1; padding: 10px; border: none; border-radius: 8px; cursor: pointer;
+      font-size: 14px;
+    }
+    #confirmOk { background: #4CAF50; color: white; }
+    #confirmCancel { background: #f44336; color: white; }
+    #confirmModal .btn-group { display: flex; gap: 10px; margin-top: 15px; }
   </style>
 </head>
 <body>
@@ -113,6 +160,25 @@
     </form>
   </div>
 
+  <!-- Modal xác nhận -->
+  <div id="confirmModal">
+    <div class="modal-content">
+      <h3>📦 Xác nhận mua hàng</h3>
+      <ol>
+        <li>⏳ Robux sẽ về acc sau 2-7 ngày (thông thường là 3) - 1-5p nếu là special package.</li>
+        <li>🛠 Sẽ có 4 tiến trình đơn hàng: duyệt đơn → chờ khách hàng tạo gamepass → gửi robux → hoàn thành đơn hàng.</li>
+        <li>📋 Chắc chắn bạn sẽ tạo gamepass đúng giá sau khi mua hàng (khi đơn đã được duyệt, vào Lịch sử đơn hàng sẽ thấy giá robux cần cho gamepass). Liên hệ admin nếu không biết tạo: <strong>0907486634 - vochuoi86@gmail.com</strong>. Robux sẽ không được gửi nếu bạn không tạo gamepass.</li>
+        <li>💰 Shop đã tính thuế Roblox 30% nên đơn sẽ tăng thêm 30% robux (VD: mua 165 robux → giá gamepass sẽ là 217 robux).</li>
+        <li>📱 Để lại thông tin liên lạc thật chính xác và kiểm tra liên tục cho đến khi đơn hoàn tất. (Khuyến nghị dùng Zalo).</li>
+        <li>✅ Chắc chắn rằng bạn đã đọc kỹ trước khi mua.</li>
+      </ol>
+      <div class="btn-group">
+        <button id="confirmOk">OK, đã đọc 💸</button>
+        <button id="confirmCancel">Hủy, tôi sẽ sửa lại 💔</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
@@ -130,6 +196,10 @@
     const cardForm = document.getElementById("cardForm");
     const userInfo = document.getElementById("userInfo");
     const loading = document.getElementById("loading");
+
+    const confirmModal = document.getElementById("confirmModal");
+    const confirmOk = document.getElementById("confirmOk");
+    const confirmCancel = document.getElementById("confirmCancel");
 
     loginBtn.addEventListener("click", () => {
       auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
@@ -178,6 +248,28 @@
       const user = auth.currentUser;
       if (!user) return alert("Bạn cần đăng nhập trước.");
 
+      const serial = document.getElementById("serial").value.trim();
+      const pin = document.getElementById("pin").value.trim();
+      const contact = document.getElementById("contact").value.trim();
+      if (!validateFields(serial, pin, contact)) return;
+
+      // Hiện modal xác nhận
+      confirmModal.classList.add("show");
+
+      // Khi bấm OK
+      confirmOk.onclick = () => {
+        confirmModal.classList.remove("show");
+        submitOrder();
+      };
+
+      // Khi bấm Hủy
+      confirmCancel.onclick = () => {
+        confirmModal.classList.remove("show");
+      };
+    });
+
+    function submitOrder() {
+      const user = auth.currentUser;
       const cardType = document.getElementById("cardType").value;
       const amount = document.getElementById("amount").value;
       const serial = document.getElementById("serial").value.trim();
@@ -185,11 +277,8 @@
       const uid = document.getElementById("uid").value.trim();
       const contact = document.getElementById("contact").value.trim();
 
-      if (!validateFields(serial, pin, contact)) return;
-
       loading.style.display = "block";
 
-      // Kiểm tra xem thẻ đã được gửi chưa
       db.collection("orders")
         .where("serial", "==", serial)
         .where("pin", "==", pin)
@@ -234,7 +323,7 @@
         .finally(() => {
           loading.style.display = "none";
         });
-    });
+    }
   </script>
 </body>
 </html>
