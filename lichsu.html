@@ -173,6 +173,10 @@
             statusText = `🚚 ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 884 robux để tiếp tục! | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`
             statusColor = "#FF3300"; // xanh dương nhẹ
 
+          if (data.status === "40kwait") 
+            statusText = `🚚 ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 183 robux để tiếp tục! | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`
+            statusColor = "#FF3300"; // xanh dương nhẹ
+          
           const li = document.createElement("li");
           li.innerHTML = `
             💲 <span class="robux">${robux}</span> robux - 
