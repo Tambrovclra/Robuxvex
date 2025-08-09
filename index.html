@@ -13,7 +13,7 @@
     z-index: 1000;
   }
 
-  #dropnotifydownBox {
+  #dropdownBox {
     position: fixed;
     top: 60px; /* ngay dưới icon */
     right: 20px;
@@ -79,17 +79,12 @@
     .icon-btn:active svg { transform: rotate(90deg); }
     .icon-btn.active { background: #4CAF50; }
     .icon-btn.active svg { fill: white; }
-    .dropdown-box, .notify-box {
-      position: absolute;
-      top: 65px; right: 20px;
-      width: 220px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-      padding: 10px 0;
-      display: none;
-      z-index: 1001;
+
+    /* Dropdowns and notify (single place) */
+    .dropdown-box, /* kept for compatibility */ .notify-box {
+      /* default reset; specific behaviors controlled below */
     }
+
     .dropdown-box a, .menu-drawer a {
       display: flex;
       align-items: center;
@@ -109,7 +104,7 @@
       background: #ddd;
       margin: 4px 0;
     }
-    .notify-box { text-align: center; padding: 16px; }
+
     .menu-drawer {
       position: fixed;
       top: 0; left: 0;
@@ -467,22 +462,30 @@
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
     /* ====== Notification specific styles (kept minimal and integrated) ====== */
-   .notify-box {
-  position: fixed;
-  top: 65px;
-  right: 70px;
-  width: 260px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-  padding: 10px;
-  display: none;
-  z-index: 1001;
-  color: black;
-  max-height: 300px;
-  overflow-y: auto;
-  font-size: 14px;
-}
+    /* Final notify-box CSS (fixed position, fade handled by .show class) */
+    .notify-box {
+      position: fixed;
+      top: 65px;
+      right: 20px;
+      width: 260px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      padding: 10px;
+      display: none;
+      z-index: 1001;
+      color: #111;
+      max-height: 340px;
+      overflow-y: auto;
+      font-size: 14px;
+      text-align: left;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .notify-box.show {
+      display: block;
+      opacity: 1;
+    }
     .notify-header {
       font-weight: bold;
       display: flex;
@@ -753,9 +756,14 @@
 
     function closeAll() {
       dropdownBox.style.display = "none";
-      // hide notifyBox via its id
+      // hide notifyBox via its id (do fade-out properly)
       const nb = document.getElementById("notifyBox");
-      if (nb) nb.style.display = "none";
+      if (nb && nb.classList.contains("show")) {
+        nb.classList.remove("show");
+        setTimeout(() => { if (nb) nb.style.display = "none"; }, 380);
+      } else if (nb) {
+        nb.style.display = "none";
+      }
       menuDrawer.classList.remove("open");
       overlayMenu.style.display = "none";
       if (accountIcon) accountIcon.classList.remove("active");
@@ -770,12 +778,22 @@
       }
     }
     function toggleNotify() {
-      const nb = document.getElementById("notifyBox");
-      const isOpen = nb.style.display === "block";
-      closeAll();
+      const box = document.getElementById("notifyBox");
+      const isOpen = box.classList.contains("show");
+
+      // Đóng menu tài khoản trước khi mở thông báo
+      document.getElementById("dropdownBox").style.display = "none";
+
       if (!isOpen) {
-        nb.style.display = "block";
-        overlayMenu.style.display = "block";
+        box.style.display = "block"; // Hiện trước
+        setTimeout(() => box.classList.add("show"), 10); // Fade-in
+        document.getElementById("overlay").style.display = "block";
+        // nếu hàm markAllAsRead có trong scope Firebase, gọi nó; còn không thì an toàn
+        try { if (typeof markAllAsRead === 'function') markAllAsRead(); } catch(e){}
+      } else {
+        box.classList.remove("show"); // Fade-out
+        setTimeout(() => box.style.display = "none", 400); // Ẩn hẳn
+        document.getElementById("overlay").style.display = "none";
       }
     }
     function openMenu() {
@@ -912,6 +930,7 @@
     if (notifyBox) {
       notifyBox.innerHTML = "";
       notifyBox.style.display = "none";
+      notifyBox.classList.remove("show");
     }
     if (notifBadge) {
       notifBadge.style.display = "none";
@@ -958,9 +977,7 @@
       async function markAllAsReadLocal() {
         try {
           const q = await db.collection("users").doc(currentUID).collection("notifications").where("read", "==", false).get();
-          const batch = db.batch ? db.batch() : null;
           q.forEach(d => {
-            // update từng document
             d.ref.update({ read: true }).catch(err => console.error("Cannot mark read:", err));
           });
         } catch (err) {
@@ -1017,22 +1034,15 @@
         });
 
       // Khi mở hộp thông báo -> đánh dấu tất cả là đã đọc
-      // Sử dụng một listener click toàn cục cho icon chuông đã có: toggleNotify() đã gọi open.
-      // Ở đây thêm hành vi khi mở: đánh dấu read.
       // Gắn lại toggleNotify để gọi markAllAsRead
       const originalToggleNotify = window.toggleNotify;
       window.toggleNotify = function() {
-        // mở/hide như trước
         originalToggleNotify();
-        // nếu đang mở, mark all as read
         const nb = document.getElementById("notifyBox");
         if (nb && nb.style.display === "block") {
-          // đánh dấu read (không block UI)
           db.collection("users").doc(currentUID).collection("notifications").where("read", "==", false).get()
             .then(snap => {
-              const batch = db.batch ? db.batch() : null;
               snap.forEach(d => {
-                // update trực tiếp
                 d.ref.update({ read: true }).catch(err => console.error("Cannot mark read:", err));
               });
             }).catch(err => console.error(err));
