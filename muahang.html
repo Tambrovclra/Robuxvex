@@ -247,6 +247,10 @@
           buyForm.reset();
           finalPrice = 0;
           finalRobux = 0;
+          cardForm.reset();
+          setTimeout(() => {
+            window.location.href = "Lsnap.html";
+          }, 1000);
         };
         confirmCancel.onclick = () => {
           modal.style.display = "none";
