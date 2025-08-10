@@ -79,17 +79,12 @@
     .icon-btn:active svg { transform: rotate(90deg); }
     .icon-btn.active { background: #4CAF50; }
     .icon-btn.active svg { fill: white; }
-    .dropdown-box, .notify-box {
-      position: absolute;
-      top: 65px; right: 20px;
-      width: 220px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.25);
-      padding: 10px 0;
-      display: none;
-      z-index: 1001;
+
+    /* Dropdowns and notify (single place) */
+    .dropdown-box, /* kept for compatibility */ .notify-box {
+      /* default reset; specific behaviors controlled below */
     }
+
     .dropdown-box a, .menu-drawer a {
       display: flex;
       align-items: center;
@@ -109,7 +104,7 @@
       background: #ddd;
       margin: 4px 0;
     }
-    .notify-box { text-align: center; padding: 16px; }
+
     .menu-drawer {
       position: fixed;
       top: 0; left: 0;
@@ -465,6 +460,63 @@
       display: block;
     }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* ====== Notification specific styles (kept minimal and integrated) ====== */
+    /* Final notify-box CSS (fixed position, fade handled by .show class) */
+    .notify-box {
+      position: fixed;
+      top: 65px;
+      right: 20px;
+      width: 260px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+      padding: 10px;
+      display: none;
+      z-index: 1001;
+      color: #111;
+      max-height: 340px;
+      overflow-y: auto;
+      font-size: 14px;
+      text-align: left;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .notify-box.show {
+      display: block;
+      opacity: 1;
+    }
+    .notify-header {
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+    .notify-item {
+      padding: 8px 6px;
+      border-bottom: 1px solid #eee;
+    }
+    .notify-item.unread {
+      font-weight: 700;
+      color: #ff9800;
+      background: #fff8ef;
+      border-radius: 6px;
+      padding-left: 8px;
+    }
+    .notif-badge {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      background: #e53935;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 12px;
+      display: none;
+      z-index: 1002;
+    }
   </style>
 </head>
 <body translate="no">
@@ -477,8 +529,9 @@
       </div>
     </div>
     <div class="navbar-right">
-      <div class="icon-btn" onclick="toggleNotify()">
+      <div class="icon-btn" onclick="toggleNotify()" style="position:relative;">
         <svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7v4.5L4 17v1h16v-1l-1-3.5V9a7 7 0 0 0-7-7zm0 20a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2z"/></svg>
+        <span id="notifBadge" class="notif-badge">0</span>
       </div>
       <div class="icon-btn" id="accountIcon" onclick="toggleDropdown()">
         <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V22h19.2v-2.8c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
@@ -487,8 +540,14 @@
   </div>
   <div class="menu-drawer" id="menuDrawer">
     <a href="#kho-robux" onclick="scrollToSection('kho-robux')">📦 Kho Robux</a>
+    
     <a href="#mua-hang" onclick="scrollToSection('buy')">🛒 Mua hàng</a>
+
+    <a href="naptien.html">💸 Nạp tiền ngay</a>
+    
     <a href="lichsu.html">🧾 Lịch sử mua hàng</a>
+
+    <a href="Lsnap.html">🧾 Lịch sử nạp tiền
 
     <div class="menu-title">------------------------</div>
     
@@ -504,9 +563,8 @@
     <!-- Nội dung sẽ được chèn qua JavaScript -->
   </div>
 </div>
-  <div class="notify-box" id="notifyBox">
-    <strong>🔔 <class="bonus">Thông báo</strong>
-    <class="highlightin">No yet<
+  <div id="notifyBox" class="notify-box" aria-live="polite" aria-atomic="true">
+    <!-- Nội dung thông báo realtime sẽ được inject -->
   </div>
   <!-- Popup -->
   <div id="overlayPopup" class="overlay" onclick="closePopup()"></div>
@@ -539,7 +597,7 @@
     <div class="contact">
       <strong>📞 Liên hệ & mua hàng:</strong><br>
       Zalo: <a href="tel:0907486634" translate="no">0907486634</a><br>
-      Gmail: <a href="mailto:vochuoi86@gmail.com" translate="no">vochuoi86@gmail.com</a>
+      Gmail: <a href="mailto:vochuoi86@gmail" translate="no">vochuoi86@gmail.com</a>
     </div>
     <div class="center">
       <button onclick="closePopup()" class="popup-button">Đóng thông báo</button>
@@ -625,7 +683,7 @@
       <h2 class="section-title">ROBUX TRONG KHO</h2>
       <p class="stock-amount">Hiện còn: <span class="stock-number">1600</span> robux | ĐẶT TRƯỚC |</p>
     </div>
-    <p class="bonus">Đã bán: <span class="stock-number">1655</span> robux</p>
+    <p class="bonus">Đã bán: <span class="stock-number">655</span> robux</p>
   </div>
   <section id="buy">
     <h3 class="glow-title" id="buy-title">🎁 Mua hàng</h3>
@@ -763,10 +821,17 @@
 
     function closeAll() {
       dropdownBox.style.display = "none";
-      notifyBox.style.display = "none";
+      // hide notifyBox via its id (do fade-out properly)
+      const nb = document.getElementById("notifyBox");
+      if (nb && nb.classList.contains("show")) {
+        nb.classList.remove("show");
+        setTimeout(() => { if (nb) nb.style.display = "none"; }, 380);
+      } else if (nb) {
+        nb.style.display = "none";
+      }
       menuDrawer.classList.remove("open");
       overlayMenu.style.display = "none";
-      accountIcon.classList.remove("active");
+      if (accountIcon) accountIcon.classList.remove("active");
     }
     function toggleDropdown() {
       const isOpen = dropdownBox.style.display === "block";
@@ -774,15 +839,26 @@
       if (!isOpen) {
         dropdownBox.style.display = "block";
         overlayMenu.style.display = "block";
-        accountIcon.classList.add("active");
+        if (accountIcon) accountIcon.classList.add("active");
       }
     }
     function toggleNotify() {
-      const isOpen = notifyBox.style.display === "block";
-      closeAll();
+      const box = document.getElementById("notifyBox");
+      const isOpen = box.classList.contains("show");
+
+      // Đóng menu tài khoản trước khi mở thông báo
+      document.getElementById("dropdownBox").style.display = "none";
+
       if (!isOpen) {
-        notifyBox.style.display = "block";
-        overlayMenu.style.display = "block";
+        box.style.display = "block"; // Hiện trước
+        setTimeout(() => box.classList.add("show"), 10); // Fade-in
+        document.getElementById("overlay").style.display = "block";
+        // nếu hàm markAllAsRead có trong scope Firebase, gọi nó; còn không thì an toàn
+        try { if (typeof markAllAsRead === 'function') markAllAsRead(); } catch(e){}
+      } else {
+        box.classList.remove("show"); // Fade-out
+        setTimeout(() => box.style.display = "none", 400); // Ẩn hẳn
+        document.getElementById("overlay").style.display = "none";
       }
     }
     function openMenu() {
@@ -906,28 +982,45 @@
 </script>
 
 <script>
-  // Kiểm tra trạng thái đăng nhập
-  
-firebase.auth().onAuthStateChanged(async (user) => {
-  const dropdownBox = document.getElementById("dropdownBox");
+  // ======= TÍCH HỢP: onAuthStateChanged + notification realtime riêng từng user + badge =======
+  // Ghi chú: mình giữ nguyên logic cũ hiển thị dropdown (user info) và thay notifyBox bằng listener realtime.
+  let currentUID = null;
 
-  if (user) {
-    let userName = user.displayName || "Người dùng";
-    let balance = "0đ";
-    let role = "Member";
+  firebase.auth().onAuthStateChanged(async (user) => {
+    const dropdownBox = document.getElementById("dropdownBox");
+    const notifyBox = document.getElementById("notifyBox");
+    const notifBadge = document.getElementById("notifBadge");
 
-    try {
-      const docSnap = await firebase.firestore().collection("users").doc(user.uid).get();
-      if (docSnap.exists) {
-        const data = docSnap.data();
-        balance = (data.balance ?? 0) + "đ";
-        role = data.role ?? "Member";
-      }
-    } catch (e) {
-      console.error("Lỗi Firestore:", e);
+    // reset UI
+    if (notifyBox) {
+      notifyBox.innerHTML = "";
+      notifyBox.style.display = "none";
+      notifyBox.classList.remove("show");
+    }
+    if (notifBadge) {
+      notifBadge.style.display = "none";
+      notifBadge.textContent = "0";
     }
 
-    dropdownBox.innerHTML = `
+    if (user) {
+      currentUID = user.uid;
+      let userName = user.displayName || "Người dùng";
+      let balance = "0đ";
+      let role = "Member";
+
+      try {
+        const docSnap = await firebase.firestore().collection("users").doc(user.uid).get();
+        if (docSnap.exists) {
+          const data = docSnap.data();
+          balance = (data.balance ?? 0) + "đ";
+          role = data.role ?? "Member";
+        }
+      } catch (e) {
+        console.error("Lỗi Firestore:", e);
+      }
+
+      // cập nhật dropdown tài khoản (giữ giao diện cũ)
+      dropdownBox.innerHTML = `
       <div style="padding: 10px 16px; color: black;">
         👤 <strong>${userName}</strong><br>
         💰 Đã nạp: <strong>${balance}</strong><br>
@@ -938,13 +1031,103 @@ firebase.auth().onAuthStateChanged(async (user) => {
         <a href="#">⚙️ Cài đặt</a>
         <a href="#" onclick="logout()">🚪 Đăng xuất</a>
       `;
+
+      // Tạo khung nội dung notifyBox
+      notifyBox.innerHTML = `<div class="notify-header"><span>🔔 Thông báo</span><button id="clearNotifsBtn" style="background:none;border:none;cursor:pointer;color:#1976d2;font-weight:600">Xóa</button></div>`;
+      const notifList = document.createElement("div");
+      notifList.style.marginTop = "8px";
+      notifyBox.appendChild(notifList);
+
+      // Hàm đánh dấu tất cả read (sử dụng khi mở hộp thông báo hoặc theo hành động)
+      async function markAllAsReadLocal() {
+        try {
+          const q = await db.collection("users").doc(currentUID).collection("notifications").where("read", "==", false).get();
+          q.forEach(d => {
+            d.ref.update({ read: true }).catch(err => console.error("Cannot mark read:", err));
+          });
+        } catch (err) {
+          console.error("markAllAsRead error:", err);
+        }
+      }
+
+      // Xóa tất cả thông báo (nếu muốn) - chỉ khi ấn nút 'Xóa'
+      document.getElementById("clearNotifsBtn").addEventListener("click", async (e) => {
+        e.stopPropagation();
+        if (!confirm("Xóa toàn bộ thông báo của bạn?")) return;
+        const snaps = await db.collection("users").doc(currentUID).collection("notifications").get();
+        const batch = db.batch();
+        snaps.forEach(s => batch.delete(s.ref));
+        await batch.commit();
+      });
+
+      // realtime listener cho collection notifications của user
+      db.collection("users")
+        .doc(user.uid)
+        .collection("notifications")
+        .orderBy("time", "desc")
+        .onSnapshot(snapshot => {
+          notifList.innerHTML = "";
+          let unreadCount = 0;
+
+          if (snapshot.empty) {
+            notifList.innerHTML = "<p style='padding:8px 6px;margin:0;color:#666'>Không có thông báo nào</p>";
+          } else {
+            snapshot.forEach(doc => {
+              const data = doc.data();
+              const item = document.createElement("div");
+              item.className = "notify-item" + (data.read ? "" : " unread");
+              // hiển thị thời gian nếu có
+              let timeText = "";
+              if (data.time && data.time.toDate) {
+                const d = data.time.toDate();
+                timeText = ` <div style="font-size:11px;color:#666;margin-top:4px">${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}</div>`;
+              }
+              item.innerHTML = `<div>${data.message || ''}</div>` + timeText;
+              notifList.appendChild(item);
+              if (!data.read) unreadCount++;
+            });
+          }
+
+          // cập nhật badge
+          if (unreadCount > 0) {
+            notifBadge.style.display = "inline-block";
+            notifBadge.textContent = unreadCount;
+          } else {
+            notifBadge.style.display = "none";
+            notifBadge.textContent = "0";
+          }
+        });
+
+      // Khi mở hộp thông báo -> đánh dấu tất cả là đã đọc
+      // Gắn lại toggleNotify để gọi markAllAsRead
+      const originalToggleNotify = window.toggleNotify;
+      window.toggleNotify = function() {
+        originalToggleNotify();
+        const nb = document.getElementById("notifyBox");
+        if (nb && nb.style.display === "block") {
+          db.collection("users").doc(currentUID).collection("notifications").where("read", "==", false).get()
+            .then(snap => {
+              snap.forEach(d => {
+                d.ref.update({ read: true }).catch(err => console.error("Cannot mark read:", err));
+              });
+            }).catch(err => console.error(err));
+        }
+      };
+
     } else {
+      // user null
+      currentUID = null;
       dropdownBox.innerHTML = `
         <a href="https://robuxvex.vercel.app/dn.html">🔑 Đăng nhập</a>
         <a href="https://robuxvex.vercel.app/dk.html">📝 Đăng ký</a>
         <div class="dropdown-divider"></div>
         <strong class="highlightin"></strong>
       `;
+      // nội dung notifyBox khi chưa đăng nhập
+      const nb = document.getElementById("notifyBox");
+      if (nb) nb.innerHTML = `<p style="padding:8px 6px;margin:0;color:#666">Vui lòng đăng nhập để xem thông báo</p>`;
+      const notifBadge = document.getElementById("notifBadge");
+      if (notifBadge) notifBadge.style.display = "none";
     }
   });
 
@@ -957,19 +1140,21 @@ firebase.auth().onAuthStateChanged(async (user) => {
 </script>
   
         <script>
-  const userIcon = document.getElementById("userIcon");
-  const dropdownBox = document.getElementById("dropdownBox");
+  // An extra safe handler for a possible userIcon element (kept from original but guarded)
+  const maybeUserIcon = document.getElementById("userIcon");
+  const maybeDropdownBox = document.getElementById("dropdownBox");
+  if (maybeUserIcon && maybeDropdownBox) {
+    maybeUserIcon.addEventListener("click", () => {
+      maybeDropdownBox.style.display = maybeDropdownBox.style.display === "block" ? "none" : "block";
+    });
 
-  userIcon.addEventListener("click", () => {
-    dropdownBox.style.display = dropdownBox.style.display === "block" ? "none" : "block";
-  });
-
-  // Đóng khi click bên ngoài
-  document.addEventListener("click", function (e) {
-    if (!userIcon.contains(e.target) && !dropdownBox.contains(e.target)) {
-      dropdownBox.style.display = "none";
-    }
-  });
+    // Đóng khi click bên ngoài
+    document.addEventListener("click", function (e) {
+      if (!maybeUserIcon.contains(e.target) && !maybeDropdownBox.contains(e.target)) {
+        maybeDropdownBox.style.display = "none";
+      }
+    });
+  }
 </script>
 </body>
 </html>
