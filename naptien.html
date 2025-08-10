@@ -85,7 +85,7 @@
 </head>
 <body>
   <div class="form-wrapper">
-    <h2>Mua robux - RobuxVEX</h2>
+    <h2>Nạp tiền - RobuxVEX</h2>
     <button id="loginBtn">Vui lòng đăng nhập trước</button>
     <p id="userInfo"></p>
 
@@ -291,7 +291,7 @@
           return Promise.all([addOrder, addTransaction]);
         })
         .then(() => {
-          document.getElementById("successMsg").innerText = "🎉 Mua hàng thành công!";
+          document.getElementById("successMsg").innerText = "🎉 Gửi thẻ thành công!";
           cardForm.reset();
           setTimeout(() => {
             window.location.href = "Lsnap.html";
