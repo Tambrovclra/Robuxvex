@@ -225,8 +225,9 @@
         confirmOk.onclick = async () => {
           modal.style.display = "none";
           const newBalance = balance - finalPrice;
+          const formattedBalance = newBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
           await db.collection("users").doc(user.uid).update({
-            balance: String(newBalance)
+            balance: formattedBalance
           });
           await db.collection("orders").add({
             uid: user.uid,
