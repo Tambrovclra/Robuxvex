@@ -149,8 +149,9 @@
           } else if (data.status === "giftcard") {
             const deliveredAt = data.deliveredAT?.toDate()?.toLocaleString("vi-VN") || "–";
             const giftcard = data.giftcard || "Không có mã";
-            statusText = `🎁 Đã gửi ${robux} robux - mã card Roblox: <strong>${giftcard}</strong> <br><small>✅ Đã hoàn thành đơn lúc - ${deliveredAt}</small>`;
+            statusText = `🎁 Đã gửi ${robux} robux - mã card Roblox: <strong>${giftcard}</strong> <br><small>✅ Đã hoàn thành đơn lúc - ${deliveredAt} | truy cập roblox.com/redeem để nhập mã.</small>`;
             statusColor = "#4caf50"; // xanh lá
+            
           } else if (data.status === "10kwait") {
             statusText = `🚚 <small>ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 41 robux để tiếp tục!</small> | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`;
             statusColor = "#FF3300";
