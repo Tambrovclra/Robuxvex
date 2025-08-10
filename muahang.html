@@ -206,7 +206,13 @@
 
       try {
         const userDoc = await db.collection("users").doc(user.uid).get();
-        const balance = userDoc.exists ? (userDoc.data().balance || 0) : 0;
+        let rawBalance = userDoc.exists ? userDoc.data().balance : 0;
+        let balance = 0;
+        if (typeof rawBalance === "number") {
+          balance = rawBalance;
+        } else if (typeof rawBalance === "string") {
+          balance = parseInt(rawBalance.replace(/[^\d]/g, "")) || 0;
+        }
 
         if (balance < finalPrice) {
           loading.style.display = "none";
@@ -218,8 +224,9 @@
         modal.style.display = "flex";
         confirmOk.onclick = async () => {
           modal.style.display = "none";
+          const newBalance = balance - finalPrice;
           await db.collection("users").doc(user.uid).update({
-            balance: firebase.firestore.FieldValue.increment(-finalPrice)
+            balance: String(newBalance)
           });
           await db.collection("orders").add({
             uid: user.uid,
