@@ -108,9 +108,9 @@
       <div id="message"></div>
     </form>
     <div style="text-align:center; margin-top:15px;">
-  <a href="naptien.html" style="color: yellow; font-weight:bold; text-decoration: underline;">
-    Không đủ tiền? Bấm vào đây để nạp thêm
-  </a>
+      <a href="naptien.html" style="color: yellow; font-weight:bold; text-decoration: underline;">
+        Không đủ tiền? Bấm vào đây để nạp thêm
+      </a>
     </div>
   </div>
 
@@ -176,7 +176,11 @@
         finalPrice = 0;
         return;
       }
-      finalRobux = Math.round((val / 10000) * 30);
+      if (val === 120000) {
+        finalRobux = 400; // Gói đặc biệt 120k = 400 robux
+      } else {
+        finalRobux = Math.round((val / 10000) * 30);
+      }
       finalPrice = Math.ceil(val / 1000) * 1000;
     });
 
@@ -196,7 +200,11 @@
 
       const val = parseInt(document.getElementById("amount").value);
       if (!isNaN(val)) {
-        finalRobux = Math.round((val / 10000) * 30);
+        if (val === 120000) {
+          finalRobux = 400; // Gói đặc biệt 120k
+        } else {
+          finalRobux = Math.round((val / 10000) * 30);
+        }
         finalPrice = Math.ceil(val / 1000) * 1000;
       }
 
@@ -245,11 +253,11 @@
           messageBox.style.color = "lime";
           messageBox.innerText = "🎉 Mua hàng thành công!";
           buyForm.reset();
-finalPrice = 0;
-finalRobux = 0;
-setTimeout(() => {
-  window.location.href = "lichsu.html";
-}, 1000);
+          finalPrice = 0;
+          finalRobux = 0;
+          setTimeout(() => {
+            window.location.href = "lichsu.html";
+          }, 1000);
         };
         confirmCancel.onclick = () => {
           modal.style.display = "none";
