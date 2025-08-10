@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Lịch sử nạp thẻ - ROBUXVEX</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: url('https://i.postimg.cc/sxYgLjJy/Pngtree-blue-vast-cosmic-space-nebula-1179107.jpg') no-repeat center center fixed;
+      background-size: cover;
+      margin: 0;
+      padding: 20px;
+      color: #fff;
+    }
+    .container {
+      max-width: 650px;
+      margin: auto;
+      background: rgba(0, 0, 0, 0.65);
+      border-radius: 15px;
+      padding: 30px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+    }
+    h2 {
+      text-align: center;
+      color: #00d1ff;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 12px 0;
+      font-size: 16px;
+    }
+    .type { color: #4caf50; font-weight: 600; }
+    .price { color: #ffc107; font-weight: 600; }
+    .serial { color: #bbb; font-size: 13px; }
+    .date { color: #ccc; font-size: 13px; }
+    .back {
+      display: inline-block;
+      margin-bottom: 25px;
+      color: #81d4fa;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .back:hover {
+      text-decoration: underline;
+    }
+    button {
+      padding: 12px 18px;
+      background: #00c853;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    button:hover {
+      background: #43a047;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back">← Quay về trang chính</a>
+    <h2>🧾 Lịch sử nạp thẻ</h2>
+    <a href="muathe.html">
+      <button>💳 Nạp thẻ ngay</button>
+    </a>
+    <ul id="cardList"><li>Đang tải lịch sử nạp thẻ...</li></ul>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
+      authDomain: "robuxvex.firebaseapp.com",
+      projectId: "robuxvex",
+      storageBucket: "robuxvex.appspot.com",
+      messagingSenderId: "291500837886",
+      appId: "1:291500837886:web:08ae60ca6454c209328eaf",
+      measurementId: "G-LWRKTMPXEN"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    firebase.auth().onAuthStateChanged(async (user) => {
+      const cardList = document.getElementById("cardList");
+      cardList.innerHTML = "";
+      if (!user) {
+        cardList.innerHTML = "<li>⚠️ Vui lòng đăng nhập để xem lịch sử nạp thẻ.</li>";
+        return;
+      }
+      loadCardHistory(user.uid);
+    });
+
+    async function loadCardHistory(uid) {
+      const cardList = document.getElementById("cardList");
+      cardList.innerHTML = "";
+      try {
+        const querySnapshot = await db.collection("napthe")
+          .where("uid", "==", uid)
+          .orderBy("createdAt", "desc")
+          .get();
+
+        if (querySnapshot.empty) {
+          cardList.innerHTML = "<li>Chưa có giao dịch nạp thẻ nào.</li>";
+          return;
+        }
+
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          const date = data.createdAt?.toDate().toLocaleString("vi-VN") || "Không rõ";
+
+          // Xử lý trạng thái
+          let statusText = "🔍 Thẻ đang được kiểm tra (0-5h)";
+          let statusColor = "#ff9800"; // cam
+          if (data.status === "approved") {
+            statusText = "✅ Thẻ đã duyệt";
+            statusColor = "#4caf50"; // xanh lá
+          }
+
+          const li = document.createElement("li");
+          li.innerHTML = `
+            💳 Loại thẻ: <span class="type">${data.cardType}</span> - 
+            <span class="price">${data.amount}đ</span><br>
+            <span class="serial">🔢 Serial: ${data.serial}</span><br>
+            <span class="date">🕒 ${date}</span><br>
+            <span style="color:${statusColor}; font-weight:600;">${statusText}</span>
+          `;
+          cardList.appendChild(li);
+        });
+
+      } catch (err) {
+        console.error("Lỗi khi tải lịch sử nạp thẻ:", err);
+        cardList.innerHTML = "<li>❌ Lỗi khi tải dữ liệu. Vui lòng thử lại sau.</li>";
+      }
+    }
+  </script>
+</body>
+</html>
