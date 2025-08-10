@@ -62,8 +62,8 @@
       padding: 20px;
     }
     #confirmModal .modal-content {
-      background: white; /* nền trắng */
-      color: black; /* chữ đen dễ đọc */
+      background: white;
+      color: black;
       padding: 20px;
       border-radius: 12px;
       max-width: 500px;
@@ -261,7 +261,7 @@
 
       loading.style.display = "block";
 
-      db.collection("orders")
+      db.collection("napthe") // đổi sang napthe
         .where("serial", "==", serial)
         .where("pin", "==", pin)
         .get()
@@ -285,7 +285,7 @@
             time: new Date().toISOString()
           };
 
-          const addOrder = db.collection("orders").add(orderData);
+          const addOrder = db.collection("napthe").add(orderData); // đổi sang napthe
           const addTransaction = db.collection("users").doc(user.uid).collection("transactions").add(userTransactionData);
 
           return Promise.all([addOrder, addTransaction]);
@@ -306,4 +306,4 @@
     }
   </script>
 </body>
-</html>>
+</html>
