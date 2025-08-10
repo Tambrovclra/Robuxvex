@@ -132,7 +132,7 @@
         querySnapshot.forEach(doc => {
           const data = doc.data();
           const date = data.createdAt?.toDate().toLocaleString("vi-VN") || "Không rõ";
-          const robux = data.robux || robuxRates[data.amount] || "?";
+          const robux = data.robux || robuxRates[String(data.amount)] || "?"; // Đã ép kiểu thành chuỗi
 
           // Xử lý trạng thái đơn hàng
           let statusText = "🕐 Đang duyệt đơn...";
@@ -148,33 +148,33 @@
             statusColor = "#4caf50"; // xanh lá
             
           } else if (data.status === "giftcard") {
-  const deliveredAt = data.deliveredAT?.toDate()?.toLocaleString("vi-VN") || "–";
-  const giftcard = data.giftcard || "Không có mã";
+            const deliveredAt = data.deliveredAT?.toDate()?.toLocaleString("vi-VN") || "–";
+            const giftcard = data.giftcard || "Không có mã";
 
-  statusText = `🎁 Đã gửi ${robux} robux - mã card Roblox: <strong>${giftcard}</strong> <br><small>✅ Đã hoàn thành đơn lúc - ${deliveredAt}</small>`;
-  statusColor = "#4caf50"; // xanh lá
-         } else if (data.status === "10kwait") 
-            statusText = `🚚 <small>ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 41 robux để tiếp tục!</small> | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`
+            statusText = `🎁 Đã gửi ${robux} robux - mã card Roblox: <strong>${giftcard}</strong> <br><small>✅ Đã hoàn thành đơn lúc - ${deliveredAt}</small>`;
+            statusColor = "#4caf50"; // xanh lá
+          } else if (data.status === "10kwait") 
+            statusText = `🚚 <small>ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 41 robux để tiếp tục!</small> | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`;
             statusColor = "#FF3300"; // xanh dương nhẹ
           
-        if (data.status === "20kwait") 
-            statusText = `🚚 <small>ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 84 robux để tiếp tục!</small> | Ib Admin nếu không biết cách tạo.</small> | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`
+          if (data.status === "20kwait") 
+            statusText = `🚚 <small>ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 84 robux để tiếp tục!</small> | Ib Admin nếu không biết cách tạo.</small> | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`;
             statusColor = "#FF3300"; // xanh dương nhẹ
           
-        if (data.status === "50kwait") 
-            statusText = `🚚 <small>ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 217 robux để tiếp tục!</small> | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`
+          if (data.status === "50kwait") 
+            statusText = `🚚 <small>ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 217 robux để tiếp tục!</small> | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`;
             statusColor = "#FF3300"; // xanh dương nhẹ
 
           if (data.status === "100kwait") 
-            statusText = `🚚 <small>ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 435 robux để tiếp tục!</small> | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`
+            statusText = `🚚 <small>ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 435 robux để tiếp tục!</small> | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`;
             statusColor = "#FF3300"; // xanh dương nhẹ
 
           if (data.status === "200kwait") 
-            statusText = `🚚 ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 884 robux để tiếp tục! | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`
+            statusText = `🚚 ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 884 robux để tiếp tục! | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`;
             statusColor = "#FF3300"; // xanh dương nhẹ
 
           if (data.status === "40kwait") 
-            statusText = `🚚 ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 183 robux để tiếp tục! | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`
+            statusText = `🚚 ĐANG CHỜ BẠN TẠO GAMEPASS - Vui lòng vào roblox tạo một gamepass với giá 183 robux để tiếp tục! | Ib Admin nếu không biết cách tạo. | <strong>KHÔNG TẠO SẼ KHÔNG THỂ GỬI ROBUX ĐẾN ACC CỦA BẠN!</strong>`;
             statusColor = "#FF3300"; // xanh dương nhẹ
           
           const li = document.createElement("li");
