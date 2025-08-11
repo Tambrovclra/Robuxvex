@@ -1158,5 +1158,19 @@
     });
   }
 </script>
+  <script>let totalDeposit = 0;
+
+try {
+  const docSnap = await db.collection("users").doc(user.uid).get();
+  if (docSnap.exists) {
+    const data = docSnap.data();
+    balance = (data.balance ?? 0) + "đ";
+    role = data.role ?? "Member";
+    totalDeposit = (data.totalDeposit ?? 0) + "đ"; // thêm dòng này
+  }
+} catch (e) {
+  console.error("Lỗi Firestore:", e);
+}
+  </script>
 </body>
 </html>
