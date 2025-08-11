@@ -1019,20 +1019,28 @@
 
   // cập nhật dropdown tài khoản (giữ giao diện cũ)
   dropdownBox.innerHTML = `
-<div style="padding: 15px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align:center;">
-  <img src="${user.photoURL || 'https://i.postimg.cc/4n9C234M/robuxvex-avt.jpg'}" alt="Avatar" style="width:60px;height:60px;border-radius:50%;margin-bottom:8px;border:2px solid #4CAF50;">
-  <h3 style="margin:5px 0; color:#333;">${userName}</h3>
-  <div style="display:flex;justify-content:space-between;gap:8px;margin-top:10px;">
+<div style="padding: 15px; background: #fff; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); text-align:center; min-width: 240px;">
+  <img src="${user.photoURL || 'https://i.postimg.cc/4n9C234M/robuxvex-avt.jpg'}" alt="Avatar" style="width:65px;height:65px;border-radius:50%;margin-bottom:8px;border:2px solid #4CAF50;">
+  <h3 style="margin:5px 0; color:#333; font-size:18px; font-weight:600;">${userName}</h3>
+  
+  <div style="display:flex;justify-content:space-between;gap:8px;margin-top:12px;">
     <div style="flex:1;background:#f9f9f9;padding:8px;border-radius:8px;">
-      💰<br><strong>${balance}</strong><br><span style="font-size:12px;color:#666;">Số dư</span>
+      <div style="font-size:20px;">💰</div>
+      <div style="font-weight:700;font-size:15px;color:#111;">${balance}</div>
+      <div style="font-size:12px;color:#666;">Số dư</div>
     </div>
     <div style="flex:1;background:#f9f9f9;padding:8px;border-radius:8px;">
-      💳<br><strong>${totalDeposit}</strong><br><span style="font-size:12px;color:#666;">Đã nạp</span>
+      <div style="font-size:20px;">💳</div>
+      <div style="font-weight:700;font-size:15px;color:#111;">${totalDeposit}</div>
+      <div style="font-size:12px;color:#666;">Đã nạp</div>
     </div>
     <div style="flex:1;background:#f9f9f9;padding:8px;border-radius:8px;">
-      🏷️<br><strong>${role}</strong><br><span style="font-size:12px;color:#666;">Danh hiệu</span>
+      <div style="font-size:20px;">🏷️</div>
+      <div style="font-weight:700;font-size:15px;color:#111;">${role}</div>
+      <div style="font-size:12px;color:#666;">Danh hiệu</div>
     </div>
   </div>
+
   <div class="dropdown-divider" style="margin:12px 0;"></div>
   <a href="#" style="display:block;padding:8px;color:#333;text-decoration:none;border-radius:8px;">⚙️ Cài đặt</a>
   <a href="#" onclick="logout()" style="display:block;padding:8px;color:red;text-decoration:none;border-radius:8px;">🚪 Đăng xuất</a>
