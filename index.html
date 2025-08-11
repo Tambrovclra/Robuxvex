@@ -999,41 +999,37 @@
     }
 
     if (user) {
-      currentUID = user.uid;
-      let userName = user.displayName || "Người dùng";
-      let balance = "0đ";
-      let role = "Member";
+  currentUID = user.uid;
+  let userName = user.displayName || "Người dùng";
+  let balance = "0đ";
+  let role = "Member";
+  let totalDeposit = "0đ"; // ✅ thêm mặc định
 
-      try {
-        const docSnap = await firebase.firestore().collection("users").doc(user.uid).get();
-        if (docSnap.exists) {
-          const data = docSnap.data();
-          balance = (data.balance ?? 0) + "đ";
-          role = data.role ?? "Member";
-        }
-      } catch (e) {
-        console.error("Lỗi Firestore:", e);
-      }
+  try {
+    const docSnap = await firebase.firestore().collection("users").doc(user.uid).get();
+    if (docSnap.exists) {
+      const data = docSnap.data();
+      balance = (data.balance ?? 0) + "đ";
+      role = data.role ?? "Member";
+      totalDeposit = (data.totalDeposit ?? 0) + "đ"; // ✅ thêm lấy dữ liệu từ Firestore
+    }
+  } catch (e) {
+    console.error("Lỗi Firestore:", e);
+  }
 
-      // cập nhật dropdown tài khoản (giữ giao diện cũ)
-      dropdownBox.innerHTML = `
-      <div style="padding: 10px 16px; color: black;">
-        👤 <strong>${userName}</strong><br>
-
-        💰 Số dư của bạn: <strong>${balance}</strong><br>
-
-         💳 Đã nạp: <strong>${totalDeposit}</strong><br>
-        
-        🏷️ Danh hiệu: <strong>${role}</strong>
-        
-        
-      </div>
-        
-        <div class="dropdown-divider"></div>
-        <a href="#">⚙️ Cài đặt</a>
-        <a href="#" onclick="logout()">🚪 Đăng xuất</a>
-      `;
-
+  // cập nhật dropdown tài khoản (giữ giao diện cũ)
+  dropdownBox.innerHTML = `
+  <div style="padding: 10px 16px; color: black;">
+    👤 <strong>${userName}</strong><br>
+    💰 Số dư của bạn: <strong>${balance}</strong><br>
+    💳 Đã nạp: <strong>${totalDeposit}</strong><br>
+    🏷️ Danh hiệu: <strong>${role}</strong>
+  </div>
+    
+    <div class="dropdown-divider"></div>
+    <a href="#">⚙️ Cài đặt</a>
+    <a href="#" onclick="logout()">🚪 Đăng xuất</a>
+  `;
       // Tạo khung nội dung notifyBox
       notifyBox.innerHTML = `<div class="notify-header"><span>🔔 Thông báo</span><button id="clearNotifsBtn" style="background:none;border:none;cursor:pointer;color:#1976d2;font-weight:600">Xóa</button></div>`;
       const notifList = document.createElement("div");
@@ -1158,19 +1154,6 @@
     });
   }
 </script>
-  <script>let totalDeposit = 0;
 
-try {
-  const docSnap = await db.collection("users").doc(user.uid).get();
-  if (docSnap.exists) {
-    const data = docSnap.data();
-    balance = (data.balance ?? 0) + "đ";
-    role = data.role ?? "Member";
-    totalDeposit = (data.totalDeposit ?? 0) + "đ"; // thêm dòng này
-  }
-} catch (e) {
-  console.error("Lỗi Firestore:", e);
-}
-  </script>
 </body>
 </html>
