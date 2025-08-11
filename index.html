@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="google" content="notranslate">
-  <title>ROBUXVEX - Shop robux chính hãng</title>
+  <title>ROBUXVEX - Sho.menu-drawep robux chính hãng</title>
   <style>
   #userIcon {
     position: fixed;
@@ -85,7 +85,7 @@
       /* default reset; specific behaviors controlled below */
     }
 
-    .dropdown-box a, .menu-drawer a {
+    .dropdown-box a, r a {
       display: flex;
       align-items: center;
       gap: 10px;
@@ -95,10 +95,26 @@
       transition: all 0.3s ease;
       border-radius: 8px;
     }
-    .dropdown-box a:hover, .menu-drawer a:hover {
-      background: #f0f0f0;
-      transform: scale(1.02);
-    }
+    .dropdown-box a:hover, .menu-drawer a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  color: #333;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 8px;
+  border: 2px solid #4CAF50; /* viền xanh lá giống avatar */
+  background-color: #fff;
+  margin-bottom: 10px;
+  transition: all 0.25s ease;
+}
+
+.menu-drawer a:hover {
+  background-color: #f5f5f5;
+  transform: translateX(4px);
+}
     .dropdown-divider {
       height: 1px;
       background: #ddd;
@@ -106,29 +122,79 @@
     }
 
     .menu-drawer {
-      position: fixed;
-      top: 0; left: 0;
-      width: 180px;
-      height: 100%;
-      background: linear-gradient(135deg, #ffffff, #f4f4f4);
-      box-shadow: 4px 0 10px rgba(0,0,0,0.2);
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      padding: 20px 10px;
-      z-index: 1002;
-      border-top-right-radius: 20px;
-      border-bottom-right-radius: 20px;
-      overflow: hidden;
-    }
-    .menu-drawer.open { transform: translateX(0); }
-    .menu-title {
-      font-weight: bold;
-      margin-top: 20px;
-      margin-bottom: 8px;
-      padding-left: 10px;
-      font-size: 15px;
-      color: #888;
-    }
+  position: fixed;
+  top: 0; left: 0;
+  width: 230px;
+  height: 100%;
+  background: #fff;
+  box-shadow: 4px 0 12px rgba(0,0,0,0.15);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  padding: 20px 14px;
+  z-index: 1002;
+  border-top-right-radius: 18px;
+  border-bottom-right-radius: 18px;
+  overflow-y: auto;
+}
+
+.menu-drawer.open { transform: translateX(0); }
+
+.menu-drawer a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  color: #333;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+}
+
+.menu-drawer a:hover {
+  background: #f5f5f5;
+  transform: translateX(5px);
+}
+
+.menu-title {
+  font-weight: bold;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #777;
+  border-top: 1px solid #eee;
+  padding-top: 10px;
+  text-transform: uppercase;
+}
+.sub-menu {
+  max-height: 0;
+  overflow: hidden;
+  padding-left: 15px; /* thụt vào để phân biệt */
+  transition: max-height 0.35s ease;
+}
+
+.sub-menu.open {
+  max-height: 200px; /* đủ để chứa các ô con */
+}
+
+.sub-menu a {
+  border: 2px solid #4CAF50; /* viền xanh */
+  background-color: #fff;
+  border-radius: 8px;
+  margin-bottom: 8px;
+  display: block;
+  padding: 10px 14px;
+  color: #333;
+  font-size: 14px;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.sub-menu a:hover {
+  background-color: #f5f5f5;
+  transform: translateX(4px);
+}
     .menu-support a {
       color: #4CAF50;
       font-size: 14px;
@@ -541,7 +607,12 @@
   <div class="menu-drawer" id="menuDrawer">
     <a href="#kho-robux" onclick="scrollToSection('kho-robux')">📦 Kho Robux</a>
     
-    <a href="#mua-hang" onclick="scrollToSection('buy')">🛒 Mua hàng</a>
+    <a href="javascript:void(0)" onclick="toggleSubMenu()">🛒 Mua hàng</a>
+<div class="sub-menu" id="submenu-buy">
+  
+    <a href="#mua-hang" onclick="scrollToSection('buy')">R$⏣ Mua robux</a>
+  <a href="vongquay.html">🎯 Vòng quay robux</a>
+</div>
 
     <a href="naptien.html">💸 Nạp tiền ngay</a>
     
@@ -1170,6 +1241,11 @@
     });
   }
 </script>
-
+<script>
+  function toggleSubMenu() {
+  const submenu = document.getElementById("submenu-buy");
+  submenu.classList.toggle("open");
+}
+</script>
 </body>
 </html>
