@@ -23,35 +23,7 @@
     .btn:hover { background: #4338ca; }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    /* Loading spinner */
-    .loading-spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #4f46e5;
-      border-radius: 50%;
-      width: 18px;
-      height: 18px;
-      animation: spin 1s linear forwards; /* xoay đúng 1 giây */
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 8px;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Warning box */
-    .warning {
-      margin-top: 10px;
-      font-size: 14px;
-      padding: 10px 12px;
-      border-radius: 8px;
-      font-weight: 600;
-      display: none;
-      transition: opacity 0.3s ease;
-    }
-    .warning.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
-    .warning.success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .warning { margin-top: 10px; font-size: 14px; color: #d97706; font-weight: 600; }
 
     /* History */
     .history-card { background: #fff; border-radius: 12px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); overflow: hidden; }
@@ -65,6 +37,11 @@
     .status.pending { background:#fef3c7; color:#92400e; }
     .status.success { background:#d1fae5; color:#065f46; }
     .status.failed { background:#fee2e2; color:#991b1b; }
+
+    @media (max-width:520px) {
+      .container { padding: 0 12px; }
+      .summary span:last-child { font-size:18px; }
+    }
   </style>
 </head>
 <body>
@@ -89,6 +66,7 @@
 
       <label for="qty">Số lượng (Robux)</label>
       <input type="number" id="qty" value="60" min="1">
+      <div id="robuxAfter" style="margin:-12px 0 12px; font-size:14px; color:#555; font-weight:600;"></div>
 
       <div class="summary">
         <span>Tổng thanh toán</span>
@@ -97,18 +75,6 @@
 
       <button class="btn" id="buyBtn">Mua Ngay</button>
       <div id="warningBox" class="warning"></div>
-    </div>
-    <!-- Hướng dẫn -->
-    <div class="card guide-card" aria-labelledby="guide">
-      <h3 id="guide">📑 CÁCH MUA ROBUX (Gamepass/Giftcard)</h3>
-      <ol>
-        <li>Chọn <strong>Gamepass</strong> hoặc <strong>Gift Card</strong>.</li>
-        <li>Nhập chính xác <strong>username Roblox</strong> và <strong>liên hệ của bạn</strong>.</li>
-        <li>Nhập số Robux muốn mua hoặc chọn Gift Card mặc định 400 R$.</li>
-        <li>Nhấn <em>Mua Ngay</em> để thanh toán.</li>
-        <li>Sau khi duyệt, chờ 3-5 ngày bạn sẽ nhận được Robux vào tài khoản Roblox.</li>
-      </ol>
-      <div class="guide-note">Lưu ý: Robux nhận thực tế khi mua bằng gamepass = 70% do phí Roblox.</div>
     </div>
 
     <!-- Lịch sử -->
@@ -159,6 +125,7 @@
     const typeSelect = document.getElementById("type");
     const warningBox = document.getElementById("warningBox");
     const historyTableBody = document.getElementById("historyTable").querySelector("tbody");
+    const robuxAfterEl = document.getElementById("robuxAfter");
 
     const PRICE_PER_ROBUX = 10000 / 60;
 
@@ -166,71 +133,64 @@
       if (typeSelect.value === "giftcard") {
         qtyInput.value = 400;
         qtyInput.disabled = true;
+        totalEl.innerText = "100.000 ₫"; // Giá cố định Giftcard
+        robuxAfterEl.innerText = "Thực nhận: 400 R$ (Gift Card, không bị trừ phí)";
       } else {
         qtyInput.disabled = false;
+        updateTotal();
       }
-      updateTotal();
     }
 
     function updateTotal() {
       const qty = parseInt(qtyInput.value) || 0;
-      const price = Math.round(qty * PRICE_PER_ROBUX);
+      let price = 0;
+
+      if (typeSelect.value === "giftcard") {
+        price = 100000; // gift card cố định
+        robuxAfterEl.innerText = "Thực nhận: 400 R$ (Gift Card, không bị trừ phí)";
+      } else {
+        price = Math.round(qty * PRICE_PER_ROBUX);
+        if (qty > 0) {
+          const after = Math.floor(qty * 0.7);
+          robuxAfterEl.innerText = `Thực nhận: ${after} R$ (-30%)`;
+        } else {
+          robuxAfterEl.innerText = "";
+        }
+      }
+
       totalEl.innerText = price.toLocaleString("vi-VN") + " ₫";
       buyBtn.disabled = !(usernameInput.value.trim().length >= 3 && contactInput.value.trim().length >= 3 && qty > 0);
     }
 
-    function showWarning(message, type = "error") {
-      warningBox.textContent = message;
-      warningBox.className = "warning " + type;
-      warningBox.style.display = "block";
-      warningBox.style.opacity = "1";
-      setTimeout(() => {
-        warningBox.style.opacity = "0";
-        setTimeout(() => { warningBox.style.display = "none"; }, 300);
-      }, 4000);
-    }
-
     async function handleBuy(username, contact, robux, priceVND) {
-      try {
-        buyBtn.disabled = true;
-        buyBtn.innerHTML = `<span class="loading-spinner"></span> Đang xử lý...`;
-        await new Promise(resolve => setTimeout(resolve, 1000)); // xoay 1 giây
+      const userRef = doc(db, "users", username);
+      const snap = await getDoc(userRef);
 
-        const userRef = doc(db, "users", username);
-        const snap = await getDoc(userRef);
-
-        if (!snap.exists()) {
-          showWarning("❌ Tài khoản chưa tồn tại trong hệ thống!", "error");
-          return;
-        }
-
-        const balance = snap.data().balance || 0;
-        if (balance < priceVND) {
-          showWarning("❌ Số dư không đủ! Hiện tại: " + balance.toLocaleString("vi-VN") + "₫", "error");
-          return;
-        }
-
-        await updateDoc(userRef, { balance: balance - priceVND });
-
-        await addDoc(collection(db, "orders"), {
-          username,
-          contact,
-          robux,
-          robuxAfterTax: Math.floor(robux * 0.7),
-          priceVND,
-          status: "chờ duyệt",
-          time: Date.now()
-        });
-
-        showWarning(`✅ Mua thành công ${robux} R$ cho @${username}. Số dư còn lại: ${(balance - priceVND).toLocaleString("vi-VN")}₫`, "success");
-
-      } catch (err) {
-        console.error(err);
-        showWarning("⚠️ Có lỗi xảy ra khi mua!", "error");
-      } finally {
-        buyBtn.disabled = false;
-        buyBtn.innerText = "Mua Ngay";
+      if (!snap.exists()) {
+        warningBox.innerText = "❌ Tài khoản chưa tồn tại trong hệ thống!";
+        return;
       }
+
+      const balance = snap.data().balance || 0;
+      if (balance < priceVND) {
+        warningBox.innerText = "❌ Số dư không đủ! Hiện tại: " + balance.toLocaleString("vi-VN") + "₫";
+        return;
+      }
+
+      await updateDoc(userRef, { balance: balance - priceVND });
+
+      await addDoc(collection(db, "orders"), {
+        username,
+        contact,
+        robux,
+        robuxAfterTax: typeSelect.value === "giftcard" ? robux : Math.floor(robux * 0.7),
+        priceVND,
+        status: "chờ duyệt",
+        time: Date.now()
+      });
+
+      warningBox.innerText = `✅ Mua thành công ${robux} R$ cho @${username}. Số dư còn lại: ${(balance - priceVND).toLocaleString("vi-VN")}₫`;
+      addHistoryRow(username, contact, robux, typeSelect.value === "giftcard" ? robux : Math.floor(robux * 0.7), priceVND, "chờ duyệt", Date.now());
     }
 
     function addHistoryRow(username, contact, robux, robuxAfter, priceVND, status, timestamp) {
@@ -270,7 +230,7 @@
       const username = usernameInput.value.trim();
       const contact = contactInput.value.trim();
       const robux = parseInt(qtyInput.value);
-      const priceVND = Math.round(robux * PRICE_PER_ROBUX);
+      const priceVND = typeSelect.value === "giftcard" ? 100000 : Math.round(robux * PRICE_PER_ROBUX);
       handleBuy(username, contact, robux, priceVND);
     });
 
