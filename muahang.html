@@ -244,55 +244,66 @@
 
     // Load gamepass từ Roblox (tự động khi nhập username)
     async function findGamepasses(username) {
-      if (typeSelect.value !== "gamepass") return;
-      gamepassBox.innerHTML = "";
-      availablePassPrices = [];
+    async function findGamepasses(username) {
+  const gamepassBox = document.getElementById("gamepassBox");
+  const warningBox = document.getElementById("warningBox");
 
-      try {
-        const res = await fetch(`https://api.roblox.com/users/get-by-username?username=${username}`);
-        const data = await res.json();
-        if (!data.Id) return;
-        const userId = data.Id;
+  gamepassBox.innerHTML = "";
+  warningBox.innerText = "";
 
-        const resGames = await fetch(`https://games.roblox.com/v2/users/${userId}/games?limit=3`);
-        const gamesData = await resGames.json();
-        if (!gamesData.data || gamesData.data.length === 0) return;
+  try {
+    // 1️⃣ Lấy userId từ API Vercel
+    const userRes = await fetch(`/api/users?username=${encodeURIComponent(username)}`);
+    const userData = await userRes.json();
+    if (!userData || !userData.data || !userData.data[0]) {
+      warningBox.innerText = "❌ Không tìm thấy tài khoản Roblox";
+      return;
+    }
+    const userId = userData.data[0].id;
 
-        for (let game of gamesData.data) {
-          const resPass = await fetch(`https://games.roblox.com/v1/games/${game.id}/game-passes?limit=5`);
-          const passData = await resPass.json();
+    // 2️⃣ Lấy danh sách game từ Roblox API (cái này chưa cần proxy qua Vercel)
+    const gamesRes = await fetch(`https://games.roblox.com/v2/users/${userId}/games?limit=3`);
+    const gamesData = await gamesRes.json();
 
-          if (passData.data && passData.data.length > 0) {
-            for (let gp of passData.data) {
-              const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/assets?assetIds=${gp.id}&size=150x150&format=Png`);
-              const thumbData = await thumbRes.json();
-              const imgUrl = thumbData.data?.[0]?.imageUrl || "";
+    if (!gamesData.data || gamesData.data.length === 0) {
+      warningBox.innerText = "❌ Người dùng này không có game nào";
+      return;
+    }
 
-              const infoRes = await fetch(`https://economy.roblox.com/v1/game-pass/${gp.id}/product-info`);
-              const infoData = await infoRes.json();
-              const price = infoData.PriceInRobux || "?";
+    // 3️⃣ Với mỗi game → lấy gamepass qua API Vercel
+    for (let game of gamesData.data) {
+      const gpRes = await fetch(`/api/gamepasses?gameId=${game.id}`);
+      const gpData = await gpRes.json();
 
-              if (typeof price === "number") availablePassPrices.push(price);
+      if (!gpData.data) continue;
 
-              const div = document.createElement("div");
-              div.className = "gamepass-item";
-              div.innerHTML = `
-                <img src="${imgUrl}" alt="${gp.name}">
-                <h4>${gp.name}</h4>
-                <p>${price} R$ (Nhận ${Math.floor(price*0.7)} R$)</p>
-              `;
-              if (typeof price === "number") {
-                attachGamepassBuy(div, username, price);
-              }
-              gamepassBox.appendChild(div);
-            }
-          }
-        }
-        updateTotal();
-      } catch (err) {
-        console.error(err);
+      for (let gp of gpData.data) {
+        // 4️⃣ Lấy thông tin product (Robux) 
+        const productRes = await fetch(`https://economy.roblox.com/v1/game-pass/${gp.id}/product-info`);
+        const productData = await productRes.json();
+
+        // 5️⃣ Lấy thumbnail qua API Vercel
+        const thumbRes = await fetch(`/api/thumbnail?userId=${gp.id}`);
+        const thumbData = await thumbRes.json();
+        const thumbUrl = thumbData?.data?.[0]?.imageUrl || "https://tr.rbxcdn.com/180-day-thumbnail-default.png";
+
+        // 6️⃣ Render UI
+        const div = document.createElement("div");
+        div.className = "gamepass-item";
+        div.innerHTML = `
+          <img src="${thumbUrl}" alt="${gp.name}">
+          <h4>${gp.name}</h4>
+          <p>💰 ${productData.PriceInRobux} Robux</p>
+          <button onclick="purchase('${gp.id}', ${productData.PriceInRobux})">Mua ngay</button>
+        `;
+        gamepassBox.appendChild(div);
       }
     }
+  } catch (err) {
+    console.error(err);
+    warningBox.innerText = "⚠️ Có lỗi xảy ra khi tải gamepasses.";
+  }
+}
 
     // Load history realtime từ Firestore
     function loadHistory() {
