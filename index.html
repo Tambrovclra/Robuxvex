@@ -9,9 +9,10 @@
     .navbar { position:fixed; top:0; left:0; right:0; height:60px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 20px; box-shadow:0 2px 10px rgba(0,0,0,0.1); z-index:1000; }
     .icon-btn { width:38px;height:38px;border-radius:50%;background:#eee; display:flex;align-items:center;justify-content:center;cursor:pointer; }
     .icon-btn svg { width:20px;height:20px;fill:#333; }
-    #dropdownBox { position:fixed;top:65px;right:20px;background:#fff;border-radius:16px; box-shadow:0 6px 20px rgba(0,0,0,0.25);display:none;min-width:280px;padding:20px; }
+
+    /* Dropdown tài khoản */
+    #dropdownBox { position:fixed;top:65px;right:20px;background:#fff;border-radius:16px; box-shadow:0 6px 20px rgba(0,0,0,0.25);display:none;min-width:280px;padding:20px; z-index:1200; }
     #dropdownBox img { width:80px;height:80px;border-radius:50%;display:block;margin:0 auto 10px;border:4px solid #3498db;box-shadow:0 0 15px rgba(52,152,219,0.6);transition:all 0.3s ease; }
-    #dropdownBox img:hover { box-shadow:0 0 25px rgba(52,152,219,0.9),0 0 40px rgba(52,152,219,0.7);transform:scale(1.05); }
     #dropdownBox h3 { text-align:center;margin:5px 0 15px; }
     .info-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; text-align:center; margin-bottom:15px; }
     .info-box { background:#f9f9f9;padding:10px;border-radius:12px;box-shadow:inset 0 0 8px rgba(0,0,0,0.05);transition:0.3s; }
@@ -21,6 +22,8 @@
     #dropdownBox a { display:block;padding:10px 14px;color:#333;text-decoration:none;border-radius:8px;margin-top:5px;text-align:center; }
     #dropdownBox a:hover { background:#f4f6fa; }
     #dropdownBox .logout { color:#e74c3c;font-weight:600; }
+
+    /* Main */
     .container { padding:80px 20px 40px; max-width:1200px; margin:auto; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; }
     .card { background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 12px rgba(0,0,0,0.08); text-align:center;transition:transform 0.2s; }
@@ -39,16 +42,52 @@
     tr:nth-child(even) td { background:#f9f9f9; }
     .robux { font-weight:bold; color:#e74c3c; }
     .money { font-weight:bold; color:#27ae60; }
+
+    /* Sidebar */
+    #sidebar {
+      position:fixed;top:0;left:-260px;width:260px;height:100%;
+      background:#0b1e45;color:#fff;
+      box-shadow:2px 0 12px rgba(0,0,0,0.2);
+      transition:left 0.3s ease; z-index:1100; padding:20px 0;
+    }
+    #sidebar.active { left:0; }
+    #sidebar h3 { padding:0 20px;margin-bottom:20px;font-size:18px;color:#ddd; }
+    #sidebar ul { list-style:none; padding:0; margin:0; }
+    #sidebar ul li { margin:8px 0; }
+    #sidebar ul li a {
+      display:flex;align-items:center;
+      padding:10px 20px;color:#fff;text-decoration:none;font-size:15px;
+      transition:background 0.2s;
+    }
+    #sidebar ul li a:hover { background:rgba(255,255,255,0.1); border-radius:6px; }
+    #sidebar ul li a svg { margin-right:12px; width:18px;height:18px;fill:#fff; }
+    #overlay {
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.4);display:none;z-index:1000;
+    }
+    #overlay.active { display:block; }
   </style>
 </head>
 <body>
+  <!-- NAVBAR -->
   <div class="navbar">
-    <div class="navbar-left"><div class="icon-btn"><svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg></div></div>
-    <div class="navbar-right"><div class="icon-btn" id="accountIcon">
-      <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V22h19.2v-2.8c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
-    </div></div>
+    <div class="navbar-left">
+      <!-- Hamburger menu chính -->
+      <div class="icon-btn" id="menuBtn">
+        <svg viewBox="0 0 24 24"><path d="M3 6h18v2H3V6zm0 5h18v2H3v-2zm0 5h18v2H3v-2z"/></svg>
+      </div>
+    </div>
+    <div class="navbar-right">
+      <div class="icon-btn" id="accountIcon">
+        <svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V22h19.2v-2.8c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+      </div>
+    </div>
   </div>
+
+  <!-- DROPDOWN ACCOUNT -->
   <div id="dropdownBox"></div>
+
+  <!-- DASHBOARD -->
   <div class="container">
     <div class="grid">
       <div class="card done"><h3>Đơn hàng hoàn thành</h3><p id="doneOrders">0</p></div>
@@ -56,6 +95,7 @@
       <div class="card bought"><h3>Robux đã mua</h3><p id="robuxBought">0</p></div>
       <div class="card available"><h3>Robux có sẵn</h3><p id="robuxAvailable">0</p></div>
     </div>
+
     <h2>Top mua Robux</h2>
     <div class="table-wrapper">
       <table id="ordersTable">
@@ -63,6 +103,7 @@
         <tbody></tbody>
       </table>
     </div>
+
     <h2>Lịch sử nạp tiền</h2>
     <div class="table-wrapper">
       <table id="depositsTable">
@@ -71,10 +112,57 @@
       </table>
     </div>
   </div>
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <h3>MAIN</h3>
+    <ul>
+      <li><a href="#"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Trang chủ</a></li>
+    </ul>
+
+    <h3>CHỨC NĂNG CHÍNH</h3>
+    <ul>
+      <li><a href="#"><svg viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm0-2h14V6H7v10zm13-12c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h13z"/></svg>Mua nhanh</a></li>
+      <li><a href="#"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm1 17.9V20h-2v-.1C7.1 19.4 4 16 4 12c0-4 3.1-7.4 7-7.9V4h2v.1c3.9.5 7 3.9 7 7.9 0 4-3.1 7.4-7 7.9z"/></svg>Lịch sử mua hàng</a></li>
+    </ul>
+
+    <h3>QUẢN LÝ TÀI KHOẢN</h3>
+    <ul>
+      <li><a href="#"><svg viewBox="0 0 24 24"><path d="M12 8c-2.2 0-4 1.8-4 4s1.8 4 4 4 4-1.8 4-4-1.8-4-4-4zm0-6C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/></svg>Nạp tiền</a></li>
+      <li><a href="#"><svg viewBox="0 0 24 24"><path d="M3 3h18v2H3V3zm0 6h18v2H3V9zm0 6h18v2H3v-2z"/></svg>Biến động số dư</a></li>
+      <li><a href="#"><svg viewBox="0 0 24 24"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8V22h19.2v-2.8c0-3.2-6.4-4.8-9.6-4.8z"/></svg>Thông tin tài khoản</a></li>
+    </ul>
+
+    <h3>LIÊN HỆ & HƯỚNG DẪN</h3>
+    <ul>
+      <li><a href="#"><svg viewBox="0 0 24 24"><path d="M22 12c0-5.5-4.5-10-10-10S2 6.5 2 12c0 4.7 3.2 8.6 7.5 9.7v-6.9H7.1V12h2.4V9.8c0-2.4 1.4-3.8 3.6-3.8 1 0 2.1.2 2.1.2v2.4h-1.2c-1.2 0-1.6.7-1.6 1.5V12h2.7l-.4 2.8h-2.3v6.9C18.8 20.6 22 16.7 22 12"/></svg>Liên hệ qua Facebook</a></li>
+      <li><a href="#"><svg viewBox="0 0 24 24"><path d="M10 15.5l6-3.5-6-3.5v7zM12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z"/></svg>Xem hướng dẫn mua hàng</a></li>
+    </ul>
+  </div>
+
+  <div id="overlay"></div>
+
+  <!-- FIX: chỉ 1 hamburger & toggle sidebar -->
+  <script>
+    (function(){
+      var sidebar = document.getElementById('sidebar');
+      var overlay = document.getElementById('overlay');
+      var menuBtn = document.getElementById('menuBtn');
+      if (!sidebar || !menuBtn) return;
+      function toggleSidebar(){
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+      }
+      menuBtn.onclick = toggleSidebar;
+      overlay.onclick = toggleSidebar;
+    })();
+  </script>
+
+  <!-- Firebase + Dashboard -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, query, orderBy, limit, getDocs, doc, getDoc, where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
@@ -91,7 +179,7 @@
     const auth = getAuth(app);
 
     async function loadDashboard(){
-      const uid = window.currentUid || localStorage.getItem('uid') || localStorage.getItem('userId');
+      const uid = window.currentUid;
       if (!uid) return;
       const q = query(
         collection(db,"orders"),
@@ -111,9 +199,23 @@
       document.getElementById("doneOrders").innerText = doneOrders;
       document.getElementById("pendingOrders").innerText = pendingOrders;
       document.getElementById("robuxBought").innerText = robuxBought;
+
       let totalRobuxAvailable = 0;
-      snapshot.forEach(docSnap=>{ const data = docSnap.data(); if (data.status === "done") { totalRobuxAvailable += Number(data.robuxAmount || 0); } });
+      snapshot.forEach(docSnap=>{
+        const data = docSnap.data();
+        if (data.status === "done") totalRobuxAvailable += Number(data.robuxAmount || 0);
+      });
       document.getElementById("robuxAvailable").innerText = totalRobuxAvailable;
+    }
+
+    async function getUserName(uid){
+      if (!uid) return "Người dùng";
+      const ref = doc(db, "users", uid);
+      const snap = await getDoc(ref);
+      if (snap.exists()){
+        return snap.data().displayName || uid;
+      }
+      return uid;
     }
 
     async function loadTopBuyers(){
@@ -122,55 +224,72 @@
       const totals = {};
       snapshot.forEach(docSnap=>{
         const data = docSnap.data();
-        const user = data.robloxUid || "Không rõ";
+        const uid = data.uid;
         const amount = Number(data.robuxAmount || 0);
-        if (!totals[user]) totals[user] = 0;
-        totals[user] += amount;
+        if (!totals[uid]) totals[uid] = 0;
+        totals[uid] += amount;
       });
+
+      const userNames = {};
+      await Promise.all(Object.keys(totals).map(async (uid)=>{
+        userNames[uid] = await getUserName(uid);
+      }));
+
       const sorted = Object.entries(totals).sort((a,b)=>b[1]-a[1]).slice(0,4);
       const ordersBody = document.querySelector("#ordersTable tbody");
       ordersBody.innerHTML = "";
-      sorted.forEach(([user,total],index)=>{
-        ordersBody.insertAdjacentHTML("beforeend", `<tr><td>${user}</td><td class="robux">${total} R$</td><td>#${index+1}</td></tr>`);
+      sorted.forEach(([uid,total],index)=>{
+        const name = userNames[uid] || "Người dùng";
+        ordersBody.insertAdjacentHTML("beforeend", `<tr><td>${name}</td><td class="robux">${total} R$</td><td>#${index+1}</td></tr>`);
       });
     }
 
-    async function loadUserInfo(uid){
+    async function loadTopDeposits(){
+      const q = query(collection(db, "deposits"));
+      const snapshot = await getDocs(q);
+      const depositsBody = document.querySelector("#depositsTable tbody");
+      depositsBody.innerHTML = "";
+
+      for (const docSnap of snapshot.docs){
+        const data = docSnap.data();
+        const uid = data.uid;
+        const amount = Number(data.amount || 0).toLocaleString('vi-VN');
+        const name = await getUserName(uid);
+        depositsBody.insertAdjacentHTML("beforeend", `<tr><td>${name}</td><td class="money">${amount}đ</td></tr>`);
+      }
+    }
+
+    async function loadUserInfo(user){
       const box = document.getElementById('dropdownBox');
       const fallbackAvatar = "https://i.postimg.cc/pV12TyXH/Screenshot-20250822-142636-Gallery.png";
-      const ref = doc(db, "users", uid);
+      const ref = doc(db, "users", user.uid);
       const snap = await getDoc(ref);
 
-      if(snap.exists()){
-        const data = snap.data();
-        const displayName = data.displayName || data.email?.split('@')[0] || 'Người dùng';
-        const balance = Number(data.balance || 0).toLocaleString('vi-VN');
-        const totalDeposit = Number(data.totalDeposit || 0).toLocaleString('vi-VN');
-        const role = data.role || 'Member';
-        const avatar = data.avatar || fallbackAvatar;
+      let displayName = user.displayName || user.email?.split('@')[0] || "Người dùng";
+      let balance = "0";
+      let totalDeposit = "0";
+      let role = "Member";
+      let avatar = user.photoURL || fallbackAvatar;
 
-        box.innerHTML = `
-          <img src="${avatar}" alt="avatar" />
-          <h3>${displayName}</h3>
-          <div class="info-grid">
-            <div class="info-box"><strong>${balance}đ</strong><p>Số dư</p></div>
-            <div class="info-box"><strong>${totalDeposit}đ</strong><p>Đã nạp</p></div>
-            <div class="info-box"><strong>${role}</strong><p>Danh hiệu</p></div>
-          </div>
-          <a href="#">⚙️ Cài đặt</a>
-          <a href="#" class="logout" id="logoutBtn">🚪 Đăng xuất</a>`;
-      } else {
-        box.innerHTML = `
-          <img src="${fallbackAvatar}" alt="avatar" />
-          <h3>Người dùng</h3>
-          <div class="info-grid">
-            <div class="info-box"><strong>0đ</strong><p>Số dư</p></div>
-            <div class="info-box"><strong>0đ</strong><p>Đã nạp</p></div>
-            <div class="info-box"><strong>Member</strong><p>Danh hiệu</p></div>
-          </div>
-          <a href="#">⚙️ Cài đặt</a>
-          <a href="#" class="logout" id="logoutBtn">🚪 Đăng xuất</a>`;
+      if (snap.exists()){
+        const data = snap.data();
+        displayName = data.displayName || displayName;
+        balance = Number(data.balance || 0).toLocaleString('vi-VN');
+        totalDeposit = Number(data.totalDeposit || 0).toLocaleString('vi-VN');
+        role = data.role || role;
+        avatar = data.avatar || avatar;
       }
+
+      box.innerHTML = `
+        <img src="${avatar}" alt="avatar" />
+        <h3>${displayName}</h3>
+        <div class="info-grid">
+          <div class="info-box"><strong>${balance}đ</strong><p>Số dư</p></div>
+          <div class="info-box"><strong>${totalDeposit}đ</strong><p>Đã nạp</p></div>
+          <div class="info-box"><strong>${role}</strong><p>Danh hiệu</p></div>
+        </div>
+        <a href="#">⚙️ Cài đặt</a>
+        <a href="#" class="logout" id="logoutBtn">🚪 Đăng xuất</a>`;
 
       const logoutBtn = document.querySelector('#logoutBtn');
       if (logoutBtn) logoutBtn.addEventListener('click', (e)=>{ e.preventDefault(); logout(); });
@@ -180,38 +299,38 @@
       const box = document.getElementById('dropdownBox');
       const willShow = box.style.display !== 'block';
       box.style.display = willShow ? 'block' : 'none';
-      if(willShow){
-        const uid = window.currentUid || localStorage.getItem('uid') || localStorage.getItem('userId') || 'demo_uid';
+      if(willShow && auth.currentUser){
         box.innerHTML = `<img src="https://i.postimg.cc/pV12TyXH/Screenshot-20250822-142636-Gallery.png" alt="avatar" /><h3>...</h3>`;
-        loadUserInfo(uid);
+        loadUserInfo(auth.currentUser);
       }
     }
 
     function logout(){
-      localStorage.removeItem('uid'); 
-      localStorage.removeItem('userId'); 
-      localStorage.removeItem('username'); 
-      localStorage.removeItem('name');
-      document.getElementById('dropdownBox').style.display = 'none';
+      signOut(auth).then(()=>{
+        localStorage.clear();
+        document.getElementById('dropdownBox').style.display = 'none';
+        location.reload();
+      });
     }
 
+    // Expose nếu cần dùng ở ngoài
     window.toggleDropdown = toggleDropdown;
-    window.loadUserInfo = loadUserInfo;
 
+    // Khi đăng nhập xong
     onAuthStateChanged(auth, (user)=>{ 
       if(user){ 
         window.currentUid = user.uid; 
         localStorage.setItem('uid', user.uid);
-      } else { 
-        const savedUid = localStorage.getItem('uid') || localStorage.getItem('userId'); 
-        if(savedUid){ window.currentUid = savedUid; } 
+        loadDashboard();
+        loadTopBuyers();
+        loadTopDeposits();
       } 
     });
 
+    // Gán click cho icon người dùng
     document.addEventListener('DOMContentLoaded', ()=>{
-      document.getElementById('accountIcon').addEventListener('click', toggleDropdown);
-      loadDashboard();
-      loadTopBuyers();
+      const acc = document.getElementById('accountIcon');
+      if (acc) acc.addEventListener('click', toggleDropdown);
     });
   </script>
 </body>
