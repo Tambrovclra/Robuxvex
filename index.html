@@ -7,7 +7,8 @@
   <style>
     body { margin:0; font-family:'Poppins',sans-serif; background:#f4f6fa; color:#333; }
     .navbar { position:fixed; top:0; left:0; right:0; height:60px; background:#fff; display:flex; align-items:center; justify-content:space-between; padding:0 20px; box-shadow:0 2px 10px rgba(0,0,0,0.1); z-index:1000; }
-    .icon-btn { width:38px;height:38px;border-radius:50%;background:#eee; display:flex;align-items:center;justify-content:center;cursor:pointer; }
+    .icon-btn { width:38px;height:38px;
+:50%;background:#eee; display:flex;align-items:center;justify-content:center;cursor:pointer; }
     .icon-btn svg { width:20px;height:20px;fill:#333; }
 
     /* Dropdown tài khoản */
@@ -22,7 +23,92 @@
     #dropdownBox a { display:block;padding:10px 14px;color:#333;text-decoration:none;border-radius:8px;margin-top:5px;text-align:center; }
     #dropdownBox a:hover { background:#f4f6fa; }
     #dropdownBox .logout { color:#e74c3c;font-weight:600; }
+    /* LED viền đỏ-cam cho số tiền & robux */
+.led-box {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 12px;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(90deg, #ff0000, #ff8800);
+  box-shadow: 0 0 12px rgba(255,0,0,0.8),
+              0 0 20px rgba(255,136,0,0.9);
+  animation: glowPulse 1.5s infinite alternate;
+}
 
+/* LED xanh dương-xanh lá cho tên user */
+.led-name {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 600;
+  background: linear-gradient(90deg, #00aaff, #00ff66);
+  box-shadow: 0 0 10px rgba(0,170,255,0.8),
+              0 0 18px rgba(0,255,100,0.9);
+  animation: namePulse 2s infinite alternate;
+}
+
+/* Hiệu ứng nhấp nháy nhẹ */
+@keyframes glowPulse {
+  from { box-shadow: 0 0 10px rgba(255,0,0,0.7), 0 0 20px rgba(255,136,0,0.8); }
+  to   { box-shadow: 0 0 18px rgba(255,0,0,1),   0 0 30px rgba(255,136,0,1); }
+}
+
+@keyframes namePulse {
+  from { box-shadow: 0 0 8px rgba(0,170,255,0.7), 0 0 14px rgba(0,255,100,0.8); }
+  to   { box-shadow: 0 0 16px rgba(0,170,255,1),  0 0 26px rgba(0,255,100,1); }
+}
+.top-section {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px;
+  margin: 25px 0;
+  box-shadow: 0 0 20px rgba(0, 200, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* viền ngoài phát sáng nhẹ */
+.top-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  padding: 2px; /* độ dày viền */
+  background: linear-gradient(135deg, #00aaff, #00ff88, #ff6600);
+  -webkit-mask: 
+     linear-gradient(#fff 0 0) content-box, 
+     linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: borderGlow 3s linear infinite;
+}
+
+@keyframes borderGlow {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
+}
+    .section-title {
+  font-size: 20px;
+  font-weight: 700;
+  text-align: center;
+  padding: 10px 18px;
+  margin: 35px auto 15px;
+  color: #fff;
+  display: inline-block;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #0066ff, #00ff99);
+  box-shadow: 0 0 10px rgba(0,255,150,0.7), 0 0 20px rgba(0,120,255,0.9);
+  text-shadow: 0 0 5px #fff, 0 0 12px rgba(0,200,255,0.8);
+  animation: softPulse 2s infinite alternate;
+}
+
+/* hiệu ứng nhấp nháy nhẹ */
+@keyframes softPulse {
+  from { box-shadow: 0 0 8px rgba(0,255,150,0.6), 0 0 18px rgba(0,120,255,0.7); }
+  to   { box-shadow: 0 0 14px rgba(0,255,150,0.8), 0 0 28px rgba(0,120,255,0.9); }
+}
     /* Main */
     .container { padding:80px 20px 40px; max-width:1200px; margin:auto; }
     .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:20px; }
@@ -96,22 +182,28 @@
       <div class="card available"><h3>Robux có sẵn</h3><p id="robuxAvailable">0</p></div>
     </div>
 
-    <h2>Top mua Robux</h2>
-    <div class="table-wrapper">
-      <table id="ordersTable">
-        <thead><tr><th>Tài khoản</th><th>Tổng Robux</th><th>Xếp hạng</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <h2>Top nạp tiền</h2>
-    <div class="table-wrapper">
-      <table id="depositsTable">
-        <thead><tr><th>Tài khoản</th><th>Số tiền nạp</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
+   <div class="top-section">
+  <div class="section-title">🌟 TOP MUA ROBUX 🌟</div>
+  <div class="table-wrapper">
+    <table id="ordersTable">    <thead><tr><th>Tài khoản</th><th>Tổng Robux</th><th>Thời gian</th></tr></thead>
+        <tbody></tbody></table>
   </div>
+</div>
+ 
+ <div class="top-section">
+  <div class="section-title">💸 TOP NẠP TIỀN 💸</div>
+  <div class="table-wrapper">
+    <table id="depositsTable">        <thead><tr><th>Tài khoản</th><th>Số tiền nạp</th></tr></thead>
+        <tbody></tbody></table>
+  </div>
+</div>
+ 
+ 
+
+
+
+
+
 
   <!-- SIDEBAR -->
   <div id="sidebar">
@@ -221,45 +313,83 @@
     }
 
     async function loadTopBuyers(){
-      const q = query(collection(db, "orders"));
-      const snapshot = await getDocs(q);
-      const totals = {};
-      snapshot.forEach(docSnap=>{
-        const data = docSnap.data();
-        const uid = data.uid;
-        const amount = Number(data.robuxAmount || 0);
-        if (!totals[uid]) totals[uid] = 0;
-        totals[uid] += amount;
-      });
+  const q = query(collection(db, "orders"));
+  const snapshot = await getDocs(q);
+  const userData = {}; 
 
-      const userNames = {};
-      await Promise.all(Object.keys(totals).map(async (uid)=>{
-        userNames[uid] = await getUserName(uid);
-      }));
-
-      const sorted = Object.entries(totals).sort((a,b)=>b[1]-a[1]).slice(0,4);
-      const ordersBody = document.querySelector("#ordersTable tbody");
-      ordersBody.innerHTML = "";
-      sorted.forEach(([uid,total],index)=>{
-        const name = userNames[uid] || "Người dùng";
-        ordersBody.insertAdjacentHTML("beforeend", `<tr><td>${name}</td><td class="robux">${total} R$</td><td>#${index+1}</td></tr>`);
-      });
+  snapshot.forEach(docSnap=>{
+    const data = docSnap.data();
+    const uid = data.uid;
+    const amount = Number(data.robuxAmount || 0);
+    if (!userData[uid]) {
+      userData[uid] = { total: 0, latestDeliveredAt: null };
     }
+    userData[uid].total += amount;
 
-    async function loadTopDeposits(){
-      const q = query(collection(db, "deposits"));
-      const snapshot = await getDocs(q);
-      const depositsBody = document.querySelector("#depositsTable tbody");
-      depositsBody.innerHTML = "";
-
-      for (const docSnap of snapshot.docs){
-        const data = docSnap.data();
-        const uid = data.uid;
-        const amount = Number(data.amount || 0).toLocaleString('vi-VN');
-        const name = await getUserName(uid);
-        depositsBody.insertAdjacentHTML("beforeend", `<tr><td>${name}</td><td class="money">${amount}đ</td></tr>`);
+    // Lấy thời gian từ deliveredAT (đúng với Firestore)
+    if (data.deliveredAT) {
+      const deliveredDate = data.deliveredAT.toDate ? data.deliveredAT.toDate() : new Date(data.deliveredAT);
+      if (!userData[uid].latestDeliveredAt || deliveredDate > userData[uid].latestDeliveredAt) {
+        userData[uid].latestDeliveredAt = deliveredDate;
       }
     }
+  });
+
+  const userNames = {};
+  await Promise.all(Object.keys(userData).map(async (uid)=>{
+    userNames[uid] = await getUserName(uid);
+  }));
+
+  const sorted = Object.entries(userData).sort((a,b)=>b[1].total - a[1].total).slice(0,4);
+  const ordersBody = document.querySelector("#ordersTable tbody");
+  ordersBody.innerHTML = "";
+  sorted.forEach(([uid, data])=>{
+    const name = userNames[uid] || "Người dùng";
+    const timeStr = data.latestDeliveredAt ? data.latestDeliveredAt.toLocaleString("vi-VN") : "Chưa có";
+    ordersBody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td><span class="led-name">${name}</span></td>
+        <td><span class="led-box">${data.total} R$</span></td>
+        <td>${timeStr}</td>
+      </tr>
+    `);
+  });
+}
+
+    async function loadTopDeposits(){
+  const q = query(collection(db, "napthe")); // ✅ đúng tên collection
+  const snapshot = await getDocs(q);
+
+  const totals = {};
+  snapshot.forEach(docSnap=>{
+    const data = docSnap.data();
+    const uid = data.uid;
+    const amount = Number(data.amount || 0); // ✅ đúng tên field
+    if (!totals[uid]) totals[uid] = 0;
+    totals[uid] += amount;
+  });
+
+  // lấy tên user
+  const userNames = {};
+  await Promise.all(Object.keys(totals).map(async uid=>{
+    userNames[uid] = await getUserName(uid);
+  }));
+
+  // sắp xếp top 5
+  const sorted = Object.entries(totals).sort((a,b)=>b[1]-a[1]).slice(0,5);
+
+  // render ra bảng
+  const depositsBody = document.querySelector("#depositsTable tbody");
+  depositsBody.innerHTML = "";
+  sorted.forEach(([uid, total])=>{
+    depositsBody.insertAdjacentHTML("beforeend", `
+  <tr>
+    <td><span class="led-name">${userNames[uid] || uid}</span></td>
+    <td><span class="led-box">${total.toLocaleString('vi-VN')}đ</span></td>
+  </tr>
+`);
+  });
+}
 
     async function loadUserInfo(user){
       const box = document.getElementById('dropdownBox');
