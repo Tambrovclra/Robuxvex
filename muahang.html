@@ -1,4 +1,4 @@
-ai<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
@@ -128,160 +128,207 @@ ai<!DOCTYPE html>
   </div>
 
   <!-- Firebase + Firestore + chức năng -->
-    <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  const firebaseConfig = { /* giữ nguyên */ };
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+    const firebaseConfig = {
+      apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
+      authDomain: "robuxvex.firebaseapp.com",
+      projectId: "robuxvex",
+      storageBucket: "robuxvex.firebasestorage.app",
+      messagingSenderId: "291500837886",
+      appId: "1:291500837886:web:08ae60ca6454c209328eaf",
+      measurementId: "G-LWRKTMPXEN"
+    };
 
-  const qtyInput = document.getElementById("qty");
-  const totalEl = document.getElementById("total");
-  const buyBtn = document.getElementById("buyBtn");
-  const usernameInput = document.getElementById("username");
-  const typeSelect = document.getElementById("type");
-  const gamepassBox = document.getElementById("gamepassBox");
-  const warningBox = document.getElementById("warningBox");
-  const historyTableBody = document.getElementById('historyTable').querySelector('tbody');
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  const PRICE_PER_ROBUX = 10000 / 60;
-  let availablePassPrices = [];
+    const qtyInput = document.getElementById("qty");
+    const totalEl = document.getElementById("total");
+    const buyBtn = document.getElementById("buyBtn");
+    const usernameInput = document.getElementById("username");
+    const typeSelect = document.getElementById("type");
+    const gamepassBox = document.getElementById("gamepassBox");
+    const warningBox = document.getElementById("warningBox");
+    const historyTableBody = document.getElementById("historyTable").querySelector("tbody");
 
-  function updateForm() {
-    if (typeSelect.value === "giftcard") {
-      qtyInput.value = 400;
-      qtyInput.disabled = true;
-      gamepassBox.innerHTML = "";
-      availablePassPrices = [];
-    } else {
-      qtyInput.disabled = false;
+    const PRICE_PER_ROBUX = 10000 / 60;
+    let availablePassPrices = [];
+
+    function updateForm() {
+      if (typeSelect.value === "giftcard") {
+        qtyInput.value = 400;
+        qtyInput.disabled = true;
+        gamepassBox.innerHTML = "";
+        availablePassPrices = [];
+      } else {
+        qtyInput.disabled = false;
+      }
+      updateTotal();
     }
-    updateTotal();
-  }
 
-  function updateTotal() {
-    const qty = parseInt(qtyInput.value) || 0;
-    const price = Math.round(qty * PRICE_PER_ROBUX);
-    totalEl.innerText = price.toLocaleString("vi-VN") + " ₫";
-    buyBtn.disabled = !(usernameInput.value.trim().length >= 3 && qty > 0);
+    function updateTotal() {
+      const qty = parseInt(qtyInput.value) || 0;
+      const price = Math.round(qty * PRICE_PER_ROBUX);
+      totalEl.innerText = price.toLocaleString("vi-VN") + " ₫";
+      buyBtn.disabled = !(usernameInput.value.trim().length >= 3 && qty > 0);
 
-    if (typeSelect.value === "gamepass" && qty > 0) {
-      if (!availablePassPrices.includes(qty)) {
-        warningBox.innerText = "⚠️ Bạn chưa tạo gamepass đúng mệnh giá này.";
-        buyBtn.disabled = true;
+      // Kiểm tra gamepass hợp lệ: nếu là gamepass và không tồn tại giá tương ứng => disable mua
+      if (typeSelect.value === "gamepass" && qty > 0) {
+        if (!availablePassPrices.includes(qty)) {
+          warningBox.innerText = "⚠️ Bạn chưa tạo gamepass phù hợp với số Robux này.";
+          buyBtn.disabled = true;
+        } else {
+          warningBox.innerText = "";
+        }
       } else {
         warningBox.innerText = "";
       }
-    } else {
-      warningBox.innerText = "";
     }
-  }
 
-  async function findGamepasses(username) {
-    if (typeSelect.value !== "gamepass") return;
-    gamepassBox.innerHTML = "";
-    availablePassPrices = [];
+    async function handleBuy(username, robux, priceVND) {
+      const userRef = doc(db, "users", username);
+      const snap = await getDoc(userRef);
 
-    try {
-      const res = await fetch(`https://api.roblox.com/users/get-by-username?username=${username}`);
-      const data = await res.json();
-      if (!data.Id) return;
-      const userId = data.Id;
+      if (!snap.exists()) {
+        alert("❌ Tài khoản chưa tồn tại trong hệ thống!");
+        return;
+      }
 
-      const resGames = await fetch(`https://games.roblox.com/v2/users/${userId}/games?limit=50`);
-      const gamesData = await resGames.json();
-      if (!gamesData.data?.length) return;
+      const balance = snap.data().balance || 0;
+      if (balance < priceVND) {
+        alert("❌ Số dư không đủ! Số dư hiện tại: " + balance.toLocaleString("vi-VN") + "₫");
+        return;
+      }
 
-      for (let game of gamesData.data) {
-        const lp = await fetch(`https://games.roblox.com/v1/games/${game.id}/game-passes?limit=100`);
-        const pd = await lp.json();
-        if (pd.data?.length) {
-          for (let gp of pd.data) {
-            const info = await fetch(`https://apis.roblox.com/game-passes/v1/game-passes/${gp.id}/product-info`);
-            const idata = await info.json();
-            const price = Number(idata.PriceInRobux);
-            if (!isNaN(price) && price > 0) {
-              availablePassPrices.push(price);
-              const thumb = await fetch(`https://thumbnails.roblox.com/v1/assets?assetIds=${gp.id}&size=150x150&format=Png`);
-              const td = await thumb.json();
-              const img = td.data?.[0]?.imageUrl || "";
+      await updateDoc(userRef, { balance: balance - priceVND });
+
+      await addDoc(collection(db, "orders"), {
+        username,
+        robux,
+        robuxAfterTax: Math.floor(robux * 0.7),
+        priceVND,
+        status: "chờ duyệt",
+        time: Date.now()
+      });
+
+      // thêm vào bảng UI ngay
+      addHistoryRow(username, robux, Math.floor(robux * 0.7), priceVND, "chờ duyệt", Date.now());
+      alert(`✅ Mua thành công ${robux} R$ cho @${username}. Số dư còn lại: ${(balance - priceVND).toLocaleString("vi-VN")}₫`);
+    }
+
+    function addHistoryRow(username, robux, robuxAfter, priceVND, status, timestamp) {
+      const tr = document.createElement("tr");
+      const date = new Date(timestamp);
+      const formatted = date.toLocaleString("vi-VN");
+      const statusClass = status === "chờ duyệt" ? "pending" : (status === "thành công" ? "success" : "failed");
+      tr.innerHTML = `
+        <td>${username}</td>
+        <td>${robux} R$</td>
+        <td>${robuxAfter} R$</td>
+        <td>${priceVND.toLocaleString("vi-VN")}₫</td>
+        <td><span class="status ${statusClass}">${status}</span></td>
+        <td>${formatted}</td>
+      `;
+      historyTableBody.prepend(tr);
+    }
+
+    function attachGamepassBuy(div, username, robux) {
+      div.addEventListener("click", () => {
+        const priceVND = Math.round(robux * PRICE_PER_ROBUX);
+        handleBuy(username, robux, priceVND);
+      });
+    }
+
+    // Load gamepass từ Roblox (tự động khi nhập username)
+    async function findGamepasses(username) {
+      if (typeSelect.value !== "gamepass") return;
+      gamepassBox.innerHTML = "";
+      availablePassPrices = [];
+
+      try {
+        const res = await fetch(`https://api.roblox.com/users/get-by-username?username=${username}`);
+        const data = await res.json();
+        if (!data.Id) return;
+        const userId = data.Id;
+
+        const resGames = await fetch(`https://games.roblox.com/v2/users/${userId}/games?limit=3`);
+        const gamesData = await resGames.json();
+        if (!gamesData.data || gamesData.data.length === 0) return;
+
+        for (let game of gamesData.data) {
+          const resPass = await fetch(`https://games.roblox.com/v1/games/${game.id}/game-passes?limit=5`);
+          const passData = await resPass.json();
+
+          if (passData.data && passData.data.length > 0) {
+            for (let gp of passData.data) {
+              const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/assets?assetIds=${gp.id}&size=150x150&format=Png`);
+              const thumbData = await thumbRes.json();
+              const imgUrl = thumbData.data?.[0]?.imageUrl || "";
+
+              const infoRes = await fetch(`https://economy.roblox.com/v1/game-pass/${gp.id}/product-info`);
+              const infoData = await infoRes.json();
+              const price = infoData.PriceInRobux || "?";
+
+              if (typeof price === "number") availablePassPrices.push(price);
+
               const div = document.createElement("div");
               div.className = "gamepass-item";
-              div.innerHTML = `<img src="${img}" alt="${gp.name}"><h4>${gp.name}</h4><p>${price} R$ (Nhận ${Math.floor(price*0.7)} R$)</p>`;
-              div.addEventListener("click", () => {
-                qtyInput.value = price;
-                updateTotal();
-              });
+              div.innerHTML = `
+                <img src="${imgUrl}" alt="${gp.name}">
+                <h4>${gp.name}</h4>
+                <p>${price} R$ (Nhận ${Math.floor(price*0.7)} R$)</p>
+              `;
+              if (typeof price === "number") {
+                attachGamepassBuy(div, username, price);
+              }
               gamepassBox.appendChild(div);
             }
           }
         }
+        updateTotal();
+      } catch (err) {
+        console.error(err);
       }
-      updateTotal();
-    } catch (e) {
-      console.error(e);
     }
-  }
 
-  function addHistoryRow(u,q,qa,p,s,t) {
-    const tr = document.createElement("tr");
-    const dt = new Date(t).toLocaleString("vi-VN");
-    const sc = s === "chờ duyệt" ? "pending" : s === "thành công" ? "success" : "failed";
-    tr.innerHTML = `<td>${u}</td><td>${q} R$</td><td>${qa} R$</td><td>${p.toLocaleString("vi-VN")} ₫</td><td><span class="status ${sc}">${s}</span></td><td>${dt}</td>`;
-    historyTableBody.prepend(tr);
-  }
-
-  function loadHistory() {
-    const q = query(collection(db, "orders"), orderBy("time","desc"));
-    onSnapshot(q, snap => {
-      historyTableBody.innerHTML = "";
-      snap.forEach(doc => {
-        const d = doc.data();
-        addHistoryRow(d.username, d.robux, d.robuxAfterTax, d.priceVND, d.status, d.time);
+    // Load history realtime từ Firestore
+    function loadHistory() {
+      const q = query(collection(db, "orders"), orderBy("time", "desc"));
+      onSnapshot(q, (snapshot) => {
+        historyTableBody.innerHTML = "";
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          addHistoryRow(data.username, data.robux, data.robuxAfterTax, data.priceVND, data.status, data.time);
+        });
       });
+    }
+
+    // listeners
+    typeSelect.addEventListener("change", updateForm);
+    qtyInput.addEventListener("input", updateTotal);
+    usernameInput.addEventListener("input", () => {
+      updateTotal();
+      if (usernameInput.value.trim().length >= 3) {
+        findGamepasses(usernameInput.value.trim());
+      } else {
+        gamepassBox.innerHTML = "";
+        availablePassPrices = [];
+      }
     });
-  }
 
-  typeSelect.addEventListener("change", updateForm);
-  qtyInput.addEventListener("input", updateTotal);
-  usernameInput.addEventListener("input", () => {
-    updateTotal();
-    if (usernameInput.value.trim().length >= 3) {
-      findGamepasses(usernameInput.value.trim());
-    } else {
-      gamepassBox.innerHTML = "";
-      availablePassPrices = [];
-    }
-  });
+    buyBtn.addEventListener("click", () => {
+      const username = usernameInput.value.trim();
+      const robux = parseInt(qtyInput.value);
+      const priceVND = Math.round(robux * PRICE_PER_ROBUX);
+      handleBuy(username, robux, priceVND);
+    });
 
-  buyBtn.addEventListener("click", () => {
-    const u = usernameInput.value.trim();
-    const q = parseInt(qtyInput.value);
-    const pv = Math.round(q * PRICE_PER_ROBUX);
-    if (typeSelect.value === "gamepass" && !availablePassPrices.includes(q)) {
-      alert("⚠️ Bạn chưa tạo gamepass đúng mệnh giá này!");
-      return;
-    }
-    handleBuy(u,q,pv);
-  });
-
-  async function handleBuy(u,q,pv) {
-    const ref = doc(db, "users", u);
-    const s = await getDoc(ref);
-    if (!s.exists()) return alert("❌ Tài khoản chưa tồn tại!");
-    const bal = s.data().balance || 0;
-    if (bal < pv) return alert("❌ Số dư không đủ! Hiện: " + bal.toLocaleString("vi-VN") + "₫");
-    await updateDoc(ref,{balance: bal-pv});
-    await addDoc(collection(db,"orders"),{username:u,robux:q,robuxAfterTax:Math.floor(q*0.7),priceVND:pv,status:"chờ duyệt",time:Date.now()});
-    addHistoryRow(u,q,Math.floor(q*0.7),pv,"chờ duyệt",Date.now());
-    alert(`✅ Mua thành công ${q} R$ cho @${u}. Số dư còn lại: ${(bal-pv).toLocaleString("vi-VN")}₫`);
-  }
-
-  updateForm();
-  loadHistory();
-</script>
-            
-</script>
+    // khởi tạo
+    updateForm();
+    loadHistory();
+  </script>
 </body>
 </html>
