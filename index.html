@@ -35,7 +35,27 @@
               0 0 20px rgba(255,136,0,0.9);
   animation: glowPulse 1.5s infinite alternate;
 }
+#ordersTable, #depositsTable {
+  border-collapse: collapse;
+  width: 100%;
+}
 
+#ordersTable th, #ordersTable td,
+#depositsTable th, #depositsTable td {
+  text-align: center;
+  padding: 12px;
+  border: 1px solid #ddd; /* đường kẻ ngăn cách */
+}
+
+#ordersTable th, #depositsTable th {
+  background: #2c3e50;
+  color: #fff;
+}
+
+#ordersTable tr:nth-child(even) td,
+#depositsTable tr:nth-child(even) td {
+  background: #f9f9f9;
+}
 /* LED xanh dương-xanh lá cho tên user */
 .led-name {
   display: inline-block;
