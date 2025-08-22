@@ -317,7 +317,7 @@
       document.getElementById("pendingOrders").innerText = pendingOrders;
       document.getElementById("robuxBought").innerText = robuxBought;
 
-      let totalRobuxAvailable = 0;
+      let totalRobuxAvailable = 2000;
       snapshot.forEach(docSnap=>{
         const data = docSnap.data();
         if (data.status === "done") totalRobuxAvailable += Number(data.robuxAmount || 0);
