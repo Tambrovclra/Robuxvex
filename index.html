@@ -48,7 +48,10 @@
               0 0 18px rgba(0,255,100,0.9);
   animation: namePulse 2s infinite alternate;
 }
-
+#ordersTable th, #ordersTable td,
+#depositsTable th, #depositsTable td {
+  text-align: center;
+}
 /* Hiệu ứng nhấp nháy nhẹ */
 @keyframes glowPulse {
   from { box-shadow: 0 0 10px rgba(255,0,0,0.7), 0 0 20px rgba(255,136,0,0.8); }
@@ -68,7 +71,7 @@
   position: relative;
   overflow: hidden;
 }
-
+  
 /* viền ngoài phát sáng nhẹ */
 .top-section::before {
   content: "";
