@@ -4,6 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Menu Hamburger</title>
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
     body {
       margin: 0;
@@ -12,40 +16,44 @@
 
     /* Nút menu */
     .menu-btn {
-      font-size: 24px;
+      font-size: 26px;
       cursor: pointer;
       padding: 15px;
       position: relative;
-      z-index: 1100; /* cao hơn menu */
+      z-index: 1100;
+      color: #C0C0C0; /* icon màu đen */
+    }
+    .menu-btn.hidden {
+      display: none;
     }
 
     /* Sidebar */
     .sidebar {
       height: 100%;
-      width: 260px;             /* chiều rộng menu */
+      width: 260px;
       position: fixed;
       top: 0;
-      left: -260px;             /* ẩn ra ngoài */
+      left: -260px;
       background-color: #0a2a5c;
-      transition: left 0.5s ease; /* tốc độ mượt */
+      transition: left 0.4s ease;
       padding-top: 20px;
       color: white;
       z-index: 1000;
     }
-
     .sidebar.open {
-      left: 0; /* trượt ra */
+      left: 0;
     }
 
     .sidebar a {
-      display: block;
+      display: flex;
+      align-items: center;
+      gap: 12px;
       padding: 12px 20px;
       text-decoration: none;
       font-size: 16px;
       color: white;
       transition: background 0.3s;
     }
-
     .sidebar a:hover {
       background: rgba(255, 255, 255, 0.1);
       border-radius: 8px;
@@ -57,27 +65,41 @@
       opacity: 0.8;
       text-transform: uppercase;
     }
+
+    /* Nút đóng trong sidebar */
+    .close-btn {
+      font-size: 22px;
+      cursor: pointer;
+      color: #fff;
+      padding: 10px 20px;
+      display: block;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
 
   <!-- Nút mở menu -->
-  <span class="menu-btn" onclick="toggleMenu()">☰</span>
+  <span class="menu-btn" onclick="toggleMenu()">
+    <i class="fas fa-bars"></i>
+  </span>
 
   <!-- Sidebar -->
   <div id="sidebar" class="sidebar">
-    <h3>CHỨC NĂNG CHÍNH</h3>
-    <a href="index.html">🏠 Trang chủ</a>
-    <a href="muahang.html">💰 Mua robux</a>
-    <a href="muahang.html">📜 Lịch sử mua hàng</a>
+    
+
+    <h3>NẠP ROBUX</h3>
+    <a href="index.html"><i class="fas fa-home"></i> Trang chủ</a>
+    <a href="muahang.html"><i class="fas fa-coins"></i> Mua robux</a>
+    <a href="muahang.html"><i class="fas fa-history"></i> Lịch sử mua hàng</a>
 
     <h3>TÀI KHOẢN & NẠP</h3>
-    <a href="nap.html">➕ Nạp tiền</a>
-    <a href="#">📋 Cộng tác viên (chưa mở)</a>
+    <a href="nap.html"><i class="fas fa-wallet"></i> Nạp tiền</a>
+    <a href="#"><i class="fas fa-user-friends"></i> Cộng tác viên (chưa mở)</a>
 
     <h3>HỖ TRỢ KHÁCH HÀNG</h3>
-    <a href="zalo.me/0907486634">📱 Zalo</a>
-    <a href="mailto:vochuoi86@gmail.com">✉️ Gửi mail</a>
+    <a href="zalo.me/0907486634"><i class="fab fa-facebook-messenger"></i> Zalo</a>
+    <a href="mailto:vochuoi86@gmail.com"><i class="fas fa-envelope"></i> Gửi mail</a>
   </div>
 
   <script>
@@ -86,23 +108,24 @@
 
     function toggleMenu() {
       sidebar.classList.toggle("open");
+      menuBtn.classList.toggle("hidden");
     }
 
-    // Đóng menu khi click ra ngoài
+    // Đóng khi click ra ngoài
     document.addEventListener("click", function(event) {
       if (
-        sidebar.classList.contains("open") && 
-        !sidebar.contains(event.target) && 
+        sidebar.classList.contains("open") &&
+        !sidebar.contains(event.target) &&
         !menuBtn.contains(event.target)
       ) {
         sidebar.classList.remove("open");
+        menuBtn.classList.remove("hidden");
       }
     });
   </script>
 
 </body>
 </html>
-
 
 
 
