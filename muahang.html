@@ -243,55 +243,70 @@
     }
 
     // Load gamepass từ Roblox (tự động khi nhập username)
-    async function findGamepasses(username) {
-      if (typeSelect.value !== "gamepass") return;
-      gamepassBox.innerHTML = "";
-      availablePassPrices = [];
+    // Load gamepass từ Roblox bằng API mới
+async function findGamepasses(username) {
+  if (typeSelect.value !== "gamepass") return;
+  gamepassBox.innerHTML = "";
+  availablePassPrices = [];
 
-      try {
-        const res = await fetch(`https://api.roblox.com/users/get-by-username?username=${username}`);
-        const data = await res.json();
-        if (!data.Id) return;
-        const userId = data.Id;
+  try {
+    // Lấy userId từ username (API mới)
+    const resUser = await fetch("https://users.roblox.com/v1/usernames/users", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ usernames: [username] })
+    });
+    const userData = await resUser.json();
+    if (!userData.data || userData.data.length === 0) {
+      console.warn("Không tìm thấy user");
+      return;
+    }
+    const userId = userData.data[0].id;
 
-        const resGames = await fetch(`https://games.roblox.com/v2/users/${userId}/games?limit=3`);
-        const gamesData = await resGames.json();
-        if (!gamesData.data || gamesData.data.length === 0) return;
+    // Lấy list game của user
+    const resGames = await fetch(`https://games.roblox.com/v2/users/${userId}/games?limit=3`);
+    const gamesData = await resGames.json();
+    if (!gamesData.data || gamesData.data.length === 0) return;
 
-        for (let game of gamesData.data) {
-          const resPass = await fetch(`https://games.roblox.com/v1/games/${game.id}/game-passes?limit=5`);
-          const passData = await resPass.json();
+    for (let game of gamesData.data) {
+      // Lấy gamepasses của từng game
+      const resPass = await fetch(`https://games.roblox.com/v1/games/${game.id}/game-passes?limit=5`);
+      const passData = await resPass.json();
 
-          if (passData.data && passData.data.length > 0) {
-            for (let gp of passData.data) {
-              const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/assets?assetIds=${gp.id}&size=150x150&format=Png`);
-              const thumbData = await thumbRes.json();
-              const imgUrl = thumbData.data?.[0]?.imageUrl || "";
+      if (passData.data && passData.data.length > 0) {
+        for (let gp of passData.data) {
+          // Lấy ảnh thumb
+          const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/assets?assetIds=${gp.id}&size=150x150&format=Png`);
+          const thumbData = await thumbRes.json();
+          const imgUrl = thumbData.data?.[0]?.imageUrl || "";
 
-              const infoRes = await fetch(`https://economy.roblox.com/v1/game-pass/${gp.id}/product-info`);
-              const infoData = await infoRes.json();
-              const price = infoData.PriceInRobux || "?";
+          // Lấy giá gamepass
+          const infoRes = await fetch(`https://economy.roblox.com/v1/game-pass/${gp.id}/product-info`);
+          const infoData = await infoRes.json();
+          const price = infoData.PriceInRobux || "?";
 
-              if (typeof price === "number") availablePassPrices.push(price);
+          if (typeof price === "number") availablePassPrices.push(price);
 
-              const div = document.createElement("div");
-              div.className = "gamepass-item";
-              div.innerHTML = `
-                <img src="${imgUrl}" alt="${gp.name}">
-                <h4>${gp.name}</h4>
-                <p>${price} R$ (Nhận ${Math.floor(price*0.7)} R$)</p>
-              `;
-              if (typeof price === "number") {
-                attachGamepassBuy(div, username, price);
-              }
-              gamepassBox.appendChild(div);
-            }
+          // Render ra web
+          const div = document.createElement("div");
+          div.className = "gamepass-item";
+          div.innerHTML = `
+            <img src="${imgUrl}" alt="${gp.name}">
+            <h4>${gp.name}</h4>
+            <p>${price} R$ (Nhận ${Math.floor(price*0.7)} R$)</p>
+          `;
+          if (typeof price === "number") {
+            attachGamepassBuy(div, username, price);
           }
+          gamepassBox.appendChild(div);
         }
-        updateTotal();
-      } catch (err) {
-        console.error(err);
       }
+    }
+    updateTotal();
+  } catch (err) {
+    console.error("Lỗi khi load gamepass:", err);
+  }
+}
     }
 
     // Load history realtime từ Firestore
