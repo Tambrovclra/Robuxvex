@@ -450,6 +450,33 @@
       if (logoutBtn) logoutBtn.addEventListener('click', (e)=>{ e.preventDefault(); logout(); });
     }
 
+// Khi trạng thái auth thay đổi
+onAuthStateChanged(auth, (user)=>{ 
+  if(user){ 
+    window.currentUid = user.uid; 
+    localStorage.setItem('uid', user.uid);
+    loadDashboard();
+    loadUserInfo(user);
+  } else {
+    // Nếu chưa đăng nhập thì hiện nút đăng nhập/đăng ký
+    const box = document.getElementById('dropdownBox');
+    box.innerHTML = `
+      <h3>Chưa đăng nhập</h3>
+      <a href="login.html">🔑 Đăng nhập</a>
+      <a href="register.html">📝 Đăng ký</a>
+    `;
+  }
+});
+
+// Các top luôn hiển thị công khai
+document.addEventListener('DOMContentLoaded', ()=>{
+  loadTopBuyers();
+  loadTopDeposits();
+
+  const acc = document.getElementById('accountIcon');
+  if (acc) acc.addEventListener('click', toggleDropdown);
+});
+    
     function toggleDropdown(){
       const box = document.getElementById('dropdownBox');
       const willShow = box.style.display !== 'block';
