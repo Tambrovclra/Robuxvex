@@ -2,6 +2,117 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Hamburger</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Nút menu */
+    .menu-btn {
+      font-size: 24px;
+      cursor: pointer;
+      padding: 15px;
+      position: relative;
+      z-index: 1100; /* cao hơn menu */
+    }
+
+    /* Sidebar */
+    .sidebar {
+      height: 100%;
+      width: 260px;             /* chiều rộng menu */
+      position: fixed;
+      top: 0;
+      left: -260px;             /* ẩn ra ngoài */
+      background-color: #0a2a5c;
+      transition: left 0.5s ease; /* tốc độ mượt */
+      padding-top: 20px;
+      color: white;
+      z-index: 1000;
+    }
+
+    .sidebar.open {
+      left: 0; /* trượt ra */
+    }
+
+    .sidebar a {
+      display: block;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-size: 16px;
+      color: white;
+      transition: background 0.3s;
+    }
+
+    .sidebar a:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+    }
+
+    .sidebar h3 {
+      margin: 20px 0 10px 20px;
+      font-size: 14px;
+      opacity: 0.8;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Nút mở menu -->
+  <span class="menu-btn" onclick="toggleMenu()">☰</span>
+
+  <!-- Sidebar -->
+  <div id="sidebar" class="sidebar">
+    <h3>CHỨC NĂNG CHÍNH</h3>
+    <a href="index.html">🏠 Trang chủ</a>
+    <a href="muahang.html">💰 Mua robux</a>
+    <a href="muahang.html">📜 Lịch sử mua hàng</a>
+
+    <h3>TÀI KHOẢN & NẠP</h3>
+    <a href="nap.html">➕ Nạp tiền</a>
+    <a href="#">📋 Cộng tác viên (chưa mở)</a>
+
+    <h3>HỖ TRỢ KHÁCH HÀNG</h3>
+    <a href="zalo.me/0907486634">📱 Zalo</a>
+    <a href="mailto:vochuoi86@gmail.com">✉️ Gửi mail</a>
+  </div>
+
+  <script>
+    const sidebar = document.getElementById("sidebar");
+    const menuBtn = document.querySelector(".menu-btn");
+
+    function toggleMenu() {
+      sidebar.classList.toggle("open");
+    }
+
+    // Đóng menu khi click ra ngoài
+    document.addEventListener("click", function(event) {
+      if (
+        sidebar.classList.contains("open") && 
+        !sidebar.contains(event.target) && 
+        !menuBtn.contains(event.target)
+      ) {
+        sidebar.classList.remove("open");
+      }
+    });
+  </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
   <title>Nạp thẻ cào | RobuxVEX</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
