@@ -2,273 +2,333 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mua Robux | RobuxVEX</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mua nhanh Robux</title>
   <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-image: url('https://i.postimg.cc/tRtmYJHd/Screenshot-20250729-192919-Gallery.png');
-      background-size: cover;
-      background-position: center;
+    * { box-sizing: border-box; }
+    body { font-family: "Segoe UI", sans-serif; background: #f0f2f8; margin: 0; color: #333; }
+    header { background: white; padding: 16px 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); position: sticky; top: 0; }
+    header h1 { margin: 0; font-size: 20px; color: #4f46e5; font-weight: 600; }
+    .container { max-width: 900px; margin: 30px auto; padding: 0 15px; }
+
+    .card { background: white; border-radius: 14px; padding: 22px; margin-bottom: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
+
+    label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: #555; }
+    input, select { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 18px; font-size: 15px; }
+
+    .summary { display: flex; justify-content: space-between; background: #f9fafb; border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; font-weight: bold; font-size: 15px; }
+    .summary span:last-child { font-size: 20px; font-weight: 700; color: #e11d48; }
+
+    .btn { background: #4f46e5; color: white; border: none; border-radius: 10px; padding: 12px 18px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.2s; }
+    .btn:hover { background: #4338ca; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .warning { margin-top: 10px; font-size: 14px; color: #d97706; font-weight: 600; }
+    .gamepass-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 15px; margin-bottom: 15px; }
+    .gamepass-item { border: 1px solid #ddd; border-radius: 12px; padding: 12px; background: #fafafa; cursor: pointer; transition: 0.2s; text-align: center; }
+    .gamepass-item:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); background: #fff; }
+    .gamepass-item img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px; }
+    .gamepass-item h4 { margin: 5px 0 2px; font-size: 14px; font-weight: 600; color: #333; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .gamepass-item p { margin: 0; font-size: 13px; color: #4f46e5; font-weight: bold; }
+
+    /* Guide card (5 bước) */
+    .guide-card { padding: 18px; border-radius: 12px; background: linear-gradient(180deg,#fff,#fbfbfd); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .guide-card h3 { margin: 0 0 10px 0; font-size: 16px; color: #0f172a; display:flex; gap:8px; align-items:center; }
+    .guide-card ol { margin: 0 0 8px 18px; color:#374151; }
+    .guide-card ol li { margin-bottom: 8px; font-size: 14px; line-height:1.45; }
+    .guide-note { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px; border-radius: 8px; color:#92400e; font-weight:600; margin-top:8px; }
+
+    /* History (match image) */
+    .history-card { background: #fff; border-radius: 12px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); overflow: hidden; }
+    .history-title { display:inline-flex; align-items:center; gap:8px; font-weight:600; color:#111827; margin-bottom:12px; }
+    .history-wrapper { background: #fff; border-radius: 8px; overflow-x:auto; padding: 6px 0; }
+    .history-wrapper table { width:100%; border-collapse: collapse; font-size:14px; }
+    .history-wrapper thead { background: #000; color: #fff; }
+    .history-wrapper th { padding: 10px; font-weight:600; }
+    .history-wrapper thead th:first-child { border-top-left-radius: 8px; }
+    .history-wrapper thead th:last-child { border-top-right-radius: 8px; }
+    .history-wrapper td { padding: 10px; text-align: center; border-bottom: 1px solid #eee; color: #111827; background:#fff; }
+    .status { display:inline-block; min-width:85px; padding:4px 10px; border-radius:20px; font-size:13px; font-weight:700; }
+    .status.pending { background:#fef3c7; color:#92400e; }
+    .status.success { background:#d1fae5; color:#065f46; }
+    .status.failed { background:#fee2e2; color:#991b1b; }
+
+    /* responsive small adjustments */
+    @media (max-width:520px) {
+      .container { padding: 0 12px; }
+      .gamepass-item img { height: 90px; }
+      .summary span:last-child { font-size:18px; }
     }
-    .form-wrapper {
-      max-width: 400px;
-      margin: 50px auto;
-      background: url('https://i.postimg.cc/P5HHYrXz/Pngtree-shining-vast-fantasy-universe-cloud-1445881.png') center/cover;
-      padding: 30px;
-      border-radius: 16px;
-      color: white;
-    }
-    h2 { text-align: center; margin-bottom: 24px; }
-    label { display: block; margin-top: 12px; font-weight: bold; }
-    input, select {
-      width: 100%; padding: 10px; margin-top: 4px;
-      border: none; border-radius: 8px;
-    }
-    button {
-      margin-top: 20px; width: 100%;
-      padding: 12px; background-color: #ff9800;
-      border: none; border-radius: 8px;
-      color: white; font-size: 16px;
-      cursor: pointer;
-    }
-    #loading {
-      text-align: center;
-      display: none;
-      margin-top: 10px;
-      font-style: italic;
-    }
-    #message {
-      text-align: center;
-      margin-top: 15px;
-      font-weight: bold;
-    }
-    .important {
-      margin-top: 10px;
-      font-weight: bold;
-      color: red;
-      text-align: center;
-    }
-    /* Modal */
-    #confirmModal {
-      display: none; position: fixed; top: 0; left: 0;
-      width: 100%; height: 100%; background: rgba(0,0,0,0.7);
-      z-index: 1000; justify-content: center; align-items: center;
-      padding: 20px;
-    }
-    #confirmModal .modal-content {
-      background: white;
-      color: black;
-      padding: 20px; border-radius: 12px;
-      max-width: 500px; width: 100%;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
-      text-align: center;
-    }
-    #confirmModal button {
-      padding: 10px; border: none; border-radius: 8px; cursor: pointer;
-      margin: 10px; font-size: 14px;
-    }
-    #confirmOk { background: #4CAF50; color: white; }
-    #confirmCancel { background: #f44336; color: white; }
   </style>
 </head>
 <body>
-  <div class="form-wrapper">
-    <h2>Mua robux - RobuxVEX</h2>
-    <button id="loginBtn">Vui lòng đăng nhập trước</button>
-    <p id="userInfo"></p>
+  <header>
+    <h1>Mua nhanh Robux</h1>
+  </header>
 
-    <form id="buyForm" style="display:none">
-      <label for="amount">Mệnh giá</label>
-      <select id="amount" name="amount" required>
-        <option value="" disabled selected>---- Chọn mệnh giá ----</option>
-        <option value="10000">10.000đ - 32 robux(120h)</option>
-        <option value="20000">20.000đ - 65 robux(120h)</option>
-        <option value="50000">50.000đ - 165 robux(120h)</option>
-        <option value="100000">100.000đ - 335 robux(120h)</option>
-        <option value="120000">120.000đ - 400 robux(0-5h)</option>
-        <option value="200000">200.000đ - 680 robux(120h)</option>
-        <option value="500000">500.000đ - 1710 robux(120h)</option>
+  <div class="container">
+    <!-- Form -->
+    <div class="card">
+      <label for="type">Chọn loại</label>
+      <select id="type">
+        <option value="gamepass">Gamepass</option>
+        <option value="giftcard">Gift Card</option>
       </select>
 
-      <label for="robloxName">Tên Roblox</label>
-      <input type="text" id="robloxName" placeholder="Nhập tên Roblox của bạn" required />
+      <label for="username">Roblox Username</label>
+      <input type="text" id="username" placeholder="Nhập username...">
 
-      <label for="contact">Thông tin liên lạc (Quan trọng)</label>
-      <input type="text" id="contact" placeholder="VD: Tiktok, Zalo, Email" required />
+      <!-- Danh sách gamepass -->
+      <div id="gamepassBox" class="gamepass-list"></div>
 
-      <div class="important">Chắc chắn bạn đã thêm đúng thông tin liên lạc và thường xuyên kiểm tra nó.</div>
+      <label for="qty">Số lượng (Robux)</label>
+      <input type="number" id="qty" value="60" min="1">
 
-      <div id="loading">Đang gửi...</div>
-      <button type="submit">Mua robux</button>
-      <div id="message"></div>
-    </form>
-    <div style="text-align:center; margin-top:15px;">
-      <a href="naptien.html" style="color: yellow; font-weight:bold; text-decoration: underline;">
-        Không đủ tiền? Bấm vào đây để nạp thêm
-      </a>
+      <div class="summary">
+        <span>Tổng thanh toán</span>
+        <span id="total">0 ₫</span>
+      </div>
+
+      <button class="btn" id="buyBtn">Mua Ngay</button>
+      <div id="warningBox" class="warning"></div>
+    </div>
+
+    <!-- 5 bước hướng dẫn (bổ sung theo yêu cầu) -->
+    <div class="card guide-card" aria-labelledby="guide">
+      <h3 id="guide">📑 CÁCH MUA ROBUX QUA GAMEPASS (5 bước)</h3>
+      <ol>
+        <li>Chọn <strong>Gamepass</strong> hoặc <strong>Gift Card</strong> (Gift Card mặc định 400 R$).</li>
+        <li>Nhập chính xác <strong>username Roblox</strong> của bạn (hoặc tài khoản nhận Robux).</li>
+        <li>Tạo một <strong>Gamepass</strong> trong game của bạn với mức giá bằng số Robux muốn bán (ví dụ 60 R$).</li>
+        <li>Chọn hoặc bấm vào <strong>Gamepass</strong> tương ứng (hoặc nhập số Robux rồi bấm <em>Mua Ngay</em>).</li>
+        <li><strong>LƯU Ý:</strong> Tắt tính năng <em>Regional Pricing</em> (định giá theo khu vực) trước khi tạo Gamepass để giá hiển thị hợp lệ.</li>
+      </ol>
+      <div class="guide-note">Lưu ý: Nếu không có Gamepass có giá đúng số Robux bạn nhập, hệ thống sẽ không cho mua (cảnh báo sẽ hiển thị bên dưới nút).</div>
+    </div>
+
+    <!-- Lịch sử mua (giống ảnh mẫu) -->
+    <div class="card history-card">
+      <div class="history-title">📊 Lịch sử mua hàng</div>
+      <div class="history-wrapper">
+        <table id="historyTable">
+          <thead>
+            <tr>
+              <th>Tài khoản nhận</th>
+              <th>Số Robux</th>
+              <th>Robux thực nhận</th>
+              <th>Thanh toán</th>
+              <th>Trạng thái</th>
+              <th>Ngày mua</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
     </div>
   </div>
 
-  <!-- Modal -->
-  <div id="confirmModal">
-    <div class="modal-content">
-      <h3>Xác nhận mua hàng</h3>
-      <p>1. Robux sẽ về acc từ 2-7 ngày ngay sau khi bạn hoàn thành bước tạo gamepass (đối với các gói 120h).</p>
-      <p>2. Robux sẽ về từ 0-5h ngay sau khi bạn xác nhận mua hàng (đối với special package - 120.000đ).</p>
-      <p>3. Shop sẽ liên hệ cho bạn qua thông tin liên lạc nếu có vấn đề nên hãy để thông tin liên lạc chính xác.</p>
-      <p>4. Nếu kho robux hết, bạn sẽ chuyển sang trạng thái đặt trước và admin sẽ liên lạc hỗ trợ.</p>
-      <p>5. Nếu thấy shop uy tín, hãy quay lại ủng hộ và giúp shop phát triển hơn nhé.</p>
-      <button id="confirmOk">OK, mua ngay💸</button>
-      <button id="confirmCancel">Hủy,sẽ sửa lại💔</button>
-    </div>
-  </div>
+  <!-- Firebase + Firestore + chức năng -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
       authDomain: "robuxvex.firebaseapp.com",
       projectId: "robuxvex",
-      storageBucket: "robuxvex.appspot.com",
+      storageBucket: "robuxvex.firebasestorage.app",
       messagingSenderId: "291500837886",
-      appId: "1:291500837886:web:08ae60ca6454c209328eaf"
+      appId: "1:291500837886:web:08ae60ca6454c209328eaf",
+      measurementId: "G-LWRKTMPXEN"
     };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
 
-    const loginBtn = document.getElementById("loginBtn");
-    const buyForm = document.getElementById("buyForm");
-    const userInfo = document.getElementById("userInfo");
-    const loading = document.getElementById("loading");
-    const messageBox = document.getElementById("message");
-    const modal = document.getElementById("confirmModal");
-    const confirmOk = document.getElementById("confirmOk");
-    const confirmCancel = document.getElementById("confirmCancel");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-    let finalPrice = 0;
-    let finalRobux = 0;
+    const qtyInput = document.getElementById("qty");
+    const totalEl = document.getElementById("total");
+    const buyBtn = document.getElementById("buyBtn");
+    const usernameInput = document.getElementById("username");
+    const typeSelect = document.getElementById("type");
+    const gamepassBox = document.getElementById("gamepassBox");
+    const warningBox = document.getElementById("warningBox");
+    const historyTableBody = document.getElementById("historyTable").querySelector("tbody");
 
-    loginBtn.addEventListener("click", () => {
-      auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
-    });
+    const PRICE_PER_ROBUX = 10000 / 60;
+    let availablePassPrices = [];
 
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        buyForm.style.display = "block";
-        loginBtn.style.display = "none";
-        userInfo.innerText = `Đăng nhập với: ${user.email}`;
+    function updateForm() {
+      if (typeSelect.value === "giftcard") {
+        qtyInput.value = 400;
+        qtyInput.disabled = true;
+        gamepassBox.innerHTML = "";
+        availablePassPrices = [];
       } else {
-        buyForm.style.display = "none";
-        loginBtn.style.display = "block";
-        userInfo.innerText = "";
+        qtyInput.disabled = false;
       }
-    });
+      updateTotal();
+    }
 
-    document.getElementById("amount").addEventListener("change", () => {
-      const val = parseInt(document.getElementById("amount").value);
-      if (isNaN(val)) {
-        finalRobux = 0;
-        finalPrice = 0;
-        return;
-      }
-      if (val === 120000) {
-        finalRobux = 400; // Gói đặc biệt 120k = 400 robux
-      } else {
-        finalRobux = Math.round((val / 10000) * 30);
-      }
-      finalPrice = Math.ceil(val / 1000) * 1000;
-    });
+    function updateTotal() {
+      const qty = parseInt(qtyInput.value) || 0;
+      const price = Math.round(qty * PRICE_PER_ROBUX);
+      totalEl.innerText = price.toLocaleString("vi-VN") + " ₫";
+      buyBtn.disabled = !(usernameInput.value.trim().length >= 3 && qty > 0);
 
-    buyForm.addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const user = auth.currentUser;
-      if (!user) return;
-
-      const robloxName = document.getElementById("robloxName").value.trim();
-      const contact = document.getElementById("contact").value.trim();
-
-      if (!document.getElementById("amount").value) {
-        messageBox.style.color = "red";
-        messageBox.innerText = "⚠️ Vui lòng chọn mệnh giá.";
-        return;
-      }
-
-      const val = parseInt(document.getElementById("amount").value);
-      if (!isNaN(val)) {
-        if (val === 120000) {
-          finalRobux = 400; // Gói đặc biệt 120k
+      // Kiểm tra gamepass hợp lệ: nếu là gamepass và không tồn tại giá tương ứng => disable mua
+      if (typeSelect.value === "gamepass" && qty > 0) {
+        if (!availablePassPrices.includes(qty)) {
+          warningBox.innerText = "⚠️ Bạn chưa tạo gamepass phù hợp với số Robux này.";
+          buyBtn.disabled = true;
         } else {
-          finalRobux = Math.round((val / 10000) * 30);
+          warningBox.innerText = "";
         }
-        finalPrice = Math.ceil(val / 1000) * 1000;
+      } else {
+        warningBox.innerText = "";
       }
+    }
 
-      if (finalPrice <= 0 || finalRobux <= 0) {
-        messageBox.style.color = "red";
-        messageBox.innerText = "⚠️ Vui lòng chọn mệnh giá hợp lệ.";
+    async function handleBuy(username, robux, priceVND) {
+      const userRef = doc(db, "users", username);
+      const snap = await getDoc(userRef);
+
+      if (!snap.exists()) {
+        alert("❌ Tài khoản chưa tồn tại trong hệ thống!");
         return;
       }
 
-      messageBox.innerText = "";
-      loading.style.display = "block";
+      const balance = snap.data().balance || 0;
+      if (balance < priceVND) {
+        alert("❌ Số dư không đủ! Số dư hiện tại: " + balance.toLocaleString("vi-VN") + "₫");
+        return;
+      }
+
+      await updateDoc(userRef, { balance: balance - priceVND });
+
+      await addDoc(collection(db, "orders"), {
+        username,
+        robux,
+        robuxAfterTax: Math.floor(robux * 0.7),
+        priceVND,
+        status: "chờ duyệt",
+        time: Date.now()
+      });
+
+      // thêm vào bảng UI ngay
+      addHistoryRow(username, robux, Math.floor(robux * 0.7), priceVND, "chờ duyệt", Date.now());
+      alert(`✅ Mua thành công ${robux} R$ cho @${username}. Số dư còn lại: ${(balance - priceVND).toLocaleString("vi-VN")}₫`);
+    }
+
+    function addHistoryRow(username, robux, robuxAfter, priceVND, status, timestamp) {
+      const tr = document.createElement("tr");
+      const date = new Date(timestamp);
+      const formatted = date.toLocaleString("vi-VN");
+      const statusClass = status === "chờ duyệt" ? "pending" : (status === "thành công" ? "success" : "failed");
+      tr.innerHTML = `
+        <td>${username}</td>
+        <td>${robux} R$</td>
+        <td>${robuxAfter} R$</td>
+        <td>${priceVND.toLocaleString("vi-VN")}₫</td>
+        <td><span class="status ${statusClass}">${status}</span></td>
+        <td>${formatted}</td>
+      `;
+      historyTableBody.prepend(tr);
+    }
+
+    function attachGamepassBuy(div, username, robux) {
+      div.addEventListener("click", () => {
+        const priceVND = Math.round(robux * PRICE_PER_ROBUX);
+        handleBuy(username, robux, priceVND);
+      });
+    }
+
+    // Load gamepass từ Roblox (tự động khi nhập username)
+    async function findGamepasses(username) {
+      if (typeSelect.value !== "gamepass") return;
+      gamepassBox.innerHTML = "";
+      availablePassPrices = [];
 
       try {
-        const userDoc = await db.collection("users").doc(user.uid).get();
-        let rawBalance = userDoc.exists ? userDoc.data().balance : 0;
-        let balance = 0;
-        if (typeof rawBalance === "number") {
-          balance = rawBalance;
-        } else if (typeof rawBalance === "string") {
-          balance = parseInt(rawBalance.replace(/[^\d]/g, "")) || 0;
-        }
+        const res = await fetch(`https://api.roblox.com/users/get-by-username?username=${username}`);
+        const data = await res.json();
+        if (!data.Id) return;
+        const userId = data.Id;
 
-        if (balance < finalPrice) {
-          loading.style.display = "none";
-          messageBox.style.color = "red";
-          messageBox.innerText = "⚠️ Số dư không đủ để mua.";
-          return;
-        }
+        const resGames = await fetch(`https://games.roblox.com/v2/users/${userId}/games?limit=3`);
+        const gamesData = await resGames.json();
+        if (!gamesData.data || gamesData.data.length === 0) return;
 
-        modal.style.display = "flex";
-        confirmOk.onclick = async () => {
-          modal.style.display = "none";
-          const newBalance = balance - finalPrice;
-          const formattedBalance = newBalance.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
-          await db.collection("users").doc(user.uid).update({
-            balance: formattedBalance
-          });
-          await db.collection("orders").add({
-            uid: user.uid,
-            robux: finalRobux,
-            price: finalPrice,
-            robloxName,
-            contact,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-          messageBox.style.color = "lime";
-          messageBox.innerText = "🎉 Mua hàng thành công!";
-          buyForm.reset();
-          finalPrice = 0;
-          finalRobux = 0;
-          setTimeout(() => {
-            window.location.href = "lichsu.html";
-          }, 1000);
-        };
-        confirmCancel.onclick = () => {
-          modal.style.display = "none";
-        };
+        for (let game of gamesData.data) {
+          const resPass = await fetch(`https://games.roblox.com/v1/games/${game.id}/game-passes?limit=5`);
+          const passData = await resPass.json();
+
+          if (passData.data && passData.data.length > 0) {
+            for (let gp of passData.data) {
+              const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/assets?assetIds=${gp.id}&size=150x150&format=Png`);
+              const thumbData = await thumbRes.json();
+              const imgUrl = thumbData.data?.[0]?.imageUrl || "";
+
+              const infoRes = await fetch(`https://economy.roblox.com/v1/game-pass/${gp.id}/product-info`);
+              const infoData = await infoRes.json();
+              const price = infoData.PriceInRobux || "?";
+
+              if (typeof price === "number") availablePassPrices.push(price);
+
+              const div = document.createElement("div");
+              div.className = "gamepass-item";
+              div.innerHTML = `
+                <img src="${imgUrl}" alt="${gp.name}">
+                <h4>${gp.name}</h4>
+                <p>${price} R$ (Nhận ${Math.floor(price*0.7)} R$)</p>
+              `;
+              if (typeof price === "number") {
+                attachGamepassBuy(div, username, price);
+              }
+              gamepassBox.appendChild(div);
+            }
+          }
+        }
+        updateTotal();
       } catch (err) {
-        messageBox.style.color = "red";
-        messageBox.innerText = "❌ Lỗi: " + err.message;
-      } finally {
-        loading.style.display = "none";
+        console.error(err);
+      }
+    }
+
+    // Load history realtime từ Firestore
+    function loadHistory() {
+      const q = query(collection(db, "orders"), orderBy("time", "desc"));
+      onSnapshot(q, (snapshot) => {
+        historyTableBody.innerHTML = "";
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          addHistoryRow(data.username, data.robux, data.robuxAfterTax, data.priceVND, data.status, data.time);
+        });
+      });
+    }
+
+    // listeners
+    typeSelect.addEventListener("change", updateForm);
+    qtyInput.addEventListener("input", updateTotal);
+    usernameInput.addEventListener("input", () => {
+      updateTotal();
+      if (usernameInput.value.trim().length >= 3) {
+        findGamepasses(usernameInput.value.trim());
+      } else {
+        gamepassBox.innerHTML = "";
+        availablePassPrices = [];
       }
     });
+
+    buyBtn.addEventListener("click", () => {
+      const username = usernameInput.value.trim();
+      const robux = parseInt(qtyInput.value);
+      const priceVND = Math.round(robux * PRICE_PER_ROBUX);
+      handleBuy(username, robux, priceVND);
+    });
+
+    // khởi tạo
+    updateForm();
+    loadHistory();
   </script>
 </body>
 </html>
