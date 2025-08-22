@@ -23,14 +23,35 @@
     .btn:hover { background: #4338ca; }
     .btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-    .warning { margin-top: 10px; font-size: 14px; color: #d97706; font-weight: 600; }
+    /* Loading spinner */
+    .loading-spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #4f46e5;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      animation: spin 1s linear forwards; /* xoay đúng 1 giây */
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
 
-    /* Guide card */
-    .guide-card { padding: 18px; border-radius: 12px; background: linear-gradient(180deg,#fff,#fbfbfd); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-    .guide-card h3 { margin: 0 0 10px 0; font-size: 16px; color: #0f172a; display:flex; gap:8px; align-items:center; }
-    .guide-card ol { margin: 0 0 8px 18px; color:#374151; }
-    .guide-card ol li { margin-bottom: 8px; font-size: 14px; line-height:1.45; }
-    .guide-note { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px; border-radius: 8px; color:#92400e; font-weight:600; margin-top:8px; }
+    /* Warning box */
+    .warning {
+      margin-top: 10px;
+      font-size: 14px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-weight: 600;
+      display: none;
+      transition: opacity 0.3s ease;
+    }
+    .warning.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .warning.success { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
 
     /* History */
     .history-card { background: #fff; border-radius: 12px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); overflow: hidden; }
@@ -44,11 +65,6 @@
     .status.pending { background:#fef3c7; color:#92400e; }
     .status.success { background:#d1fae5; color:#065f46; }
     .status.failed { background:#fee2e2; color:#991b1b; }
-
-    @media (max-width:520px) {
-      .container { padding: 0 12px; }
-      .summary span:last-child { font-size:18px; }
-    }
   </style>
 </head>
 <body>
@@ -81,19 +97,6 @@
 
       <button class="btn" id="buyBtn">Mua Ngay</button>
       <div id="warningBox" class="warning"></div>
-    </div>
-
-    <!-- Hướng dẫn -->
-    <div class="card guide-card" aria-labelledby="guide">
-      <h3 id="guide">📑 CÁCH MUA ROBUX (Gamepass/Giftcard)</h3>
-      <ol>
-        <li>Chọn <strong>Gamepass</strong> hoặc <strong>Gift Card</strong>.</li>
-        <li>Nhập chính xác <strong>username Roblox</strong> và <strong>liên hệ của bạn</strong>.</li>
-        <li>Nhập số Robux muốn mua hoặc chọn Gift Card mặc định 400 R$.</li>
-        <li>Nhấn <em>Mua Ngay</em> để thanh toán.</li>
-        <li>Sau khi duyệt, chờ 3-5 ngày bạn sẽ nhận được Robux vào tài khoản Roblox.</li>
-      </ol>
-      <div class="guide-note">Lưu ý: Robux nhận thực tế khi mua bằng gamepass = 70% do phí Roblox.</div>
     </div>
 
     <!-- Lịch sử -->
@@ -164,35 +167,58 @@
       buyBtn.disabled = !(usernameInput.value.trim().length >= 3 && contactInput.value.trim().length >= 3 && qty > 0);
     }
 
+    function showWarning(message, type = "error") {
+      warningBox.textContent = message;
+      warningBox.className = "warning " + type;
+      warningBox.style.display = "block";
+      warningBox.style.opacity = "1";
+      setTimeout(() => {
+        warningBox.style.opacity = "0";
+        setTimeout(() => { warningBox.style.display = "none"; }, 300);
+      }, 4000);
+    }
+
     async function handleBuy(username, contact, robux, priceVND) {
-      const userRef = doc(db, "users", username);
-      const snap = await getDoc(userRef);
+      try {
+        buyBtn.disabled = true;
+        buyBtn.innerHTML = `<span class="loading-spinner"></span> Đang xử lý...`;
+        await new Promise(resolve => setTimeout(resolve, 1000)); // xoay 1 giây
 
-      if (!snap.exists()) {
-        alert("❌ Tài khoản chưa tồn tại trong hệ thống!");
-        return;
+        const userRef = doc(db, "users", username);
+        const snap = await getDoc(userRef);
+
+        if (!snap.exists()) {
+          showWarning("❌ Tài khoản chưa tồn tại trong hệ thống!", "error");
+          return;
+        }
+
+        const balance = snap.data().balance || 0;
+        if (balance < priceVND) {
+          showWarning("❌ Số dư không đủ! Hiện tại: " + balance.toLocaleString("vi-VN") + "₫", "error");
+          return;
+        }
+
+        await updateDoc(userRef, { balance: balance - priceVND });
+
+        await addDoc(collection(db, "orders"), {
+          username,
+          contact,
+          robux,
+          robuxAfterTax: Math.floor(robux * 0.7),
+          priceVND,
+          status: "chờ duyệt",
+          time: Date.now()
+        });
+
+        showWarning(`✅ Mua thành công ${robux} R$ cho @${username}. Số dư còn lại: ${(balance - priceVND).toLocaleString("vi-VN")}₫`, "success");
+
+      } catch (err) {
+        console.error(err);
+        showWarning("⚠️ Có lỗi xảy ra khi mua!", "error");
+      } finally {
+        buyBtn.disabled = false;
+        buyBtn.innerText = "Mua Ngay";
       }
-
-      const balance = snap.data().balance || 0;
-      if (balance < priceVND) {
-        alert("❌ Số dư không đủ! Số dư hiện tại: " + balance.toLocaleString("vi-VN") + "₫");
-        return;
-      }
-
-      await updateDoc(userRef, { balance: balance - priceVND });
-
-      await addDoc(collection(db, "orders"), {
-        username,
-        contact,
-        robux,
-        robuxAfterTax: Math.floor(robux * 0.7),
-        priceVND,
-        status: "chờ duyệt",
-        time: Date.now()
-      });
-
-      addHistoryRow(username, contact, robux, Math.floor(robux * 0.7), priceVND, "chờ duyệt", Date.now());
-      alert(`✅ Mua thành công ${robux} R$ cho @${username}. Liên hệ: ${contact}. Số dư còn lại: ${(balance - priceVND).toLocaleString("vi-VN")}₫`);
     }
 
     function addHistoryRow(username, contact, robux, robuxAfter, priceVND, status, timestamp) {
