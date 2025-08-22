@@ -128,216 +128,172 @@
   </div>
 
   <!-- Firebase + Firestore + chức năng -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-  import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    
+      <script type="module">
+  // ===== Firebase =====
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
+    apiKey: "AIzaSy...your_key_here...",
     authDomain: "robuxvex.firebaseapp.com",
     projectId: "robuxvex",
-    storageBucket: "robuxvex.firebasestorage.app",
-    messagingSenderId: "291500837886",
-    appId: "1:291500837886:web:08ae60ca6454c209328eaf",
-    measurementId: "G-LWRKTMPXEN"
+    storageBucket: "robuxvex.appspot.com",
+    messagingSenderId: "xxx",
+    appId: "xxx"
   };
-
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
+  const auth = getAuth(app);
 
-  const qtyInput = document.getElementById("qty");
-  const totalEl = document.getElementById("total");
-  const buyBtn = document.getElementById("buyBtn");
-  const usernameInput = document.getElementById("username");
-  const typeSelect = document.getElementById("type");
-  const gamepassBox = document.getElementById("gamepassBox");
+  // ===== DOM =====
+  const qtyInput = document.getElementById("qtyInput");
+  const typeSelect = document.getElementById("typeSelect");
   const warningBox = document.getElementById("warningBox");
-  const historyTableBody = document.getElementById("historyTable").querySelector("tbody");
+  const gamepassBox = document.getElementById("gamepassBox");
+  const totalPrice = document.getElementById("totalPrice");
+  const buyBtn = document.getElementById("buyBtn");
+  const usernameInput = document.getElementById("usernameInput");
 
-  const PRICE_PER_ROBUX = 10000 / 60;
-  let availablePassPrices = [];
+  let availablePassPrices = []; // để lưu giá gamepass gốc lấy từ API Roblox
+  let currentUser = null;
 
-  function updateForm() {
-    if (typeSelect.value === "giftcard") {
-      qtyInput.value = 400;
-      qtyInput.disabled = true;
-      gamepassBox.innerHTML = "";
-      availablePassPrices = [];
+  // ===== Theo dõi đăng nhập =====
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      currentUser = user;
+      console.log("Đã đăng nhập:", user.email);
     } else {
-      qtyInput.disabled = false;
+      currentUser = null;
+      console.log("Chưa đăng nhập");
     }
-    updateTotal();
-  }
+  });
 
+  // ===== Hàm tính tiền và check gamepass =====
   function updateTotal() {
     const qty = parseInt(qtyInput.value) || 0;
-    const price = Math.round(qty * PRICE_PER_ROBUX);
-    totalEl.innerText = price.toLocaleString("vi-VN") + " ₫";
-    buyBtn.disabled = !(usernameInput.value.trim().length >= 3 && qty > 0);
+    const priceVND = qty * 300; // ví dụ 1R$ = 300đ
+    totalPrice.innerText = priceVND.toLocaleString("vi-VN") + " đ";
 
-    if (typeSelect.value === "gamepass" && qty > 0) {
-      if (!availablePassPrices.includes(qty)) {
-        // gợi ý mệnh giá gần nhất
-        const suggest = availablePassPrices
-          .slice()
-          .sort((a,b)=>Math.abs(a-qty)-Math.abs(b-qty))
-          .slice(0,3)
-          .join(", ");
-        warningBox.innerText = suggest
-          ? `⚠️ Bạn chưa tạo gamepass đúng ${qty} R$. Gợi ý: ${suggest} R$.`
-          : "⚠️ Bạn chưa tạo gamepass phù hợp với số Robux này.";
-        buyBtn.disabled = true;
+    if (typeSelect.value === "gamepass") {
+      if (availablePassPrices.includes(qty)) {
+        warningBox.innerText = "✅ Đã tạo gamepass phù hợp.";
+        buyBtn.disabled = false;
       } else {
-        warningBox.innerText = "";
+        warningBox.innerText = "⚠️ Bạn chưa tạo gamepass phù hợp.";
+        buyBtn.disabled = true;
       }
     } else {
       warningBox.innerText = "";
+      buyBtn.disabled = qty <= 0;
     }
   }
 
-  async function handleBuy(username, robux, priceVND) {
-    const userRef = doc(db, "users", username);
-    const snap = await getDoc(userRef);
+  qtyInput.addEventListener("input", updateTotal);
+  typeSelect.addEventListener("change", updateTotal);
 
-    if (!snap.exists()) {
-      alert("❌ Tài khoản chưa tồn tại trong hệ thống!");
-      return;
-    }
-
-    const balance = snap.data().balance || 0;
-    if (balance < priceVND) {
-      alert("❌ Số dư không đủ! Số dư hiện tại: " + balance.toLocaleString("vi-VN") + "₫");
-      return;
-    }
-
-    await updateDoc(userRef, { balance: balance - priceVND });
-
-    await addDoc(collection(db, "orders"), {
-      username,
-      robux,
-      robuxAfterTax: Math.floor(robux * 0.7),
-      priceVND,
-      status: "chờ duyệt",
-      time: Date.now()
-    });
-
-    addHistoryRow(username, robux, Math.floor(robux * 0.7), priceVND, "chờ duyệt", Date.now());
-    alert(`✅ Mua thành công ${robux} R$ cho @${username}. Số dư còn lại: ${(balance - priceVND).toLocaleString("vi-VN")}₫`);
-  }
-
-  function addHistoryRow(username, robux, robuxAfter, priceVND, status, timestamp) {
-    const tr = document.createElement("tr");
-    const date = new Date(timestamp);
-    const formatted = date.toLocaleString("vi-VN");
-    const statusClass = status === "chờ duyệt" ? "pending" : (status === "thành công" ? "success" : "failed");
-    tr.innerHTML = `
-      <td>${username}</td>
-      <td>${robux} R$</td>
-      <td>${robuxAfter} R$</td>
-      <td>${priceVND.toLocaleString("vi-VN")}₫</td>
-      <td><span class="status ${statusClass}">${status}</span></td>
-      <td>${formatted}</td>
-    `;
-    historyTableBody.prepend(tr);
-  }
-
-  // THAY ĐỔI: click vào card gamepass chỉ "gán số Robux" để bạn bấm Mua
-  function attachGamepassSelect(div, price) {
-    div.addEventListener("click", () => {
-      if (typeof price === "number") {
-        qtyInput.value = price;
-        updateTotal();
-      }
-    });
-  }
-
-  // Lấy gamepass qua API Vercel (fix CORS + ổn định)
+  // ===== Hàm load gamepass Roblox =====
   async function findGamepasses(username) {
     if (typeSelect.value !== "gamepass") return;
-    gamepassBox.innerHTML = "<div style='grid-column:1/-1'>Đang tải gamepass…</div>";
+    gamepassBox.innerHTML = "";
     availablePassPrices = [];
 
     try {
-      // 1) username -> userId
-      const u = await fetch(`/api/users?username=${encodeURIComponent(username)}`);
-      const uJson = await u.json();
-      const userId = uJson?.id || uJson?.data?.[0]?.id || uJson?.Id;
-      if (!userId) {
-        gamepassBox.innerHTML = "";
-        warningBox.innerText = "⚠️ Không tìm thấy user này trên Roblox.";
+      // 1. Lấy userId từ username
+      const res = await fetch(`https://api.roblox.com/users/get-by-username?username=${username}`);
+      const data = await res.json();
+      if (!data.Id) {
+        warningBox.innerText = "❌ Không tìm thấy username Roblox.";
         return;
       }
+      const userId = data.Id;
 
-      // 2) userId -> danh sách gamepass (có giá)
-      const gpRes = await fetch(`/api/gamepasses?userId=${userId}`);
-      const gp = await gpRes.json();
-      const list = gp?.data || [];
+      // 2. Lấy danh sách game của user
+      const resGames = await fetch(`https://games.roblox.com/v2/users/${userId}/games?limit=3`);
+      const gamesData = await resGames.json();
+      if (!gamesData.data || gamesData.data.length === 0) return;
 
-      gamepassBox.innerHTML = "";
-      list.forEach(item => {
-        if (typeof item.price === "number") availablePassPrices.push(item.price);
+      // 3. Duyệt game → lấy gamepass
+      for (let game of gamesData.data) {
+        const resPass = await fetch(`https://games.roblox.com/v1/games/${game.id}/game-passes?limit=5`);
+        const passData = await resPass.json();
 
-        const div = document.createElement("div");
-        div.className = "gamepass-item";
-        div.innerHTML = `
-          <img src="${item.thumbnail || ""}" alt="${item.name}">
-          <h4>${item.name}</h4>
-          <p>${item.price ? `${item.price} R$ (Nhận ${Math.floor(item.price*0.7)} R$)` : "Chưa đặt giá"}</p>
-        `;
-        attachGamepassSelect(div, item.price);
-        gamepassBox.appendChild(div);
-      });
+        if (passData.data && passData.data.length > 0) {
+          for (let gp of passData.data) {
+            // Lấy giá gốc
+            const infoRes = await fetch(`https://economy.roblox.com/v1/game-pass/${gp.id}/product-info`);
+            const infoData = await infoRes.json();
+            const price = infoData.PriceInRobux;
 
-      if (availablePassPrices.length === 0) {
-        warningBox.innerText = "⚠️ Tài khoản chưa có gamepass nào đã định giá.";
-      } else {
-        warningBox.innerText = "";
+            if (typeof price === "number") {
+              availablePassPrices.push(price);
+            }
+
+            // Lấy thumbnail
+            const thumbRes = await fetch(`https://thumbnails.roblox.com/v1/assets?assetIds=${gp.id}&size=150x150&format=Png`);
+            const thumbData = await thumbRes.json();
+            const imgUrl = thumbData.data?.[0]?.imageUrl || "";
+
+            // Hiển thị ra UI
+            const div = document.createElement("div");
+            div.className = "gamepass-item";
+            div.innerHTML = `
+              <img src="${imgUrl}" alt="${gp.name}">
+              <h4>${gp.name}</h4>
+              <p>💰 ${price} R$ (Nhận ${Math.floor(price*0.7)} R$)</p>
+            `;
+            gamepassBox.appendChild(div);
+          }
+        }
       }
+      // Cập nhật lại check
       updateTotal();
     } catch (err) {
       console.error(err);
-      gamepassBox.innerHTML = "";
-      warningBox.innerText = "⚠️ Lỗi tải gamepass. Thử lại.";
+      warningBox.innerText = "⚠️ Lỗi khi tải gamepass.";
     }
   }
 
-  // realtime history
-  function loadHistory() {
-    const q = query(collection(db, "orders"), orderBy("time", "desc"));
-    onSnapshot(q, (snapshot) => {
-      historyTableBody.innerHTML = "";
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        addHistoryRow(data.username, data.robux, data.robuxAfterTax, data.priceVND, data.status, data.time);
-      });
-    });
-  }
-
-  // listeners
-  typeSelect.addEventListener("change", updateForm);
-  qtyInput.addEventListener("input", updateTotal);
-  usernameInput.addEventListener("input", () => {
-    updateTotal();
-    if (usernameInput.value.trim().length >= 3) {
-      findGamepasses(usernameInput.value.trim());
-    } else {
-      gamepassBox.innerHTML = "";
-      availablePassPrices = [];
-    }
-  });
-
-  buyBtn.addEventListener("click", () => {
+  usernameInput.addEventListener("blur", () => {
     const username = usernameInput.value.trim();
-    const robux = parseInt(qtyInput.value);
-    const priceVND = Math.round(robux * PRICE_PER_ROBUX);
-    handleBuy(username, robux, priceVND);
+    if (username) {
+      findGamepasses(username);
+    }
   });
 
-  // init
-  updateForm();
-  loadHistory();
-</script>
-</script>
-  </script>
+  // ===== Hàm mua hàng =====
+  buyBtn.addEventListener("click", async () => {
+    if (!currentUser) {
+      alert("Bạn cần đăng nhập trước khi mua.");
+      return;
+    }
+
+    const qty = parseInt(qtyInput.value) || 0;
+    const username = usernameInput.value.trim();
+
+    if (!username || qty <= 0) {
+      alert("Vui lòng nhập đủ thông tin.");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "purchases"), {
+        uid: currentUser.uid,
+        username: username,
+        robux: qty,
+        type: typeSelect.value,
+        createdAt: serverTimestamp()
+      });
+      alert("✅ Mua hàng thành công!");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Lỗi khi lưu đơn hàng.");
+    }
+  });
+
+  // Khởi động lần đầu
+  updateTotal();
+      </script>
 </body>
 </html>
