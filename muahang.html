@@ -426,15 +426,16 @@ table.history tbody td {
       await updateDoc(userRef, { balance: balance - priceVND });
 
       await addDoc(collection(db, "orders"), {
-        uid: currentUser.uid,
-        username,
-        contact,
-        robux,
-        robuxAfterTax: (typeSelect.value === "giftcard" ? robux : Math.floor(robux * 0.7)),
-        priceVND,
-        status: "chờ duyệt",
-        time: Date.now()
-      });
+  uid: currentUser.uid,
+  robloxName: username,  // ✅ thay vì username
+  contact,
+  robux,
+  robuxAmount: (typeSelect.value === "giftcard" ? robux : Math.floor(robux * 0.7)), // ✅ thay vì robuxAfterTax
+  price: priceVND,       // ✅ thay vì priceVND
+  createdAt: new Date().toISOString(), // ✅ thay vì time: Date.now()
+  deliveredAt: null,
+  status: "pending"      // ✅ thay vì "chờ duyệt"
+});
 
       addHistoryRow(username, contact, robux, (typeSelect.value === "giftcard" ? robux : Math.floor(robux * 0.7)), priceVND, "chờ duyệt", Date.now());
       showWarning(`✅ Mua thành công ${robux} R$ cho @${username}. Số dư còn lại: ${(balance - priceVND).toLocaleString("vi-VN")}₫`, "success");
@@ -443,7 +444,7 @@ table.history tbody td {
     function addHistoryRow(username, contact, robux, robuxAfter, priceVND, status, timestamp) {
       const tr = document.createElement("tr");
       const date = new Date(timestamp).toLocaleString("vi-VN");
-      const statusClass = status === "chờ duyệt" ? "pending" : (status === "thành công" ? "success" : "failed");
+      const statusClass = status === "pending" ? "pending" : (status === "success" ? "success" : "failed");
       tr.innerHTML = `
         <td>${username}</td>
         <td>${contact}</td>
