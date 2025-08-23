@@ -444,8 +444,10 @@ table.history tbody td {
     function addHistoryRow(username, contact, robux, robuxAfter, priceVND, status, timestamp) {
       const tr = document.createElement("tr");
       const date = new Date(timestamp).toLocaleString("vi-VN");
-      const statusClass = status === "pending" ? "pending" 
-                   : (status === "Completed" ? "success" : "failed");
+      const statusClass =
+  status === "pending" ? "pending" :
+  status === "completed" ? "success" :
+  "failed";
       tr.innerHTML = `
         <td>${username}</td>
         <td>${contact}</td>
@@ -459,12 +461,12 @@ table.history tbody td {
     }
 
     function loadHistory() {
-      const q = query(collection(db, "orders"), orderBy("time", "desc"));
+      const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
       onSnapshot(q, (snapshot) => {
         historyTableBody.innerHTML = "";
         snapshot.forEach((doc) => {
           const data = doc.data();
-          addHistoryRow(data.username, data.contact, data.robux, data.robuxAfterTax, data.priceVND, data.status, data.time);
+          addHistoryRow(data.robloxName, data.contact, data.robux, data.robuxAmount, data.price, data.status, data.createdAt);
         });
       });
     }
