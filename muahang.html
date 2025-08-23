@@ -444,7 +444,8 @@ table.history tbody td {
     function addHistoryRow(username, contact, robux, robuxAfter, priceVND, status, timestamp) {
       const tr = document.createElement("tr");
       const date = new Date(timestamp).toLocaleString("vi-VN");
-      const statusClass = status === "pending" ? "pending" : (status === "success" ? "success" : "failed");
+      const statusClass = status === "pending" ? "pending" 
+                   : (status === "Completed" ? "success" : "failed");
       tr.innerHTML = `
         <td>${username}</td>
         <td>${contact}</td>
