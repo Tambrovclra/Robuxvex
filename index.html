@@ -309,8 +309,8 @@
       snapshot.forEach(docSnap=>{
         const data = docSnap.data();
         const amount = Number(data.robuxAmount || 0);
-        if (data.status === "done") doneOrders++;
-        if (data.status === "pending") pendingOrders++;
+        if (data.status === "completed") doneOrders++;
+if (data.status === "pending") pendingOrders++;
         robuxBought += amount;
       });
       document.getElementById("doneOrders").innerText = doneOrders;
@@ -320,7 +320,7 @@
       let totalRobuxAvailable = 2000;
       snapshot.forEach(docSnap=>{
         const data = docSnap.data();
-        if (data.status === "done") totalRobuxAvailable += Number(data.robuxAmount || 0);
+        if (data.status === "completed") totalRobuxAvailable += Number(data.robuxAmount || 0);
       });
       document.getElementById("robuxAvailable").innerText = totalRobuxAvailable;
     }
