@@ -126,114 +126,193 @@
 
 </body>
 </html>
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mua nhanh Robux</title>
+  <title>Mua nhanh Robux — UI nâng cấp</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
-    * { box-sizing: border-box; }
-    body { font-family: "Segoe UI", sans-serif; background: #f0f2f8; margin: 0; color: #333; }
-    header { background: white; padding: 16px 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); position: sticky; top: 0; }
-    header h1 { margin: 0; font-size: 20px; color: #4f46e5; font-weight: 600; }
-    .container { max-width: 900px; margin: 30px auto; padding: 0 15px; }
-
-    .card { background: white; border-radius: 14px; padding: 22px; margin-bottom: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.08); }
-
-    label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; color: #555; }
-    input, select { width: 100%; padding: 10px 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 18px; font-size: 15px; }
-
-    .summary { display: flex; justify-content: space-between; background: #f9fafb; border-radius: 10px; padding: 12px 16px; margin-bottom: 10px; font-weight: bold; font-size: 15px; }
-    .summary span:last-child { font-size: 20px; font-weight: 700; color: #e11d48; }
-
-    .btn { background: #4f46e5; color: white; border: none; border-radius: 10px; padding: 12px 18px; font-size: 16px; font-weight: 600; cursor: pointer; width: 100%; transition: 0.2s; }
-    .btn:hover { background: #4338ca; }
-    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    .warning { margin-top: 10px; font-size: 14px; font-weight: 600; padding: 8px 10px; border-radius: 8px; display:none; }
-    .warning.error { background: #fee2e2; color:#991b1b; }
-    .warning.success { background: #d1fae5; color:#065f46; }
-
-    /* Guide card */
-    .guide-card { padding: 18px; border-radius: 12px; background: linear-gradient(180deg,#fff,#fbfbfd); box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-    .guide-card h3 { margin: 0 0 10px 0; font-size: 16px; color: #0f172a; display:flex; gap:8px; align-items:center; }
-    .guide-card ol { margin: 0 0 8px 18px; color:#374151; }
-    .guide-card ol li { margin-bottom: 8px; font-size: 14px; line-height:1.45; }
-    .guide-note { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 10px; border-radius: 8px; color:#92400e; font-weight:600; margin-top:8px; }
-
-    /* History */
-    .history-card { background: #fff; border-radius: 12px; padding: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); overflow: hidden; }
-    .history-title { display:inline-flex; align-items:center; gap:8px; font-weight:600; color:#111827; margin-bottom:12px; }
-    .history-wrapper { background: #fff; border-radius: 8px; overflow-x:auto; padding: 6px 0; }
-    .history-wrapper table { width:100%; border-collapse: collapse; font-size:14px; }
-    .history-wrapper thead { background: #000; color: #fff; }
-    .history-wrapper th { padding: 10px; font-weight:600; }
-    .history-wrapper td { padding: 10px; text-align: center; border-bottom: 1px solid #eee; color: #111827; background:#fff; }
-    .status { display:inline-block; min-width:85px; padding:4px 10px; border-radius:20px; font-size:13px; font-weight:700; }
-    .status.pending { background:#fef3c7; color:#92400e; }
-    .status.success { background:#d1fae5; color:#065f46; }
-    .status.failed { background:#fee2e2; color:#991b1b; }
-
-    @media (max-width:520px) {
-      .container { padding: 0 12px; }
-      .summary span:last-child { font-size:18px; }
+    :root {
+      --violet:#7c3aed;
+      --blue:#2563eb;
+      --yellow:#fbbf24;
     }
+
+    body {
+      margin:0;
+      font-family: Inter, Arial, sans-serif;
+      background:#f0f2f8;
+      color:#111;
+    }
+
+    header {
+      background:#fff;
+      padding:16px 20px;
+      box-shadow:0 2px 6px rgba(0,0,0,0.05);
+      position:sticky;top:0;z-index:10;
+    }
+    header h1 {margin:0;font-size:22px;font-weight:700;color:#4f46e5;}
+
+    .container{max-width:960px;margin:30px auto;padding:0 15px;}
+
+    .card{background:#fff;border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 4px 12px rgba(0,0,0,.08);}
+
+    label{display:block;margin:10px 0 6px;font-size:14px;font-weight:700;color:#374151;}
+
+    .input-glow, select{
+      width:100%;padding:12px;border-radius:12px;border:2px solid rgba(124,58,237,.6);
+      outline:none;transition:.3s;background:#fff;
+      box-shadow:0 0 10px rgba(124,58,237,.2);
+    }
+    .input-glow:focus, select:focus{
+      border-color:#8b5cf6;
+      box-shadow:0 0 16px rgba(124,58,237,.5),0 0 16px rgba(37,99,235,.4);
+    }
+
+    .summary{display:flex;justify-content:space-between;align-items:center;background:#f9fafb;
+      border:1px solid #ddd;border-radius:12px;padding:12px 16px;margin-bottom:10px;font-weight:700;}
+    .summary span:last-child{font-size:20px;color:#e11d48;font-weight:800;}
+
+    /* Nút mua ngay */
+    .buy-wrap{text-align:center;margin-top:15px;}
+    .btn{
+      display:block;width:100%;padding:15px;border:none;border-radius:14px;
+      font-size:18px;font-weight:800;letter-spacing:.5px;cursor:pointer;
+      color:#fff;text-transform:uppercase;
+      background:linear-gradient(270deg,#ff00cc,#3333ff,#00ffcc);
+      background-size:600% 600%;
+      animation:gradient 8s ease infinite, pulse 2s infinite;
+      box-shadow:0 0 25px rgba(124,58,237,.6);
+      text-shadow:0 0 6px #fff;
+      transition:transform .2s;
+    }
+    .btn:hover{transform:scale(1.05);}
+    .btn:disabled{opacity:.5;cursor:not-allowed;animation:none;background:#999;}
+
+    @keyframes gradient {
+      0%{background-position:0% 50%;}
+      50%{background-position:100% 50%;}
+      100%{background-position:0% 50%;}
+    }
+    @keyframes pulse {
+      0%{box-shadow:0 0 10px rgba(124,58,237,.4);}
+      50%{box-shadow:0 0 35px rgba(124,58,237,.8);}
+      100%{box-shadow:0 0 10px rgba(124,58,237,.4);}
+    }
+
+    .warning{margin-top:10px;font-size:14px;font-weight:700;padding:10px;border-radius:8px;display:none;}
+    .warning.error{background:#fee2e2;color:#991b1b;}
+    .warning.success{background:#d1fae5;color:#065f46;}
+
+    /* Hướng dẫn */
+    .guide-card h3{font-family:Montserrat,sans-serif;font-weight:800;font-size:18px;display:flex;gap:8px;}
+    .guide-card ol li{font-family:Inter,sans-serif;font-style:italic;font-weight:600;margin-bottom:8px;}
+
+    .guide-note{background:#fffbeb;border-left:4px solid var(--yellow);padding:10px;border-radius:8px;
+      color:#92400e;font-weight:700;margin-top:10px;font-style:italic;}
+
+    /* Lịch sử */
+    .history-title .glow-title{
+      display:inline-block;padding:8px 12px;border-radius:12px;font-weight:800;
+      border:2px solid var(--yellow);background:#fff7e6;color:#b45309;
+      box-shadow:0 0 15px rgba(251,191,36,.7);
+    }
+
+    .history-wrapper{margin-top:10px;}
+    table{width:100%;border-collapse:collapse;font-size:14px;}
+    thead th{background:#111;color:#fff;padding:10px;border:2px solid #fff;}
+    tbody td{background:#fff;color:#111;text-align:center;padding:10px;border:2px solid #fff;}
+    tr:hover td{background:#f9fafb;}
+
+    .status{padding:4px 10px;border-radius:20px;font-size:13px;font-weight:700;display:inline-block;}
+    .status.pending{background:#fef3c7;color:#92400e;}
+    .status.success{background:#d1fae5;color:#065f46;}
+    .status.failed{background:#fee2e2;color:#991b1b;}
+    
+table.history {
+  width: 100%;
+  border-collapse: separate;   /* tách dòng */
+  border-spacing: 0 12px;      /* khoảng cách giữa các dòng */
+  font-size: 14px;
+}
+
+table.history thead th {
+  background: #111827;
+  color: #fff;
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: .2px;
+  border: none;
+}
+
+table.history tbody tr {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+
+table.history tbody td {
+  padding: 12px 10px;
+  text-align: center;
+  color: #111827;
+  border: none;
+}
+
+
+
   </style>
 </head>
 <body>
-  <header>
-    <h1>Mua nhanh Robux</h1>
-  </header>
+  <header><h1>Mua nhanh Robux</h1></header>
 
   <div class="container">
-    <!-- Form -->
     <div class="card">
       <label for="type">Chọn loại</label>
-      <select id="type">
+      <select id="type" class="input-glow">
         <option value="gamepass">Gamepass</option>
         <option value="giftcard">Gift Card</option>
       </select>
 
       <label for="username">Roblox Username</label>
-      <input type="text" id="username" placeholder="Nhập username...">
+      <input id="username" class="input-glow" placeholder="Nhập username...">
 
       <label for="contact">Liên hệ của bạn</label>
-      <input type="text" id="contact" placeholder="Nhập Gmail, Zalo...">
+      <input id="contact" class="input-glow" placeholder="Nhập Gmail, Zalo...">
 
       <label for="qty">Số lượng (Robux)</label>
-      <input type="number" id="qty" value="60" min="1">
+      <input type="number" id="qty" class="input-glow" value="60" min="1">
 
-      <div class="summary">
-        <span>Tổng thanh toán</span>
-        <span id="total">0 ₫</span>
-      </div>
-      <div class="summary" id="afterTaxRow">
-        <span>Thực nhận</span>
-        <span id="afterTax">0 R$</span>
-      </div>
+      <div class="summary"><span>Tổng thanh toán</span><span id="total">0 ₫</span></div>
+      <div class="summary" id="afterTaxRow"><span>Thực nhận</span><span id="afterTax">0 R$</span></div>
 
-      <button class="btn" id="buyBtn">Mua Ngay</button>
+      <div class="buy-wrap">
+        <button class="btn" id="buyBtn">⚡ Mua Ngay ⚡</button>
+      </div>
       <div id="warningBox" class="warning"></div>
     </div>
 
-    <!-- Hướng dẫn -->
-    <div class="card guide-card" aria-labelledby="guide">
-      <h3 id="guide">📑 CÁCH MUA ROBUX (Gamepass/Giftcard)</h3>
+    <div class="card guide-card">
+      <h3>📑 CÁCH MUA ROBUX <em>(xɪɴ ᴄʜᴀ̀ᴏ)</em></h3>
       <ol>
-        <li>Chọn <strong>Gamepass</strong> hoặc <strong>Gift Card</strong>.</li>
-        <li>Nhập chính xác <strong>username Roblox</strong> và <strong>liên hệ của bạn</strong>.</li>
-        <li>Nhập số Robux muốn mua hoặc chọn Gift Card mặc định 400 R$.</li>
-        <li>Tạo gamepass với giá mà bạn đã chọn (điền 60 thì tạo gamepass giá 60) - Nhấn <em>Mua Ngay</em> để thanh toán.</li>
-        <li>Sau khi duyệt, chờ 3-5 ngày bạn sẽ nhận được Robux vào tài khoản Roblox.</li>
+        <li>Chọn Gamepass hoặc Gift Card.</li>
+        <li>Nhập username Roblox và liên hệ.</li>
+        <li>Nhập số Robux muốn mua hoặc mặc định 400 R$ với Gift Card.</li>
+        <li>Tạo gamepass với giá tương ứng – nhấn <em>Mua Ngay</em>.</li>
+        <li>Sau khi duyệt, chờ 3–5 ngày Robux sẽ về tài khoản.</li>
       </ol>
-      <div class="guide-note">Lưu ý: Robux nhận thực tế khi mua bằng gamepass = 70% do phí Roblox.</div>
+      <div class="guide-note">Lưu ý: Mua qua gamepass thực nhận = 70% do phí Roblox.</div>
     </div>
 
-    <!-- Lịch sử -->
     <div class="card history-card">
-      <div class="history-title">📊 Lịch sử mua hàng</div>
+      <div class="history-title">
+        <span class="glow-title">📊 LỊCH SỬ MUA HÀNG</span>
+      </div>
       <div class="history-wrapper">
         <table id="historyTable">
           <thead>
@@ -241,7 +320,7 @@
               <th>Tài khoản</th>
               
               <th>Số Robux</th>
-              <th>Robux nhận</th>
+              
               <th>Thanh toán</th>
               <th>Trạng thái</th>
               <th>Ngày mua</th>
@@ -298,8 +377,10 @@
       if (typeSelect.value === "giftcard") {
         qtyInput.value = 400;
         qtyInput.disabled = true;
+        afterTaxRow.querySelector('span:first-child').textContent = 'Mệnh giá';
       } else {
         qtyInput.disabled = false;
+        afterTaxRow.querySelector('span:first-child').textContent = 'Thực nhận';
       }
       updateTotal();
     }
