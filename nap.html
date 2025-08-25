@@ -13,6 +13,7 @@
   <!-- Firebase compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
 
   <style>
     body { font-family: 'Inter', sans-serif; background:#f4f6fb; }
@@ -30,7 +31,7 @@
       transition:left .35s ease;padding-top:20px;color:#fff;z-index:1000
     }
     .sidebar.open{left:0}
-    .sidebar a{display:flex;align-items:center;gap:12px;padding:12px 20px;color:#fff;text-decoration:none}
+    .sidebar a{display:block;padding:12px 20px;text-decoration:none;color:#fff}
     .sidebar a:hover{background:rgba(255,255,255,.1);border-radius:8px}
     .sidebar h3{margin:16px 0 8px 20px;font-size:13px;opacity:.8;text-transform:uppercase}
 
@@ -64,23 +65,28 @@
 </head>
 <body>
 
+  <!-- Nút mở menu -->
+  <span class="menu-btn" onclick="toggleMenu()">☰</span>
+
   <!-- Sidebar -->
   <div id="sidebar" class="sidebar">
-    <h3>NẠP ROBUX</h3>
-    <a href="index.html"><i class="fas fa-home"></i> Trang chủ</a>
-    <a href="muahang.html"><i class="fas fa-coins"></i> Mua robux</a>
-    <a href="muahang.html"><i class="fas fa-history"></i> Lịch sử mua hàng</a>
+    <h3>CHỨC NĂNG CHÍNH</h3>
+    <a href="index.html">🏠 Trang chủ</a>
+    <a href="muahang.html">💰 Mua robux</a>
+    <a href="muahang.html">📜 Lịch sử mua hàng</a>
+
     <h3>TÀI KHOẢN & NẠP</h3>
-    <a href="nap.html"><i class="fas fa-wallet"></i> Nạp tiền</a>
+    <a href="nap.html">➕ Nạp tiền</a>
+    <a href="#">📋 Cộng tác viên (chưa mở)</a>
+
     <h3>HỖ TRỢ KHÁCH HÀNG</h3>
-    <a href="https://zalo.me/0907486634"><i class="fab fa-facebook-messenger"></i> Zalo</a>
-    <a href="mailto:vochuoi86@gmail.com"><i class="fas fa-envelope"></i> Gửi mail</a>
+    <a href="https://zalo.me/0907486634">📱 Zalo</a>
+    <a href="mailto:vochuoi86@gmail.com">✉️ Gửi mail</a>
   </div>
 
   <!-- Header -->
   <div class="bg-white shadow px-4 py-3 flex justify-between items-center sticky top-0 z-50">
     <div class="flex items-center gap-3">
-      <span class="menu-btn" onclick="toggleMenu()"><i class="fas fa-bars"></i></span>
       <img src="https://i.postimg.cc/8P0gT0YD/file-0000000025b061f780c5334d2cfcad87.png" alt="logo" class="h-8"/>
     </div>
     <div class="font-bold text-indigo-700 text-lg">Robuxvex</div>
@@ -89,96 +95,8 @@
   <!-- Breadcrumb -->
   <div class="max-w-6xl mx-auto mt-4 px-4 text-sm text-gray-500">Trang chủ → Nạp thẻ cào</div>
 
-  <!-- Main -->
-  <div class="max-w-6xl mx-auto mt-4 px-4 grid grid-cols-1 md:grid-cols-2 gap-8">
-    <!-- Form -->
-    <div class="card">
-      <h2 class="text-xl font-semibold mb-6 text-gray-800">🔐 Nạp thẻ cào</h2>
-      <form id="cardForm" class="space-y-5" novalidate>
-        <div>
-          <label class="block mb-2 font-medium">Loại thẻ</label>
-          <select id="cardType" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500">
-            <option value="Viettel">Viettel (20%)</option>
-            <option value="Mobifone">Mobifone (20%)</option>
-            <option value="Vinaphone">Vinaphone (20%)</option>
-            <option value="Vietnamobile">Vietnamobile (20%)</option>
-            <option value="Zing">Zing (20%)</option>
-            <option value="Vcoin">Vcoin (20%)</option>
-            <option value="Garena">Garena (20%)</option>
-            <option value="Gate">Gate (20%)</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block mb-2 font-medium">Mệnh giá</label>
-          <select id="amount" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500">
-            <option value="10000">10.000đ</option>
-            <option value="20000">20.000đ</option>
-            <option value="50000">50.000đ</option>
-            <option value="100000">100.000đ</option>
-            <option value="200000">200.000đ</option>
-            <option value="500000">500.000đ</option>
-          </select>
-        </div>
-
-        <div>
-          <label class="block mb-2 font-medium">Số serial</label>
-          <input id="serial" inputmode="numeric" pattern="\\d*" type="text"
-                 class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500">
-          <div id="serialError" class="err"></div>
-        </div>
-
-        <div>
-          <label class="block mb-2 font-medium">Mã thẻ</label>
-          <input id="pin" inputmode="numeric" pattern="\\d*" type="text"
-                 class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500">
-          <div id="pinError" class="err"></div>
-        </div>
-
-        <div class="text-center mt-4">
-          <div class="text-2xl font-bold text-green-600 mt-1">₫<span id="thucnhan">0</span></div>
-        </div>
-
-        <button type="submit" class="w-full btn-gradient text-white py-3 rounded-full shadow-lg text-lg font-semibold">
-          Nạp thẻ ngay
-        </button>
-      </form>
-    </div>
-
-    <!-- Hướng dẫn -->
-    <div class="card">
-      <h2 class="text-xl font-semibold mb-6 text-gray-800">📘 Hướng dẫn nạp tiền</h2>
-      <ol class="list-decimal list-inside space-y-3 text-gray-700">
-        <li>Chọn loại thẻ, nhập serial, mã thẻ, mệnh giá → bấm nạp.</li>
-        <li>Hệ thống xử lý tự động, tiền cộng vào số dư nếu hợp lệ.</li>
-      </ol>
-      <div class="mt-6 text-sm text-yellow-800 bg-yellow-100 border border-yellow-300 rounded-lg p-4">
-        <strong>Lưu ý:</strong><br>- Phí nạp bằng thẻ cào là <strong>20%</strong>.<br>- Nếu nhập sai mệnh giá thẻ sẽ bị <em>trừ 50% phí</em>.
-      </div>
-    </div>
-  </div>
-
-  <!-- Lịch sử -->
-  <div class="max-w-6xl mx-auto mt-8 px-4">
-    <div class="card">
-      <h2 class="text-xl font-semibold mb-6 text-gray-800">📊 Lịch sử nạp thẻ</h2>
-      <div class="overflow-x-auto">
-        <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
-          <thead><tr>
-            <th class="px-4 py-3 bg-black text-white border-r">Nhà mạng</th>
-            <th class="px-4 py-3 bg-black text-white border-r">Số serial</th>
-            <th class="px-4 py-3 bg-black text-white border-r">Mệnh giá</th>
-            <th class="px-4 py-3 bg-black text-white border-r">Thực nhận</th>
-            <th class="px-4 py-3 bg-black text-white border-r">Trạng thái</th>
-            <th class="px-4 py-3 bg-black text-white">Ngày nạp</th>
-          </tr></thead>
-          <tbody id="historyTable" class="divide-y divide-gray-200">
-            <tr><td colspan="6" class="text-center py-5 text-gray-500">Chưa có giao dịch nào.</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+  <!-- Nội dung -->
+  <div id="contentArea" class="max-w-6xl mx-auto mt-4 px-4"></div>
 
   <!-- Loading & Success -->
   <div id="loadingOverlay"><div class="spinner"></div><div>Đang xử lý...</div></div>
@@ -193,14 +111,12 @@
     /* ===== MENU ===== */
     const sidebar = document.getElementById("sidebar");
     const menuBtn = document.querySelector(".menu-btn");
-    window.toggleMenu = function () {
+    function toggleMenu() {
       sidebar.classList.toggle("open");
-      menuBtn.classList.toggle("hidden");
-    };
+    }
     document.addEventListener("click", (e) => {
       if (sidebar.classList.contains("open") && !sidebar.contains(e.target) && !menuBtn.contains(e.target)) {
         sidebar.classList.remove("open");
-        menuBtn.classList.remove("hidden");
       }
     });
 
@@ -215,153 +131,171 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth();
 
-    const FEE_RATE = 0.8; // thực nhận 80%
-    const amountSelect = document.getElementById("amount");
-    const thucnhanSpan = document.getElementById("thucnhan");
+    const FEE_RATE = 0.8;
 
-    function updateThucNhan() {
-      const val = parseInt(amountSelect.value || 0, 10) || 0;
-      thucnhanSpan.textContent = Math.floor(val * FEE_RATE).toLocaleString("vi-VN") + "đ";
-    }
-    amountSelect.addEventListener("change", updateThucNhan);
-    updateThucNhan();
-
-    /* ===== Validate realtime: chỉ số + độ dài ===== */
-    const cardRules = {
-      "Viettel":{serial:[10,16],pin:[10,16]},
-      "Mobifone":{serial:[10,16],pin:[10,16]},
-      "Vinaphone":{serial:[10,16],pin:[10,16]},
-      "Vietnamobile":{serial:[10,16],pin:[10,16]},
-      "Zing":{serial:[9,16],pin:[10,16]},
-      "Vcoin":{serial:[9,16],pin:[10,16]},
-      "Garena":{serial:[9,16],pin:[10,16]},
-      "Gate":{serial:[9,16],pin:[10,16]}
-    };
-
-    const serialEl = document.getElementById("serial");
-    const pinEl = document.getElementById("pin");
-    const serialErr = document.getElementById("serialError");
-    const pinErr = document.getElementById("pinError");
-    const cardTypeEl = document.getElementById("cardType");
-
-    function enforceDigits(el, errEl) {
-      el.addEventListener("beforeinput", (e) => {
-        // Block non-digit insertions
-        if (e.data && /\D/.test(e.data)) {
-          e.preventDefault();
-          errEl.textContent = "⚠️ Chỉ được nhập số!";
-        }
-      });
-      el.addEventListener("input", () => {
-        // Sanitize paste and show error if had non-digits
-        const cleaned = el.value.replace(/\D/g, "");
-        if (cleaned !== el.value) {
-          el.value = cleaned;
-          errEl.textContent = "⚠️ Chỉ được nhập số!";
-        } else if (!el.value.length) {
-          errEl.textContent = ""; // clear when empty (other rules handle emptiness)
-        }
-        validateLength(el, errEl);
-      });
-      // Extra guard for keyboard input
-      el.addEventListener("keydown", (e) => {
-        const allowed = ["Backspace","Delete","ArrowLeft","ArrowRight","Tab","Home","End"];
-        if (allowed.includes(e.key)) return;
-        if (!/^\d$/.test(e.key)) {
-          e.preventDefault();
-          errEl.textContent = "⚠️ Chỉ được nhập số!";
-        }
-      });
-      el.addEventListener("blur", () => validateLength(el, errEl));
-    }
-
-    function validateLength(el, errEl) {
-      const rules = cardRules[cardTypeEl.value];
-      const isSerial = el === serialEl;
-      const [min, max] = isSerial ? rules.serial : rules.pin;
-      const len = el.value.length;
-      if (len === 0) {
-        // Không báo khi để trống lúc đang gõ; submit sẽ nhắc
+    /* ===== Hiển thị nội dung theo trạng thái đăng nhập ===== */
+    auth.onAuthStateChanged(user => {
+      const content = document.getElementById("contentArea");
+      if (!user) {
+        content.innerHTML = `
+          <div class="card text-center">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">⚠️ Bạn cần đăng nhập</h2>
+            <p>Vui lòng đăng nhập để nạp thẻ và xem lịch sử giao dịch.</p>
+          </div>`;
         return;
       }
-      if (len < min || len > max) {
-        errEl.textContent = `⚠️ ${isSerial ? "Serial" : "Mã thẻ"} phải từ ${min}-${max} số`;
-      } else {
-        // Chỉ xóa nếu hiện tại không phải thông điệp "chỉ nhập số"
-        if (errEl.textContent.startsWith("⚠️ Chỉ được nhập số")) return;
-        errEl.textContent = "";
+
+      // Nếu đã đăng nhập → hiển thị form và lịch sử
+      content.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="card">
+            <h2 class="text-xl font-semibold mb-6 text-gray-800">🔐 Nạp thẻ cào</h2>
+            <form id="cardForm" class="space-y-5" novalidate>
+              <div>
+                <label class="block mb-2 font-medium">Loại thẻ</label>
+                <select id="cardType" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500">
+                  <option value="Viettel">Viettel (20%)</option>
+                  <option value="Mobifone">Mobifone (20%)</option>
+                  <option value="Vinaphone">Vinaphone (20%)</option>
+                  <option value="Vietnamobile">Vietnamobile (20%)</option>
+                  <option value="Zing">Zing (20%)</option>
+                  <option value="Vcoin">Vcoin (20%)</option>
+                  <option value="Garena">Garena (20%)</option>
+                  <option value="Gate">Gate (20%)</option>
+                </select>
+              </div>
+              <div>
+                <label class="block mb-2 font-medium">Mệnh giá</label>
+                <select id="amount" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500">
+                  <option value="10000">10.000đ</option>
+                  <option value="20000">20.000đ</option>
+                  <option value="50000">50.000đ</option>
+                  <option value="100000">100.000đ</option>
+                  <option value="200000">200.000đ</option>
+                  <option value="500000">500.000đ</option>
+                </select>
+              </div>
+              <div>
+                <label class="block mb-2 font-medium">Số serial</label>
+                <input id="serial" inputmode="numeric" type="text"
+                  class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500">
+                <div id="serialError" class="err"></div>
+              </div>
+              <div>
+                <label class="block mb-2 font-medium">Mã thẻ</label>
+                <input id="pin" inputmode="numeric" type="text"
+                  class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500">
+                <div id="pinError" class="err"></div>
+              </div>
+              <div class="text-center mt-4">
+                <div class="text-2xl font-bold text-green-600 mt-1">₫<span id="thucnhan">0</span></div>
+              </div>
+              <button type="submit" class="w-full btn-gradient text-white py-3 rounded-full shadow-lg text-lg font-semibold">
+                Nạp thẻ ngay
+              </button>
+            </form>
+          </div>
+          <div class="card">
+            <h2 class="text-xl font-semibold mb-6 text-gray-800">📊 Lịch sử nạp thẻ</h2>
+            <div class="overflow-x-auto">
+              <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
+                <thead><tr>
+                  <th class="px-4 py-3 bg-black text-white border-r">Nhà mạng</th>
+                  <th class="px-4 py-3 bg-black text-white border-r">Số serial</th>
+                  <th class="px-4 py-3 bg-black text-white border-r">Mệnh giá</th>
+                  <th class="px-4 py-3 bg-black text-white border-r">Thực nhận</th>
+                  <th class="px-4 py-3 bg-black text-white border-r">Trạng thái</th>
+                  <th class="px-4 py-3 bg-black text-white">Ngày nạp</th>
+                </tr></thead>
+                <tbody id="historyTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>`;
+
+      setupForm(user);
+      loadHistory(user.uid);
+    });
+
+    /* ===== Xử lý form ===== */
+    function setupForm(user) {
+      const cardForm = document.getElementById("cardForm");
+      const amountSelect = document.getElementById("amount");
+      const thucnhanSpan = document.getElementById("thucnhan");
+      function updateThucNhan() {
+        const val = parseInt(amountSelect.value || 0, 10) || 0;
+        thucnhanSpan.textContent = Math.floor(val * FEE_RATE).toLocaleString("vi-VN") + "đ";
       }
+      amountSelect.addEventListener("change", updateThucNhan);
+      updateThucNhan();
+
+      const serialEl = document.getElementById("serial");
+      const pinEl = document.getElementById("pin");
+      const serialErr = document.getElementById("serialError");
+      const pinErr = document.getElementById("pinError");
+      const cardTypeEl = document.getElementById("cardType");
+
+      const cardRules = {
+        "Viettel":{serial:[10,16],pin:[10,16]},
+        "Mobifone":{serial:[10,16],pin:[10,16]},
+        "Vinaphone":{serial:[10,16],pin:[10,16]},
+        "Vietnamobile":{serial:[10,16],pin:[10,16]},
+        "Zing":{serial:[9,16],pin:[10,16]},
+        "Vcoin":{serial:[9,16],pin:[10,16]},
+        "Garena":{serial:[9,16],pin:[10,16]},
+        "Gate":{serial:[9,16],pin:[10,16]}
+      };
+
+      cardForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const pin = pinEl.value.trim();
+        const serial = serialEl.value.trim();
+        const cardType = cardTypeEl.value;
+        const amount = parseInt(amountSelect.value || "0", 10) || 0;
+
+        let hasError = false;
+        const rules = cardRules[cardType];
+
+        if (!serial) { serialErr.textContent = "⚠️ Vui lòng nhập số serial"; hasError = true; }
+        else if (serial.length < rules.serial[0] || serial.length > rules.serial[1]) {
+          serialErr.textContent = `⚠️ Serial phải từ ${rules.serial[0]}-${rules.serial[1]} số`; hasError = true;
+        } else serialErr.textContent = "";
+
+        if (!pin) { pinErr.textContent = "⚠️ Vui lòng nhập mã thẻ"; hasError = true; }
+        else if (pin.length < rules.pin[0] || pin.length > rules.pin[1]) {
+          pinErr.textContent = `⚠️ Mã thẻ phải từ ${rules.pin[0]}-${rules.pin[1]} số`; hasError = true;
+        } else pinErr.textContent = "";
+
+        if (hasError) return;
+
+        document.getElementById("loadingOverlay").style.display = "flex";
+        setTimeout(async () => {
+          try {
+            await db.collection("napthe").add({
+              uid: user.uid,
+              cardType, amount, serial, pin,
+              createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              status: "Đang kiểm tra (0-5h)"
+            });
+            cardForm.reset();
+            updateThucNhan();
+            loadHistory(user.uid);
+            document.getElementById("loadingOverlay").style.display = "none";
+            document.getElementById("successModal").style.display = "flex";
+          } catch (err) {
+            alert("Lỗi: " + err.message);
+            document.getElementById("loadingOverlay").style.display = "none";
+          }
+        }, 1000);
+      });
+      document.getElementById("okBtn").addEventListener("click", () => {
+        document.getElementById("successModal").style.display = "none";
+      });
     }
 
-    enforceDigits(serialEl, serialErr);
-    enforceDigits(pinEl, pinErr);
-    cardTypeEl.addEventListener("change", () => {
-      // Re-validate khi đổi loại thẻ
-      validateLength(serialEl, serialErr);
-      validateLength(pinEl, pinErr);
-    });
-
-    /* ===== Submit ===== */
-    const cardForm = document.getElementById("cardForm");
-    cardForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const pin = pinEl.value.trim();
-      const serial = serialEl.value.trim();
-      const cardType = cardTypeEl.value;
-      const amount = parseInt(amountSelect.value || "0", 10) || 0;
-
-      serialErr.textContent = "";
-      pinErr.textContent = "";
-
-      const rules = cardRules[cardType];
-      let hasError = false;
-
-      if (!serial) { serialErr.textContent = "⚠️ Vui lòng nhập số serial"; hasError = true; }
-      else if (serial.length < rules.serial[0] || serial.length > rules.serial[1]) {
-        serialErr.textContent = `⚠️ Serial phải từ ${rules.serial[0]}-${rules.serial[1]} số`; hasError = true;
-      }
-
-      if (!pin) { pinErr.textContent = "⚠️ Vui lòng nhập mã thẻ"; hasError = true; }
-      else if (pin.length < rules.pin[0] || pin.length > rules.pin[1]) {
-        pinErr.textContent = `⚠️ Mã thẻ phải từ ${rules.pin[0]}-${rules.pin[1]} số`; hasError = true;
-      }
-
-      if (hasError) return;
-
-      // Loading 1s
-      document.getElementById("loadingOverlay").style.display = "flex";
-      setTimeout(async () => {
-        try {
-          await db.collection("napthe").add({
-            uid: "guest",
-            cardType, amount, serial, pin,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            status: "Pending"
-          });
-
-          cardForm.reset();
-          updateThucNhan();
-          loadHistory("guest");
-
-          document.getElementById("loadingOverlay").style.display = "none";
-          document.getElementById("successModal").style.display = "flex";
-        } catch (err) {
-          alert("Lỗi: " + err.message);
-          document.getElementById("loadingOverlay").style.display = "none";
-        }
-      }, 1000);
-    });
-
-    // OK -> fade-out mượt rồi reload
-    document.getElementById("okBtn").addEventListener("click", () => {
-      const modalBox = document.querySelector("#successModal .modal-box");
-      modalBox.classList.add("fade-out");
-      setTimeout(() => location.reload(), 400);
-    });
-
-    /* ===== History ===== */
+    /* ===== Lịch sử ===== */
     async function loadHistory(uid) {
       const tbody = document.getElementById("historyTable");
       tbody.innerHTML = "";
@@ -382,7 +316,7 @@
           const menhgia = (d.amount || 0).toLocaleString("vi-VN") + "đ";
           const thucnhan = Math.floor((d.amount || 0) * FEE_RATE).toLocaleString("vi-VN") + "đ";
           const statusClass =
-            d.status === "Pending" ? "bg-yellow-500" :
+            d.status.includes("kiểm tra") ? "bg-yellow-500" :
             d.status === "Completed" ? "bg-green-500" : "bg-red-500";
 
           tbody.innerHTML += `
@@ -390,7 +324,7 @@
               <td class="px-4 py-3">${d.cardType || ""}</td>
               <td class="px-4 py-3">${d.serial || ""}</td>
               <td class="px-4 py-3">${menhgia}</td>
-              <td class="px-4 py-3">${thucnhan}</td>
+              <td class="px-4 py-3">${thucnhan}
               <td class="px-4 py-3">
                 <span class="px-3 py-1 rounded-full text-white text-sm font-semibold ${statusClass}">
                   ${d.status || ""}
@@ -403,9 +337,6 @@
         tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-red-500">Không tải được lịch sử: ${e.message}</td></tr>`;
       }
     }
-
-    // Lần đầu mở trang (nếu muốn hiển thị sẵn cho "guest")
-    loadHistory("guest");
   </script>
 </body>
 </html>
