@@ -125,14 +125,16 @@
 
         <div>
           <label class="block mb-2 font-medium">Số serial</label>
-          <input id="serial" inputmode="numeric" pattern="\\d*" type="text"
+          <!-- sửa 1 -->
+          <input id="serial" type="text"
                  class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500">
           <div id="serialError" class="err"></div>
         </div>
 
         <div>
           <label class="block mb-2 font-medium">Mã thẻ</label>
-          <input id="pin" inputmode="numeric" pattern="\\d*" type="text"
+          <!-- sửa 2 -->
+          <input id="pin" type="text"
                  class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500">
           <div id="pinError" class="err"></div>
         </div>
@@ -145,7 +147,6 @@
           Nạp thẻ ngay
         </button>
 
-        <!-- Thông báo yêu cầu đăng nhập (hiện ngay khi chưa đăng nhập, không cần bấm) -->
         <div id="authInlineMsg" class="err text-center"></div>
       </form>
     </div>
@@ -167,12 +168,9 @@
   <div class="max-w-6xl mx-auto mt-8 px-4">
     <div class="card">
       <h2 class="text-xl font-semibold mb-6 text-gray-800">📊 Lịch sử nạp thẻ</h2>
-
-      <!-- Nhắc đăng nhập khi chưa có user -->
       <div id="historyGuestNotice" class="text-sm text-yellow-900 bg-yellow-100 border border-yellow-300 rounded-lg p-4 hidden">
         Vui lòng đăng nhập để xem lịch sử nạp của bạn.
       </div>
-
       <div id="historyWrap" class="overflow-x-auto hidden">
         <table class="min-w-full border border-gray-200 rounded-lg overflow-hidden">
           <thead><tr>
@@ -200,7 +198,8 @@
     </div>
   </div>
 
-  <script>
+  <!-- Script bắt đầu -->
+<script>
     /* ===== MENU ===== */
     const sidebar = document.getElementById("sidebar");
     const menuBtn = document.querySelector(".menu-btn");
@@ -228,12 +227,11 @@
     const db = firebase.firestore();
     const auth = firebase.auth();
 
-    const FEE_RATE = 0.8; // thực nhận 80%
+    const FEE_RATE = 0.8;
     const amountSelect = document.getElementById("amount");
     const thucnhanSpan = document.getElementById("thucnhan");
     const submitBtn = document.getElementById("submitBtn");
     const authInlineMsg = document.getElementById("authInlineMsg");
-
     const historyWrap = document.getElementById("historyWrap");
     const historyGuestNotice = document.getElementById("historyGuestNotice");
 
@@ -244,7 +242,6 @@
     amountSelect.addEventListener("change", updateThucNhan);
     updateThucNhan();
 
-    /* ===== Validate realtime: chỉ số + độ dài ===== */
     const cardRules = {
       "Viettel":{serial:[10,16],pin:[10,16]},
       "Mobifone":{serial:[10,16],pin:[10,16]},
@@ -262,34 +259,7 @@
     const pinErr = document.getElementById("pinError");
     const cardTypeEl = document.getElementById("cardType");
 
-    function enforceDigits(el, errEl) {
-      el.addEventListener("beforeinput", (e) => {
-        if (e.data && /\D/.test(e.data)) {
-          e.preventDefault();
-          errEl.textContent = "⚠️ Chỉ được nhập số!";
-        }
-      });
-      el.addEventListener("input", () => {
-        const cleaned = el.value.replace(/\D/g, "");
-        if (cleaned !== el.value) {
-          el.value = cleaned;
-          errEl.textContent = "⚠️ Chỉ được nhập số!";
-        } else if (!el.value.length) {
-          errEl.textContent = "";
-        }
-        validateLength(el, errEl);
-      });
-      el.addEventListener("keydown", (e) => {
-        const allowed = ["Backspace","Delete","ArrowLeft","ArrowRight","Tab","Home","End"];
-        if (allowed.includes(e.key)) return;
-        if (!/^\d$/.test(e.key)) {
-          e.preventDefault();
-          errEl.textContent = "⚠️ Chỉ được nhập số!";
-        }
-      });
-      el.addEventListener("blur", () => validateLength(el, errEl));
-    }
-
+    // sửa 3: kiểm tra độ dài, cho nhập mọi ký tự
     function validateLength(el, errEl) {
       const rules = cardRules[cardTypeEl.value];
       const isSerial = el === serialEl;
@@ -297,21 +267,20 @@
       const len = el.value.length;
       if (len === 0) return;
       if (len < min || len > max) {
-        errEl.textContent = `⚠️ ${isSerial ? "Serial" : "Mã thẻ"} phải từ ${min}-${max} số`;
+        errEl.textContent = `⚠️ ${isSerial ? "Serial" : "Mã thẻ"} phải từ ${min}-${max} ký tự`;
       } else {
-        if (errEl.textContent.startsWith("⚠️ Chỉ được nhập số")) return;
         errEl.textContent = "";
       }
     }
 
-    enforceDigits(serialEl, serialErr);
-    enforceDigits(pinEl, pinErr);
+    serialEl.addEventListener("blur", () => validateLength(serialEl, serialErr));
+    pinEl.addEventListener("blur", () => validateLength(pinEl, pinErr));
     cardTypeEl.addEventListener("change", () => {
       validateLength(serialEl, serialErr);
       validateLength(pinEl, pinErr);
     });
 
-    /* ===== Helper: Khoá/Mở form theo trạng thái đăng nhập ===== */
+    /* ===== Helper ===== */
     const formControls = [cardTypeEl, amountSelect, serialEl, pinEl, submitBtn];
     function setFormEnabled(enabled) {
       formControls.forEach(el => {
@@ -322,17 +291,14 @@
       });
     }
 
-    /* ===== AUTH STATE UI ===== */
+    /* ===== AUTH ===== */
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
-        // Khách: khóa form + hiện thông báo ngay bên dưới nút
         setFormEnabled(false);
         authInlineMsg.innerHTML = 'Bạn cần <a href="login.html" class="underline font-semibold">đăng nhập</a> để nạp thẻ.';
-        // Lịch sử: ẩn bảng, hiện nhắc đăng nhập
         historyWrap.classList.add("hidden");
         historyGuestNotice.classList.remove("hidden");
       } else {
-        // Đã đăng nhập: mở form, xóa thông báo, tải lịch sử của chính user
         setFormEnabled(true);
         authInlineMsg.textContent = "";
         historyGuestNotice.classList.add("hidden");
@@ -345,14 +311,11 @@
     const cardForm = document.getElementById("cardForm");
     cardForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-
       const user = auth.currentUser;
       if (!user) {
-        // Double-check phía client
         authInlineMsg.innerHTML = 'Bạn cần <a href="dn.html" class="underline font-semibold">đăng nhập</a> để nạp thẻ.';
         return;
       }
-
       const pin = pinEl.value.trim();
       const serial = serialEl.value.trim();
       const cardType = cardTypeEl.value;
@@ -360,96 +323,58 @@
 
       serialErr.textContent = "";
       pinErr.textContent = "";
+      validateLength(serialEl, serialErr);
+      validateLength(pinEl, pinErr);
+      if (serialErr.textContent || pinErr.textContent) return;
 
-      const rules = cardRules[cardType];
-      let hasError = false;
+      const loadingOverlay = document.getElementById("loadingOverlay");
+      loadingOverlay.style.display = "flex";
+      setFormEnabled(false);
 
-      if (!serial) { serialErr.textContent = "⚠️ Vui lòng nhập số serial"; hasError = true; }
-      else if (serial.length < rules.serial[0] || serial.length > rules.serial[1]) {
-        serialErr.textContent = `⚠️ Serial phải từ ${rules.serial[0]}-${rules.serial[1]} số`; hasError = true;
+      try {
+        await db.collection("cardSubmissions").add({
+          uid: user.uid,
+          cardType, amount, serial, pin,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          status: "pending"
+        });
+        loadingOverlay.style.display = "none";
+        const modal = document.getElementById("successModal");
+        modal.style.display = "flex";
+        document.getElementById("okBtn").onclick = () => {
+          modal.querySelector(".modal-box").classList.add("fade-out");
+          setTimeout(()=>{modal.style.display="none"; modal.querySelector(".modal-box").classList.remove("fade-out");},400);
+        };
+        cardForm.reset();
+        updateThucNhan();
+      } catch (err) {
+        alert("Có lỗi: " + err.message);
       }
-
-      if (!pin) { pinErr.textContent = "⚠️ Vui lòng nhập mã thẻ"; hasError = true; }
-      else if (pin.length < rules.pin[0] || pin.length > rules.pin[1]) {
-        pinErr.textContent = `⚠️ Mã thẻ phải từ ${rules.pin[0]}-${rules.pin[1]} số`; hasError = true;
-      }
-
-      if (hasError) return;
-
-      document.getElementById("loadingOverlay").style.display = "flex";
-      setTimeout(async () => {
-        try {
-          await db.collection("napthe").add({
-            uid: user.uid,
-            cardType, amount, serial, pin,
-            createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-            status: "Pending"
-          });
-
-          cardForm.reset();
-          updateThucNhan();
-          loadHistory(user.uid);
-
-          document.getElementById("loadingOverlay").style.display = "none";
-          document.getElementById("successModal").style.display = "flex";
-        } catch (err) {
-          alert("Lỗi: " + err.message);
-          document.getElementById("loadingOverlay").style.display = "none";
-        }
-      }, 800);
+      setFormEnabled(true);
     });
 
-    // OK -> fade-out mượt rồi reload
-    document.getElementById("okBtn").addEventListener("click", () => {
-      const modalBox = document.querySelector("#successModal .modal-box");
-      modalBox.classList.add("fade-out");
-      setTimeout(() => location.reload(), 400);
-    });
-
-    /* ===== History (user only) ===== */
+    /* ===== Load history ===== */
     async function loadHistory(uid) {
       const tbody = document.getElementById("historyTable");
+      const snap = await db.collection("cardSubmissions").where("uid","==",uid).orderBy("createdAt","desc").get();
       tbody.innerHTML = "";
-      try {
-        const snap = await db.collection("napthe")
-          .where("uid", "==", uid)
-          .orderBy("createdAt", "desc")
-          .get();
-
-        if (snap.empty) {
-          tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-gray-500">Chưa có giao dịch nào.</td></tr>`;
-          return;
-        }
-
-        snap.forEach(doc => {
-          const d = doc.data();
-          const date = d.createdAt?.toDate().toLocaleString("vi-VN") || "";
-          const menhgia = (d.amount || 0).toLocaleString("vi-VN") + "đ";
-          const thucnhan = Math.floor((d.amount || 0) * FEE_RATE).toLocaleString("vi-VN") + "đ";
-          const statusClass =
-            d.status === "Pending" ? "bg-yellow-500" :
-            d.status === "Completed" ? "bg-green-500" : "bg-red-500";
-
-          tbody.innerHTML += `
-            <tr class="hover:bg-gray-50">
-              <td class="px-4 py-3">${d.cardType || ""}</td>
-              <td class="px-4 py-3">${d.serial || ""}</td>
-              <td class="px-4 py-3">${menhgia}</td>
-              <td class="px-4 py-3">${thucnhan}</td>
-              <td class="px-4 py-3">
-                <span class="px-3 py-1 rounded-full text-white text-sm font-semibold ${statusClass}">
-                  ${d.status || ""}
-                </span>
-              </td>
-              <td class="px-4 py-3">${date}</td>
-            </tr>`;
-        });
-      } catch (e) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-5 text-red-500">Không tải được lịch sử: ${e.message}</td></tr>`;
+      if (snap.empty) {
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-gray-500">Chưa có giao dịch nào.</td></tr>';
+        return;
       }
+      snap.forEach(doc=>{
+        const d = doc.data();
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="px-4 py-2 border">${d.cardType}</td>
+          <td class="px-4 py-2 border">${d.serial}</td>
+          <td class="px-4 py-2 border">${d.amount.toLocaleString("vi-VN")}đ</td>
+          <td class="px-4 py-2 border">${Math.floor(d.amount*FEE_RATE).toLocaleString("vi-VN")}đ</td>
+          <td class="px-4 py-2 border">${d.status||"pending"}</td>
+          <td class="px-4 py-2 border">${d.createdAt?.toDate().toLocaleString("vi-VN")||""}</td>`;
+        tbody.appendChild(row);
+      });
     }
-
-    // KHÔNG load lịch sử cho khách, chỉ khi có user (đã xử lý trong onAuthStateChanged)
   </script>
 </body>
 </html>
