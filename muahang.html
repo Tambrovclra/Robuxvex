@@ -1,134 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mua robux</title>
-
-  <!-- FontAwesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-    }
-
-    /* Nút menu */
-    .menu-btn {
-      font-size: 26px;
-      cursor: pointer;
-      padding: 15px;
-      position: relative;
-      z-index: 1100;
-      color: #C0C0C0; /* icon màu đen */
-    }
-    .menu-btn.hidden {
-      display: none;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      height: 100%;
-      width: 260px;
-      position: fixed;
-      top: 0;
-      left: -260px;
-      background-color: #0a2a5c;
-      transition: left 0.4s ease;
-      padding-top: 20px;
-      color: white;
-      z-index: 1000;
-    }
-    .sidebar.open {
-      left: 0;
-    }
-
-    .sidebar a {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 20px;
-      text-decoration: none;
-      font-size: 16px;
-      color: white;
-      transition: background 0.3s;
-    }
-    .sidebar a:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 8px;
-    }
-
-    .sidebar h3 {
-      margin: 20px 0 10px 20px;
-      font-size: 14px;
-      opacity: 0.8;
-      text-transform: uppercase;
-    }
-
-    /* Nút đóng trong sidebar */
-    .close-btn {
-      font-size: 22px;
-      cursor: pointer;
-      color: #fff;
-      padding: 10px 20px;
-      display: block;
-      margin-bottom: 10px;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Nút mở menu -->
-  <span class="menu-btn" onclick="toggleMenu()">
-    <i class="fas fa-bars"></i>
-  </span>
-
-  <!-- Sidebar -->
-  <div id="sidebar" class="sidebar">
-    
-
-    <h3>NẠP ROBUX</h3>
-    <a href="index.html"><i class="fas fa-home"></i> Trang chủ</a>
-    <a href="muahang.html"><i class="fas fa-coins"></i> Mua robux</a>
-    <a href="muahang.html"><i class="fas fa-history"></i> Lịch sử mua hàng</a>
-
-    <h3>TÀI KHOẢN & NẠP</h3>
-    <a href="nap.html"><i class="fas fa-wallet"></i> Nạp tiền</a>
-    <a href="#"><i class="fas fa-user-friends"></i> Cộng tác viên (chưa mở)</a>
-
-    <h3>HỖ TRỢ KHÁCH HÀNG</h3>
-    <a href="zalo.me/0907486634"><i class="fab fa-facebook-messenger"></i> Zalo</a>
-    <a href="mailto:vochuoi86@gmail.com"><i class="fas fa-envelope"></i> Gửi mail</a>
-  </div>
-
-  <script>
-    const sidebar = document.getElementById("sidebar");
-    const menuBtn = document.querySelector(".menu-btn");
-
-    function toggleMenu() {
-      sidebar.classList.toggle("open");
-      menuBtn.classList.toggle("hidden");
-    }
-
-    // Đóng khi click ra ngoài
-    document.addEventListener("click", function(event) {
-      if (
-        sidebar.classList.contains("open") &&
-        !sidebar.contains(event.target) &&
-        !menuBtn.contains(event.target)
-      ) {
-        sidebar.classList.remove("open");
-        menuBtn.classList.remove("hidden");
-      }
-    });
-  </script>
-
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mua robux</title>
@@ -223,7 +95,11 @@
       box-shadow:0 0 15px rgba(251,191,36,.7);
     }
 
-    .history-wrapper{margin-top:10px;}
+    .history-wrapper{
+      margin-top:10px;
+      overflow-x:auto;   /* ✅ cuộn ngang khi bảng quá rộng */
+      max-width:100%;
+    }
     table{width:100%;border-collapse:collapse;font-size:14px;}
     thead th{background:#111;color:#fff;padding:10px;border:2px solid #fff;}
     tbody td{background:#fff;color:#111;text-align:center;padding:10px;border:2px solid #fff;}
@@ -233,39 +109,6 @@
     .status.pending{background:#fef3c7;color:#92400e;}
     .status.success{background:#d1fae5;color:#065f46;}
     .status.failed{background:#fee2e2;color:#991b1b;}
-    
-table.history {
-  width: 100%;
-  border-collapse: separate;   /* tách dòng */
-  border-spacing: 0 12px;      /* khoảng cách giữa các dòng */
-  font-size: 14px;
-}
-
-table.history thead th {
-  background: #111827;
-  color: #fff;
-  padding: 12px 10px;
-  text-align: center;
-  font-weight: 800;
-  letter-spacing: .2px;
-  border: none;
-}
-
-table.history tbody tr {
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,.08);
-}
-
-table.history tbody td {
-  padding: 12px 10px;
-  text-align: center;
-  color: #111827;
-  border: none;
-}
-
-
-
   </style>
 </head>
 <body>
@@ -318,9 +161,9 @@ table.history tbody td {
           <thead>
             <tr>
               <th>Tài khoản</th>
-              
+              <th>Liên hệ</th>
               <th>Số Robux</th>
-              
+              <th>Thực nhận</th>
               <th>Thanh toán</th>
               <th>Trạng thái</th>
               <th>Ngày mua</th>
@@ -335,7 +178,7 @@ table.history tbody td {
   <!-- Firebase -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, orderBy, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
     const firebaseConfig = {
@@ -352,7 +195,6 @@ table.history tbody td {
     const db = getFirestore(app);
     const auth = getAuth(app);
     let currentUser = null;
-    onAuthStateChanged(auth, (user) => { currentUser = user; });
 
     const qtyInput = document.getElementById("qty");
     const totalEl = document.getElementById("total");
@@ -426,18 +268,17 @@ table.history tbody td {
       await updateDoc(userRef, { balance: balance - priceVND });
 
       await addDoc(collection(db, "orders"), {
-  uid: currentUser.uid,
-  robloxName: username,  // ✅ thay vì username
-  contact,
-  robux,
-  robuxAmount: (typeSelect.value === "giftcard" ? robux : Math.floor(robux * 0.7)), // ✅ thay vì robuxAfterTax
-  price: priceVND,       // ✅ thay vì priceVND
-  createdAt: new Date().toISOString(), // ✅ thay vì time: Date.now()
-  deliveredAt: null,
-  status: "pending"      // ✅ thay vì "chờ duyệt"
-});
+        uid: currentUser.uid,
+        robloxName: username,
+        contact,
+        robux,
+        robuxAmount: (typeSelect.value === "giftcard" ? robux : Math.floor(robux * 0.7)),
+        price: priceVND,
+        createdAt: new Date().toISOString(),
+        deliveredAt: null,
+        status: "pending"
+      });
 
-      addHistoryRow(username, contact, robux, (typeSelect.value === "giftcard" ? robux : Math.floor(robux * 0.7)), priceVND, "chờ duyệt", Date.now());
       showWarning(`✅ Mua thành công ${robux} R$ cho @${username}. Số dư còn lại: ${(balance - priceVND).toLocaleString("vi-VN")}₫`, "success");
     }
 
@@ -445,9 +286,9 @@ table.history tbody td {
       const tr = document.createElement("tr");
       const date = new Date(timestamp).toLocaleString("vi-VN");
       const statusClass =
-  status === "pending" ? "pending" :
-  status === "completed" ? "success" :
-  "failed";
+        status === "pending" ? "pending" :
+        status === "completed" ? "success" :
+        "failed";
       tr.innerHTML = `
         <td>${username}</td>
         <td>${contact}</td>
@@ -461,7 +302,12 @@ table.history tbody td {
     }
 
     function loadHistory() {
-      const q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
+      if (!currentUser) return;
+      const q = query(
+        collection(db, "orders"),
+        where("uid", "==", currentUser.uid),
+        orderBy("createdAt", "desc")
+      );
       onSnapshot(q, (snapshot) => {
         historyTableBody.innerHTML = "";
         snapshot.forEach((doc) => {
@@ -484,8 +330,16 @@ table.history tbody td {
       handleBuy(username, contact, robux, priceVND);
     });
 
+    onAuthStateChanged(auth, (user) => {
+      currentUser = user;
+      if (currentUser) {
+        loadHistory();
+      } else {
+        historyTableBody.innerHTML = "<tr><td colspan='7'>⚠️ Vui lòng đăng nhập để xem lịch sử mua hàng</td></tr>";
+      }
+    });
+
     updateForm();
-    loadHistory();
   </script>
 </body>
 </html>
