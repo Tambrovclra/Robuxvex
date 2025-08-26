@@ -295,7 +295,7 @@
     auth.onAuthStateChanged(async (user) => {
       if (!user) {
         setFormEnabled(false);
-        authInlineMsg.innerHTML = 'Bạn cần <a href="login.html" class="underline font-semibold">đăng nhập</a> để nạp thẻ.';
+        authInlineMsg.innerHTML = 'Bạn cần <a href="dn.html" class="underline font-semibold">đăng nhập</a> để nạp thẻ.';
         historyWrap.classList.add("hidden");
         historyGuestNotice.classList.remove("hidden");
       } else {
@@ -332,12 +332,12 @@
       setFormEnabled(false);
 
       try {
-        await db.collection("cardSubmissions").add({
-          uid: user.uid,
-          cardType, amount, serial, pin,
-          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-          status: "pending"
-        });
+        await db.collection("napthe").add({
+  uid: user.uid,
+  cardType, amount, serial, pin,
+  createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+  status: "pending"
+});
         loadingOverlay.style.display = "none";
         const modal = document.getElementById("successModal");
         modal.style.display = "flex";
@@ -356,7 +356,7 @@
     /* ===== Load history ===== */
     async function loadHistory(uid) {
       const tbody = document.getElementById("historyTable");
-      const snap = await db.collection("cardSubmissions").where("uid","==",uid).orderBy("createdAt","desc").get();
+      const snap = await db.collection("napthe").where("uid","==",uid).orderBy("createdAt","desc").get();
       tbody.innerHTML = "";
       if (snap.empty) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-gray-500">Chưa có giao dịch nào.</td></tr>';
