@@ -134,45 +134,141 @@
     [data-theme="light"] .pill{ background:#eef2ff; border-color:rgba(15,23,42,.06) }
 
     /* ===== SECTIONS (TOP TABLES) ===== */
-    .section{
-      background: linear-gradient(180deg, var(--panel), var(--panel-2));
-      border: 1px solid rgba(255,255,255,.06); border-radius: var(--radius); box-shadow: var(--shadow);
-      overflow:hidden; position:relative;
-    }
-    [data-theme="light"] .section{ border-color: rgba(15,23,42,.06) }
-    .section-head{
-      display:flex; align-items:center; justify-content:space-between; gap:12px;
-      padding:16px 18px; border-bottom:1px solid rgba(255,255,255,.06);
-      background: linear-gradient(180deg, rgba(79,140,255,.08), transparent);
-    }
-    [data-theme="light"] .section-head{ border-bottom-color: rgba(15,23,42,.06) }
-    .section-title{ margin:0; font-size:15px; letter-spacing:.4px }
-    .badge{
-      font-size:12px; color:#0b1220; background: linear-gradient(90deg, var(--brand), var(--accent));
-      padding:6px 10px; border-radius:999px; font-weight:700;
-    }
+:root{
+  --bg:#f3f4f6;
+  --card:#ffffff;
+  --navy:#0d2338;
+  --line:#e6e9ee;
+  --text:#111827;
+}
 
-    /* ===== TABLE ===== */
-    .table-wrap{ overflow:auto }
-    table{ width:100%; border-collapse:collapse; }
-    thead th{
-      text-align:left; font-weight:600; letter-spacing:.3px; color:#bcd0ee; font-size:12px;
-      padding:12px 16px; background: rgba(255,255,255,.03)
-    }
-    [data-theme="light"] thead th{ color:#334155; background: rgba(15,23,42,.03) }
-    tbody td{ padding:14px 16px; border-top:1px dashed rgba(255,255,255,.06) }
-    [data-theme="light"] tbody td{ border-top-color: rgba(15,23,42,.08) }
-    tbody tr:hover td{ background: rgba(79,140,255,.06) }
-    [data-theme="light"] tbody tr:hover td{ background: rgba(43,108,255,.08) }
-    .name{font-weight:700}
-    .chip{
-      display:inline-block; padding:6px 10px; border-radius:10px; font-weight:700; letter-spacing:.3px;
-      background: rgba(79,140,255,.12); color:#bed6ff; border:1px solid rgba(79,140,255,.35)
-    }
-    [data-theme="light"] .chip{ color:#1e40af; background: rgba(43,108,255,.12); border-color: rgba(43,108,255,.35) }
-    .time{ color:#9fb2cf; font-size:12px }
-    [data-theme="light"] .time{ color:#475569 }
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color:var(--text);
+  padding:18px 12px;
+}
 
+.wrap{
+  max-width:940px;
+  margin:0 auto;
+  display:grid;
+  gap:28px;
+  padding:0 12px 60px;
+}
+
+.table-card{
+  background:var(--card);
+  border-radius:12px;
+  box-shadow:0 6px 18px rgba(16,24,40,0.06);
+  overflow:hidden;
+  border: 1px solid rgba(15,23,42,0.03);
+}
+
+.card-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:18px 20px;
+  font-weight:800;
+  font-size:15px;
+  color:var(--text);
+}
+.card-head .title{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  text-transform:uppercase;
+  letter-spacing:0.6px;
+}
+.card-head .title::before {
+  content:"";
+  width:6px;
+  height:22px;
+  border-radius:3px;
+  display:block;
+  background: linear-gradient(180deg, #ef4444 0%, #7c3aed 100%);
+}
+.card-head .meta{
+  color:#6b7280;
+  font-weight:600;
+  font-size:13px;
+}
+
+.table-wrap{
+  width:100%;
+  overflow:hidden;
+  padding:0 16px 18px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:14px;
+  table-layout:fixed;
+}
+
+thead{
+  background:var(--navy);
+  color:#fff;
+}
+thead th{
+  padding:12px 14px;
+  text-align:left;
+  font-weight:700;
+  font-size:13px;
+  border-bottom:3px solid #fff;   /* gạch trắng ngang */
+  border-right:1px solid #fff;    /* gạch trắng dọc */
+}
+thead th:last-child{
+  border-right:none;
+}
+
+tbody td{
+  padding:16px 14px;
+  color:var(--text);
+  border-top:1px solid var(--line);
+  border-right:1px solid var(--line);
+  vertical-align:middle;
+  word-break:break-word;
+}
+tbody td:last-child{
+  border-right:none;
+}
+tbody tr:first-child td{
+  border-top:none;
+}
+tbody tr:hover td{
+  background:#fbfdff;
+}
+
+.icon-money{
+  width:14px;
+  height:14px;
+  opacity:0.5;
+  margin-right:6px;
+  vertical-align:middle;
+}
+
+.chip{
+  display:inline-block;
+  padding:7px 12px;
+  border-radius:8px;
+  font-weight:700;
+  font-size:13px;
+  color:#fff;
+  background: linear-gradient(90deg, #f7c600 0%, #2ecc71 100%);
+  box-shadow: 0 2px 6px rgba(46,204,113,0.12);
+  white-space:nowrap;
+}
+
+@media (max-width:760px){
+  thead th { font-size:13px; padding:12px 10px; }
+  tbody td { padding:12px 10px; font-size:14px; }
+  .chip { padding:6px 10px; font-size:13px; }
+  .card-head { padding:14px 14px; }
+  .table-wrap { padding:0 12px 16px; }
+}
     /* ===== SIDEBAR ===== */
     .sidebar{
       position:fixed; inset:0 auto 0 0; width:280px; transform: translateX(-100%);
@@ -282,34 +378,52 @@
     width: 6px; height: 20px; border-radius: 4px;
     background: linear-gradient(135deg,#6a11cb,#2575fc);
     }
+    
+    
+    
+    
+    
+    
+    
+.nav-balance {
+  position: static;       /* bỏ absolute đi */
+  margin-right: 8px;      /* cách icon tài khoản một chút */
+  font-size: 13px;
+  font-weight: 700;
+  color: #CC0000;         /* vàng cho dễ nhìn, bạn đổi màu tùy ý */
+  display: inline-block;
+}
   </style>
 </head>
 <body>
 
   <!-- NAVBAR -->
-  <header class="navbar">
-    <div class="nav-left">
-      <button class="icon-btn" id="openSidebar" title="Menu">
-        <svg class="icon" viewBox="0 0 24 24"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-      </button>
-      <div class="logo-wrap">
-        <img class="logo" src="https://i.postimg.cc/Vs4sX62s/file-0000000025b061f780c5334d2cfcad87.png" alt="ROBUXVEX">
-        <div class="brand-title">ROBUXVEX</div>
-      </div>
+<header class="navbar">
+  <div class="nav-left">
+    <button class="icon-btn" id="openSidebar" title="Menu">
+      <svg class="icon" viewBox="0 0 24 24">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <div class="logo-wrap">
+      <img class="logo" src="https://i.postimg.cc/Vs4sX62s/file-0000000025b061f780c5334d2cfcad87.png" alt="ROBUXVEX">
+      <div class="brand-title">ROBUXVEX</div>
     </div>
-    <div class="nav-right" style="display:flex; gap:10px; align-items:center">
-      <!-- Nút chế độ sáng/tối (trái icon người) -->
-      <button class="icon-btn" id="btnTheme" title="Chế độ sáng/tối">
-        <svg class="icon" id="icoTheme" viewBox="0 0 24 24">
-          <!-- default moon -->
-          <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path>
-        </svg>
-      </button>
-      <button class="icon-btn" id="btnAccount" title="Tài khoản">
-        <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"></circle><path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path></svg>
-      </button>
-    </div>
-  </header>
+  </div>
+
+  <!-- thêm nav-right để chứa số dư và icon -->
+  <div class="nav-right" style="display:flex; align-items:center; gap:8px;">
+    <span id="navBalance" class="nav-balance">0đ</span>
+    <button class="icon-btn" id="btnAccount" title="Tài khoản">
+      <svg class="icon" viewBox="0 0 24 24">
+        <circle cx="12" cy="8" r="4"></circle>
+        <path d="M4 20c0-4 4-6 8-6s8 2 8 6"></path>
+      </svg>
+    </button>
+  </div>
+</header>
 
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
@@ -319,7 +433,7 @@
         <svg class="nav-ico" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"></path><path d="M9 21V9h6v12"></path></svg>
         Trang chủ
       </a></li>
-      <li><a class="nav-link" href="muahang.html">
+      <li><a class="nav-link" href=".html">
         <svg class="nav-ico" viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9H8L6 6z"></path><circle cx="9" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg>
         Mua Robux
       </a></li>
@@ -327,11 +441,14 @@
         <svg class="nav-ico" viewBox="0 0 24 24"><path d="M12 3v18"></path><path d="M6 12h12"></path><circle cx="12" cy="12" r="9"></circle></svg>
         Nạp tiền
       </a></li>
-      <li><a class="nav-link" href="muahang.html">
-        <svg class="nav-ico" viewBox="0 0 24 24"><path d="M3 4h18M8 2v4M16 2v4"></path><rect x="3" y="8" width="18" height="12" rx="2"></rect><path d="M7 12h10M7 16h7"></path></svg>
-        Lịch sử mua hàng
-      </a></li>
-    </ul>
+<li><a class="nav-link" href="lichsu.html">
+  <svg class="nav-ico" viewBox="0 0 24 24">
+    <path d="M3 4h18M8 2v4M16 2v4"></path>
+    <rect x="3" y="8" width="18" height="12" rx="2"></rect>
+    <path d="M7 12h10M7 16h7"></path>
+  </svg>
+  Lịch sử mua hàng
+</a></li>
 
     <div class="side-head">Hỗ trợ</div>
     <ul class="nav-list">
@@ -341,6 +458,7 @@
       </a></li>
       <li><a class="nav-link" href="mailto:vochuoi86@gmail.com">
         <svg class="nav-ico" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"></path><path d="M22 6l-10 7L2 6"></path></svg>
+    
         Gửi mail
       </a></li>
     </ul>
@@ -399,43 +517,60 @@
     </section>
 
     <!-- TWO TOP BOXES SIDE BY SIDE WITH LED RING -->
-    <div class="togrid">
-      <div class="led-wrap">
-        <section class="section">
-          <div class="section-head">
-              <h3 class="section-title">TOP mua Robux (Web)</h3>
-            <span class="badge">Realtime</span>
-          </div>
-          <div class="table-wrap">
-            <table id="ordersTable">
-              <thead>
-                <tr><th>Tài khoản</th><th>Tổng Robux</th><th>Thời gian</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </section>
+   
+  <main class="wrap">
+
+    <!-- TOP MUA ROBUX -->
+    <section class="table-card" aria-label="Top mua robux">
+      <div class="card-head">
+        <div class="title">Top Mua Robux (Web)</div>
+        <div class="meta">Realtime</div>
       </div>
 
-      <div class="led-wrap">
-        <section class="section">
-          <div class="section-head">
-            <h3 class="section-title">TOP nạp tiền</h3>
-            <span class="badge">nạp gần đây</span>
-          </div>
-          <div class="table-wrap">
-            <table id="depositsTable">
-              <thead>
-                <tr><th>Tài khoản</th><th>Số tiền nạp</th></tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </section>
+      <div class="table-wrap">
+        <table role="table" aria-label="Top mua robux table" id="ordersTable">
+          <thead>
+            <tr>
+              <th style="width:45%;">Tài khoản</th>
+              <th style="width:30%;">Tổng Robux</th>
+              <th style="width:25%;">Thời gian</th>
+            </tr>
+          </thead>
+          <tbody>
+  </tbody>
+        </table>
       </div>
-    </div>
-  </main>
+    </section>
+      </div>
+    <!-- TOP NẠP TIỀN -->
+    <section class="table-card" aria-label="Top nạp tiền">
+      <div class="card-head">
+        <div class="title">Top Nạp Tiền</div>
+        <div class="meta">Nạp gần đây</div>
+      </div>
+
+      <div class="table-wrap">
+        <table role="table" aria-label="Top nạp tiền table" id="depositsTable">
+          <thead>
+            <tr>
+              <th style="width:65%;">Tài khoản</th>
+              <th style="width:35%;">Số tiền nạp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Firestore sẽ render dữ liệu tại đây -->
+            
+                      </tr>
+          </thead>
+          <tbody>
+  </tbody>
+        </table>
+      </div>
+    </section>
+      </div>
+</main>
   <!-- BEHAVIOR: sidebar -->
+  
   <script>
     (function(){
       const sidebar = document.getElementById('sidebar');
@@ -700,10 +835,59 @@
     // ===== Init =====
     loadTopBuyers();
     loadTopDeposits();
-    onAuthStateChanged(auth, (user)=>{
-      if (user){ loadDashboard(); }
-      else { document.getElementById('robuxAvailable').textContent = (7152).toLocaleString('vi-VN'); }
-    });
+    onAuthStateChanged(auth, async (user)=>{
+  const navBal = document.getElementById("navBalance");
+
+  if (user){ 
+    loadDashboard();
+    const ref = doc(db,"users",user.uid);
+    const snap = await getDoc(ref);
+    if (snap.exists()){
+      const data = snap.data();
+      navBal.textContent = (Number(data.balance||0).toLocaleString("vi-VN")) + "đ";
+    } else {
+      navBal.textContent = "0đ";
+    }
+  } else {
+    if (navBal) navBal.textContent = "0đ";
+    document.getElementById('robuxAvailable').textContent = 
+      (7152).toLocaleString('vi-VN');
+  }
+});
   </script>
+  <script type="module">
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const auth = getAuth();
+
+  // danh sách link cần kiểm soát
+  const protectedLinks = [
+    { selector: 'a[href=".html"]', target: ".html" },
+    { selector: 'a[href="nap.html"]', target: "nap.html" },
+    { selector: 'a[href="lichsu.html"]', target: "lichsu.html" }
+  ];
+
+  function protectLinks(user) {
+    protectedLinks.forEach(link => {
+      const el = document.querySelector(link.selector);
+      if (!el) return;
+      el.addEventListener("click", (e) => {
+        e.preventDefault(); // chặn mặc định
+        if (user) {
+          // đã đăng nhập -> đi tới trang gốc
+          window.location.href = link.target;
+        } else {
+          // chưa đăng nhập -> ép sang đăng ký
+          window.location.href = "dk.html";
+        }
+      });
+    });
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    protectLinks(user);
+  });
+</script>
+
 </body>
 </html>
