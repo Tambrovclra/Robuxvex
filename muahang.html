@@ -305,6 +305,8 @@
     const auth = getAuth(app);
     let currentUser = null;
 
+
+
     const qtyInput = document.getElementById("qty");
     const totalEl = document.getElementById("total");
     const afterTaxEl = document.getElementById("afterTax");
@@ -385,6 +387,7 @@
         price: priceVND,
         createdAt: new Date().toISOString(),
         deliveredAt: null,
+        type: typeSelect.value,
         status: "pending"
       });
 
