@@ -387,30 +387,24 @@
       showWarning(`✅ Mua thành công ${robux} R$ cho @${username}. Số dư còn lại: ${(balance - priceVND).toLocaleString("vi-VN")}₫`, "success");
     }
 
-    function addHistoryRow(username, contact, robux, robuxAfter, priceVND, status, timestamp) {
-      const tr = document.createElement("tr");
-      const date = new Date(timestamp).toLocaleString("vi-VN");
-      const statusClass =
-        status === "pending" ? "pending" :
-        status === "completed" ? "success" :
-        "failed";
-function addHistoryRow(doc){
+    function addHistoryRow(doc) {
   const data = doc.data();
   const tr = document.createElement("tr");
 
-  // gán class màu cho status
   let statusClass = "status-pending";
-  if (data.status === "completed") statusClass = "status-completed";
-  else if (data.status === "failed") statusClass = "status-failed";
-  else if (data.status === "processing") statusClass = "status-pending";
+  if (data.status === "completed") {
+    statusClass = "status-completed";
+  } else if (data.status === "failed") {
+    statusClass = "status-failed";
+  }
 
   tr.innerHTML = `
-    <td><span class="chip username">${data.username || "N/A"}</span></td>
+    <td><span class="chip username">${data.robloxName || "N/A"}</span></td>
     <td><span class="chip type">${data.type || "-"}</span></td>
+    <td>${data.robux || 0} R$</td>
     <td>${data.robuxAmount || 0} R$</td>
-    <td>${data.afterTax || 0} R$</td>
-    <td><span class="chip price">${data.price || 0}₫</span></td>
-    <td><span class="chip ${statusClass}">${data.status}</span></td>
+    <td><span class="chip price">${(data.price || 0).toLocaleString("vi-VN")}₫</span></td>
+    <td><span class="chip ${statusClass}">${data.status || "-"}</span></td>
   `;
 
   document.querySelector("#historyTable tbody").appendChild(tr);
@@ -424,12 +418,11 @@ function addHistoryRow(doc){
         orderBy("createdAt", "desc")
       );
       onSnapshot(q, (snapshot) => {
-        historyTableBody.innerHTML = "";
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          addHistoryRow(data.robloxName, data.contact, data.robux, data.robuxAmount, data.price, data.status, data.createdAt);
-        });
-      });
+  historyTableBody.innerHTML = "";
+  snapshot.forEach((doc) => {
+    addHistoryRow(doc);
+  });
+});
     }
 
     typeSelect.addEventListener("change", updateForm);
@@ -467,30 +460,7 @@ function addHistoryRow(doc){
 
 
 <!-- Firebase script giữ nguyên -->
-<script type="module">
-  // ... code firebase cũ ở đây ...
-  // Khi render data thì bọc chip:
-  function addHistoryRow(doc){
-  const data = doc.data();
-  const tr = document.createElement("tr");
 
-  // xử lý status class
-  let statusClass = "status-pending";
-  if(data.status === "completed") statusClass = "status-completed";
-  else if(data.status === "failed") statusClass = "status-failed";
-  else if(data.status === "processing") statusClass = "status-pending"; // có thể tách riêng nếu muốn
-
-  tr.innerHTML = `
-    <td><span class="chip username">${data.username || "N/A"}</span></td>
-    <td><span class="chip type">${data.type || "-"}</span></td>
-    <td>${data.robuxAmount || 0} R$</td>
-    <td>${data.afterTax || 0} R$</td>
-    <td><span class="chip price">${data.price || 0}₫</span></td>
-    <td><span class="chip ${statusClass}">${data.status}</span></td>
-  `;
-
-  document.querySelector("#historyTable tbody").appendChild(tr);
-}
 </script>
 </body>
 </html>
