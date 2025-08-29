@@ -132,6 +132,26 @@
     .chip.status-pending{background:linear-gradient(90deg,#facc15,#f97316);}
     .chip.status-failed{background:linear-gradient(90deg,#dc2626,#6d28d9);}
     .chip.status-completed{background:linear-gradient(90deg,#4ade80,#15803d);}
+    
+    
+    
+    
+    .guide-card ol li{
+  margin-bottom:6px;
+  font-weight:500;
+  font-size:14px;  /* nhỏ lại */
+  line-height:1.5;
+}
+.guide-card h3{
+  font-size:16px;
+}
+.guide-note{
+  font-size:13px;
+}
+    
+    
+    
+    
   </style>
 </head>
 <body>
@@ -441,18 +461,26 @@
   // ... code firebase cũ ở đây ...
   // Khi render data thì bọc chip:
   function addHistoryRow(doc){
-    const data = doc.data();
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td><span class="chip username">${data.username || "N/A"}</span></td>
-      <td><span class="chip type">${data.type || "-"}</span></td>
-      <td>${data.robuxAmount || 0}</td>
-      <td>${data.afterTax || 0}</td>
-      <td><span class="chip price">${data.price || 0}₫</span></td>
-      <td><span class="chip status-${data.status}">${data.status}</span></td>
-    `;
-    document.querySelector("#historyTable tbody").appendChild(tr);
-  }
+  const data = doc.data();
+  const tr = document.createElement("tr");
+
+  // xử lý status class
+  let statusClass = "status-pending";
+  if(data.status === "completed") statusClass = "status-completed";
+  else if(data.status === "failed") statusClass = "status-failed";
+  else if(data.status === "processing") statusClass = "status-pending"; // có thể tách riêng nếu muốn
+
+  tr.innerHTML = `
+    <td><span class="chip username">${data.username || "N/A"}</span></td>
+    <td><span class="chip type">${data.type || "-"}</span></td>
+    <td>${data.robuxAmount || 0} R$</td>
+    <td>${data.afterTax || 0} R$</td>
+    <td><span class="chip price">${data.price || 0}₫</span></td>
+    <td><span class="chip ${statusClass}">${data.status}</span></td>
+  `;
+
+  document.querySelector("#historyTable tbody").appendChild(tr);
+}
 </script>
 </body>
 </html>
