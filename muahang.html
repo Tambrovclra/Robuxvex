@@ -394,17 +394,27 @@
         status === "pending" ? "pending" :
         status === "completed" ? "success" :
         "failed";
-      tr.innerHTML = `
-        <td>${username}</td>
-        <td>${contact}</td>
-        <td>${robux} R$</td>
-        <td>${robuxAfter} R$</td>
-        <td>${priceVND.toLocaleString("vi-VN")}₫</td>
-        <td><span class="status ${statusClass}">${status}</span></td>
-        <td>${date}</td>
-      `;
-      historyTableBody.prepend(tr);
-    }
+function addHistoryRow(doc){
+  const data = doc.data();
+  const tr = document.createElement("tr");
+
+  // gán class màu cho status
+  let statusClass = "status-pending";
+  if (data.status === "completed") statusClass = "status-completed";
+  else if (data.status === "failed") statusClass = "status-failed";
+  else if (data.status === "processing") statusClass = "status-pending";
+
+  tr.innerHTML = `
+    <td><span class="chip username">${data.username || "N/A"}</span></td>
+    <td><span class="chip type">${data.type || "-"}</span></td>
+    <td>${data.robuxAmount || 0} R$</td>
+    <td>${data.afterTax || 0} R$</td>
+    <td><span class="chip price">${data.price || 0}₫</span></td>
+    <td><span class="chip ${statusClass}">${data.status}</span></td>
+  `;
+
+  document.querySelector("#historyTable tbody").appendChild(tr);
+}
 
     function loadHistory() {
       if (!currentUser) return;
