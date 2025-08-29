@@ -286,6 +286,10 @@
     import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, orderBy, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+
+
+
+
     const firebaseConfig = {
       apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
       authDomain: "robuxvex.firebaseapp.com",
@@ -448,6 +452,35 @@
     });
 
     updateForm();
+    document.getElementById("buyBtn").addEventListener("click", async () => {
+  const username = document.getElementById("username").value.trim();
+  const contact = document.getElementById("contact").value.trim();
+  const robuxAmount = parseInt(document.getElementById("qty").value) || 0;
+  const type = document.getElementById("type").value; // 👈 lấy Gamepass | Giftcard
+
+  if (!username || !contact || robuxAmount <= 0) {
+    alert("Vui lòng nhập đầy đủ thông tin!");
+    return;
+  }
+
+  // Tính toán
+  const afterTax = type === "gamepass" ? Math.floor(robuxAmount * 0.7) : robuxAmount;
+  const price = robuxAmount * 350; // bạn chỉnh công thức giá theo ý
+
+  // Lưu vào Firestore
+  await addDoc(collection(db, "orders"), {
+    username,
+    contact,
+    robuxAmount,
+    afterTax,
+    price,
+    type,                // 👈 thêm type vào đây
+    status: "pending",
+    createdAt: serverTimestamp()
+  });
+
+  alert("Đặt mua thành công!");
+});
     </script>
 
 
