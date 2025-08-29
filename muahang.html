@@ -1,120 +1,192 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mua robux</title>
-
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <title>Mua robux - ROBUXVEX</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --violet:#7c3aed;
-      --blue:#2563eb;
-      --yellow:#fbbf24;
+    /* ===== THEME LIGHT ===== */
+    :root{
+      --bg:#f5f7fb;
+      --panel:#ffffff;
+      --panel-2:#f9fbff;
+      --muted:#5c6b7e;
+      --text:#0f172a;
+      --brand:#2b6cff;
+      --brand-2:#7c5cff;
+      --accent:#06b6d4;
+      --danger:#ef4444;
+      --shadow:0 8px 24px rgba(0,0,0,.08);
+      --radius:18px;
+      --navy:#0d2338;
+      --line:#e6e9ee;
     }
+    body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--text);background:var(--bg);}
+    *{box-sizing:border-box}
 
-    body {
-      margin:0;
-      font-family: Inter, Arial, sans-serif;
-      background:#f0f2f8;
-      color:#111;
+    /* ===== NAVBAR ===== */
+    .navbar{
+      position: sticky; top:0; z-index: 50;
+      height:64px; padding:0 16px;
+      display:flex; align-items:center; justify-content:space-between;
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(255,255,255,.85));
+      border-bottom: 1px solid rgba(15,23,42,.06);
+      backdrop-filter:saturate(180%) blur(12px);
     }
-
-    header {
-      background:#fff;
-      padding:16px 20px;
-      box-shadow:0 2px 6px rgba(0,0,0,0.05);
-      position:sticky;top:0;z-index:10;
+    .nav-left{display:flex; align-items:center; gap:12px}
+    .logo{height:36px; width:auto; border-radius:10px}
+    .brand-title{font-weight:700; font-size:18px; color:var(--text);}
+    .icon-btn{
+      width:40px; height:40px; display:grid; place-items:center; border-radius:12px;
+      background:#eef2ff; border:1px solid rgba(15,23,42,.06); cursor:pointer;
     }
-    header h1 {margin:0;font-size:22px;font-weight:700;color:#4f46e5;}
+    .icon{width:22px; height:22px; stroke:#334155; fill:none; stroke-width:2}
 
-    .container{max-width:960px;margin:30px auto;padding:0 15px;}
+    /* ===== SIDEBAR ===== */
+    .sidebar{position:fixed;inset:0 auto 0 0;width:280px;transform:translateX(-100%);
+      background:#fff;border-right:1px solid rgba(15,23,42,.06);
+      z-index:60;transition:.25s transform;box-shadow:var(--shadow);display:flex;flex-direction:column;}
+    .sidebar.active{transform:translateX(0)}
+    .side-head{padding:16px;color:#334155;font-weight:700}
+    .nav-list{list-style:none;padding:6px 8px 16px;margin:0;display:grid;gap:6px}
+    .nav-link{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
+      color:var(--text);text-decoration:none;border:1px solid rgba(15,23,42,.06);background:#f8fafc}
+    .nav-link:hover{background:#eef2ff;border-color:rgba(15,23,42,.12)}
+    .nav-link svg {width:18px;height:18px;stroke:#334155;}
+    .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:55;display:none}
+    .overlay.active{display:block}
 
-    .card{background:#fff;border-radius:16px;padding:20px;margin-bottom:20px;box-shadow:0 4px 12px rgba(0,0,0,.08);}
+    /* ===== CONTENT ===== */
+    .wrap{max-width:1100px;margin:24px auto;padding:0 16px;display:grid;gap:20px}
+    .card{background:linear-gradient(180deg,var(--panel),var(--panel-2));
+      border:1px solid rgba(15,23,42,.06);border-radius:var(--radius);padding:20px}
 
-    label{display:block;margin:10px 0 6px;font-size:14px;font-weight:700;color:#374151;}
-
+    label{display:block;margin:10px 0 6px;font-size:14px;font-weight:700;color:var(--muted)}
     .input-glow, select{
       width:100%;padding:12px;border-radius:12px;border:2px solid rgba(124,58,237,.6);
-      outline:none;transition:.3s;background:#fff;
-      box-shadow:0 0 10px rgba(124,58,237,.2);
-    }
-    .input-glow:focus, select:focus{
-      border-color:#8b5cf6;
-      box-shadow:0 0 16px rgba(124,58,237,.5),0 0 16px rgba(37,99,235,.4);
+      outline:none;background:#fff;color:#111;
     }
 
-    .summary{display:flex;justify-content:space-between;align-items:center;background:#f9fafb;
-      border:1px solid #ddd;border-radius:12px;padding:12px 16px;margin-bottom:10px;font-weight:700;}
-    .summary span:last-child{font-size:20px;color:#e11d48;font-weight:800;}
+    .summary{display:flex;justify-content:space-between;align-items:center;
+      background:#f9fafb;border:1px solid #ddd;border-radius:12px;
+      padding:12px 16px;margin-bottom:10px;font-weight:700;}
+    .summary span:last-child{font-size:18px;color:#e11d48;font-weight:800;}
 
-    /* Nút mua ngay */
-    .buy-wrap{text-align:center;margin-top:15px;}
     .btn{
-      display:block;width:100%;padding:15px;border:none;border-radius:14px;
-      font-size:18px;font-weight:800;letter-spacing:.5px;cursor:pointer;
-      color:#fff;text-transform:uppercase;
-      background:linear-gradient(270deg,#ff00cc,#3333ff,#00ffcc);
-      background-size:600% 600%;
-      animation:gradient 8s ease infinite, pulse 2s infinite;
-      box-shadow:0 0 25px rgba(124,58,237,.6);
-      text-shadow:0 0 6px #fff;
-      transition:transform .2s;
+      display:block;width:100%;padding:14px;border:none;border-radius:14px;
+      font-size:16px;font-weight:800;cursor:pointer;
+      background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#fff;
     }
-    .btn:hover{transform:scale(1.05);}
-    .btn:disabled{opacity:.5;cursor:not-allowed;animation:none;background:#999;}
-
-    @keyframes gradient {
-      0%{background-position:0% 50%;}
-      50%{background-position:100% 50%;}
-      100%{background-position:0% 50%;}
-    }
-    @keyframes pulse {
-      0%{box-shadow:0 0 10px rgba(124,58,237,.4);}
-      50%{box-shadow:0 0 35px rgba(124,58,237,.8);}
-      100%{box-shadow:0 0 10px rgba(124,58,237,.4);}
-    }
+    .btn:disabled{opacity:.5;cursor:not-allowed}
 
     .warning{margin-top:10px;font-size:14px;font-weight:700;padding:10px;border-radius:8px;display:none;}
     .warning.error{background:#fee2e2;color:#991b1b;}
     .warning.success{background:#d1fae5;color:#065f46;}
 
-    /* Hướng dẫn */
-    .guide-card h3{font-family:Montserrat,sans-serif;font-weight:800;font-size:18px;display:flex;gap:8px;}
-    .guide-card ol li{font-family:Inter,sans-serif;font-style:italic;font-weight:600;margin-bottom:8px;}
-
-    .guide-note{background:#fffbeb;border-left:4px solid var(--yellow);padding:10px;border-radius:8px;
-      color:#92400e;font-weight:700;margin-top:10px;font-style:italic;}
-
-    /* Lịch sử */
-    .history-title .glow-title{
-      display:inline-block;padding:8px 12px;border-radius:12px;font-weight:800;
-      border:2px solid var(--yellow);background:#fff7e6;color:#b45309;
-      box-shadow:0 0 15px rgba(251,191,36,.7);
+    /* ===== GRID LAYOUT ===== */
+    @media(min-width: 960px){
+      .grid-2 {display:grid;grid-template-columns:1fr 1fr;gap:20px;}
     }
 
-    .history-wrapper{
-      margin-top:10px;
-      overflow-x:auto;   /* ✅ cuộn ngang khi bảng quá rộng */
-      max-width:100%;
-    }
-    table{width:100%;border-collapse:collapse;font-size:14px;}
-    thead th{background:#111;color:#fff;padding:10px;border:2px solid #fff;}
-    tbody td{background:#fff;color:#111;text-align:center;padding:10px;border:2px solid #fff;}
-    tr:hover td{background:#f9fafb;}
+    /* ===== HƯỚNG DẪN ===== */
+    .guide-card h3{font-size:18px;font-weight:800;margin-bottom:10px;color:#4f46e5;display:flex;gap:6px;align-items:center;}
+    .guide-card ol{margin-left:20px;}
+    .guide-card ol li{margin-bottom:8px;font-weight:600;color:#374151;}
+    .guide-note{margin-top:10px;padding:10px;border-left:4px solid #fbbf24;background:#fffbeb;border-radius:6px;font-size:14px;font-style:italic;color:#92400e;}
 
-    .status{padding:4px 10px;border-radius:20px;font-size:13px;font-weight:700;display:inline-block;}
-    .status.pending{background:#fef3c7;color:#92400e;}
-    .status.success{background:#d1fae5;color:#065f46;}
-    .status.failed{background:#fee2e2;color:#991b1b;}
+    /* ===== TABLE STYLE ===== */
+    .table-card{
+      background:var(--card,#fff);
+      border-radius:12px;
+      box-shadow:0 6px 18px rgba(16,24,40,0.06);
+      overflow:hidden;
+      border:1px solid rgba(15,23,42,0.03);
+    }
+    .card-head{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;font-weight:800;font-size:15px;color:var(--text);}
+    .card-head .title{display:flex;align-items:center;gap:12px;text-transform:uppercase;letter-spacing:0.6px}
+    .card-head .title::before{content:"";width:6px;height:22px;border-radius:3px;display:block;background: linear-gradient(180deg, #ef4444 0%, #7c3aed 100%);}
+    .table-wrap{width:100%;overflow-x:auto;padding:0 16px 18px;}
+    table{width:100%;border-collapse:collapse;font-size:14px;table-layout:auto;min-width:720px}
+    thead{background:var(--navy);color:#fff}
+    thead th{padding:12px 14px;text-align:left;font-weight:700;font-size:13px;border-bottom:3px solid #fff;border-right:1px solid #fff;white-space:nowrap}
+    thead th:last-child{border-right:none}
+    tbody td{padding:14px;color:var(--text);border-top:1px solid var(--line);border-right:1px solid var(--line);vertical-align:middle}
+    tbody td:last-child{border-right:none}
+    tbody tr:hover td{background:#fbfdff}
+
+    /* ===== CHIPS ===== */
+    .chip{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:20px;
+      font-size:13px;
+      font-weight:700;
+      color:#fff;
+      white-space:nowrap;
+    }
+    .chip.username{background:linear-gradient(90deg,#2563eb,#7c3aed);}
+    .chip.type{background:linear-gradient(90deg,#f97316,#dc2626);}
+    .chip.price{background:linear-gradient(90deg,#facc15,#065f46);}
+    .chip.status-pending{background:linear-gradient(90deg,#facc15,#f97316);}
+    .chip.status-failed{background:linear-gradient(90deg,#dc2626,#6d28d9);}
+    .chip.status-completed{background:linear-gradient(90deg,#4ade80,#15803d);}
   </style>
 </head>
 <body>
-  <header><h1>Mua Robux</h1></header>
 
-  <div class="container">
+<!-- NAVBAR -->
+<header class="navbar">
+  <div class="nav-left">
+    <button class="icon-btn" id="openSidebar" title="Menu">
+      <svg class="icon" viewBox="0 0 24 24">
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+    </button>
+    <div class="logo-wrap" style="display:flex;align-items:center;gap:10px;">
+      <img class="logo" src="https://i.postimg.cc/Vs4sX62s/file-0000000025b061f780c5334d2cfcad87.png" alt="ROBUXVEX">
+      <div class="brand-title">ROBUXVEX</div>
+    </div>
+  </div>
+</header>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="side-head">Điều hướng</div>
+  <ul class="nav-list">
+    <li><a class="nav-link" href="index.html">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 12l9-9 9 9" stroke="currentColor" stroke-width="2"/><path d="M9 21V9h6v12" stroke="currentColor" stroke-width="2"/></svg>
+      Trang chủ</a></li>
+    <li><a class="nav-link" href="muahang.html">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 3h18v4H3zM3 7h18l-2 14H5z" stroke="currentColor" stroke-width="2"/></svg>
+      Mua Robux</a></li>
+    <li><a class="nav-link" href="nap.html">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M8 12h8M12 8v8" stroke="currentColor" stroke-width="2"/></svg>
+      Nạp tiền</a></li>
+    <li><a class="nav-link" href="lichsu.html">
+      <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2"/></svg>
+      Lịch sử mua hàng</a></li>
+  </ul>
+  <div class="side-head">Hỗ trợ</div>
+  <ul class="nav-list">
+    <li><a class="nav-link" href="zalo.me/0907486634">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="2"/></svg>
+      Zalo</a></li>
+    <li><a class="nav-link" href="mailto:vochuoi86@gmail.com">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M4 4h16v16H4z" stroke="currentColor" stroke-width="2"/><path d="M4 4l8 8 8-8" stroke="currentColor" stroke-width="2"/></svg>
+      Email</a></li>
+  </ul>
+</aside>
+<div class="overlay" id="overlay"></div>
+
+<!-- CONTENT -->
+<main class="wrap">
+  <!-- GRID FORM + GUIDE -->
+  <div class="grid-2">
+    <!-- FORM MUA -->
     <div class="card">
       <label for="type">Chọn loại</label>
       <select id="type" class="input-glow">
@@ -134,49 +206,62 @@
       <div class="summary"><span>Tổng thanh toán</span><span id="total">0 ₫</span></div>
       <div class="summary" id="afterTaxRow"><span>Thực nhận</span><span id="afterTax">0 R$</span></div>
 
-      <div class="buy-wrap">
-        <button class="btn" id="buyBtn">⚡ Mua Ngay ⚡</button>
-      </div>
+      <button class="btn" id="buyBtn">⚡ Mua Ngay ⚡</button>
       <div id="warningBox" class="warning"></div>
     </div>
 
+    <!-- HƯỚNG DẪN -->
     <div class="card guide-card">
-      <h3>📑 CÁCH MUA ROBUX <em>(ᴆᴏ̣ᴄ ᴋʏ̃)</em></h3>
+      <h3>📑 Hướng dẫn mua Robux</h3>
       <ol>
-        <li>Chọn Gamepass hoặc Gift Card.</li>
-        <li>Nhập username Roblox và liên hệ.</li>
-        <li>Nhập số Robux muốn mua hoặc mặc định 400 R$ với Gift Card.</li>
-        <li>Tạo gamepass với giá tương ứng – nhấn <em>Mua Ngay</em>.</li>
-        <li>Sau khi duyệt, chờ 3–5 ngày Robux sẽ về tài khoản.</li>
+        <li>Chọn loại giao dịch (Gamepass hoặc Gift Card).</li>
+        <li>Điền username Roblox và thông tin liên hệ.</li>
+        <li>Nhập số Robux cần mua (Gift Card mặc định 400 R$).</li>
+        <li>Tạo gamepass đúng mệnh giá nếu chọn Gamepass.</li>
+        <li>Nhấn <b>Mua Ngay</b> và chờ duyệt.</li>
       </ol>
-      <div class="guide-note">Lưu ý: Mua qua gamepass thực nhận = 70% do phí Roblox.</div>
-    </div>
-
-    <div class="card history-card">
-      <div class="history-title">
-        <span class="glow-title">📊 LỊCH SỬ MUA HÀNG</span>
-      </div>
-      <div class="history-wrapper">
-        <table id="historyTable">
-          <thead>
-            <tr>
-              <th>Tài khoản</th>
-              <th>Liên hệ</th>
-              <th>Số Robux</th>
-              <th>Thực nhận</th>
-              <th>Thanh toán</th>
-              <th>Trạng thái</th>
-              <th>Ngày mua</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
+      <div class="guide-note">💡 Lưu ý: Mua qua Gamepass thực nhận chỉ = 70% do phí Roblox.</div>
     </div>
   </div>
 
-  <!-- Firebase -->
-  <script type="module">
+  <!-- LỊCH SỬ MUA HÀNG -->
+  <section class="table-card" aria-label="Lịch sử mua hàng">
+    <div class="card-head">
+      <div class="title">Lịch sử mua hàng</div>
+      <div class="meta">Gần đây</div>
+    </div>
+    <div class="table-wrap">
+      <table id="historyTable">
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Type</th>
+            <th>Robux Amount</th>
+            <th>After Tax</th>
+            <th>Price</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<script>
+  // sidebar toggle
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('overlay');
+  document.getElementById('openSidebar').onclick=()=>{sidebar.classList.toggle('active');overlay.classList.toggle('active');}
+  overlay.onclick=()=>{sidebar.classList.remove('active');overlay.classList.remove('active');}
+</script>
+
+
+
+
+
+
+<script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, query, orderBy, where, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
@@ -340,6 +425,34 @@
     });
 
     updateForm();
-  </script>
+    </script>
+
+
+
+
+
+
+
+
+
+
+<!-- Firebase script giữ nguyên -->
+<script type="module">
+  // ... code firebase cũ ở đây ...
+  // Khi render data thì bọc chip:
+  function addHistoryRow(doc){
+    const data = doc.data();
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><span class="chip username">${data.username || "N/A"}</span></td>
+      <td><span class="chip type">${data.type || "-"}</span></td>
+      <td>${data.robuxAmount || 0}</td>
+      <td>${data.afterTax || 0}</td>
+      <td><span class="chip price">${data.price || 0}₫</span></td>
+      <td><span class="chip status-${data.status}">${data.status}</span></td>
+    `;
+    document.querySelector("#historyTable tbody").appendChild(tr);
+  }
+</script>
 </body>
 </html>
