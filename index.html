@@ -803,16 +803,22 @@ tbody tr:hover td{
 
     // ===== TOP Deposits (always load, no login required) =====
     async function loadTopDeposits(){
-      const qy = query(collection(db,"napthe"));
-      const s = await getDocs(qy);
-      const sum = new Map(); // uid -> total money
-      s.forEach(d=>{
-        const v = d.data();
-        const uid = v.uid; if (!uid) return;
-        const money = Number(v.amount||0);
-        sum.set(uid, (sum.get(uid)||0) + money);
-      });
+      // Chỉ lấy các giao dịch nạp thành công
+const qy = query(
+  collection(db, "napthe"),
+  where("status", "==", "completed")   // hoặc "completed" tùy bạn lưu trong Firestore
+);
+const s = await getDocs(qy);
 
+const sum = new Map(); // uid -> total money
+s.forEach(d => {
+  const v = d.data();
+  const uid = v.uid; 
+  if (!uid) return;
+
+  const money = Number(v.amount || 0);
+  sum.set(uid, (sum.get(uid) || 0) + money);
+});
       const entries = Array.from(sum.entries());
       const names = {};
       await Promise.all(entries.map(async([uid])=>{
