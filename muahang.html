@@ -495,8 +495,32 @@
 
 
 
+<script>
+import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
+const messaging = getMessaging(app);
 
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    .then(async (reg) => {
+      console.log('Service worker registered:', reg);
+
+      const permission = await Notification.requestPermission();
+      if (permission === 'granted') {
+        const token = await getToken(messaging, {
+          vapidKey: "BOkDyfOxTnVK_DvD3yslB8JWcPXHi2REidV9-BHpZmZBJ4g9W-KbmHZPSSLZq8VsPx473XC2uXYsw6DJr0GUWso" // 👈 lấy trong Firebase Console
+        });
+        console.log("🔑 Token:", token);
+
+        // Hiện token ra UI để dễ copy
+        const el = document.createElement('textarea');
+        el.value = token || "Không lấy được token";
+        el.style.width = "100%";
+        el.style.height = "80px";
+        document.body.prepend(el);
+      }
+    });
+}
 
 
 <!-- Firebase script giữ nguyên -->
@@ -504,3 +528,4 @@
 </script>
 </body>
 </html>
+
