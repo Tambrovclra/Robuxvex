@@ -504,19 +504,14 @@
 
   alert("Đặt mua thành công!");
 });
-    </script>
 
 
 
 
 
 
-<script>
-import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
 
-const messaging = getMessaging(app);
-
-if ('serviceWorker' in navigator) {
+  if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/firebase-messaging-sw.js').then(async (registration) => {
     console.log('✅ Service Worker registered', registration);
 
@@ -529,20 +524,21 @@ if ('serviceWorker' in navigator) {
 
       console.log("🔑 FCM Token:", token);
 
-      // Hiện token ra web để dễ copy
+      // 👉 Ghi token vào textarea
       const box = document.getElementById("fcmTokenBox");
       if (box) box.value = token;
     }
   }).catch(err => {
     console.error("❌ Lỗi đăng ký Service Worker:", err);
   });
-}
+  }
+    </script>
 
-// Nhận thông báo khi tab đang mở
-onMessage(messaging, (payload) => {
-  console.log("🔔 Có thông báo mới:", payload);
-  alert(payload.notification.title + "\n" + payload.notification.body);
-});
+
+
+
+
+
 </script>
 </body>
 </html>
