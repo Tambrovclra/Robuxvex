@@ -520,19 +520,6 @@ tbody tr:hover td{
    
   <main class="wrap">
 
-
-
-
-
-
-
-
-
-
-
-
-    
-
     <!-- TOP MUA ROBUX -->
     <section class="table-card" aria-label="Top mua robux">
       <div class="card-head">
@@ -631,7 +618,7 @@ tbody tr:hover td{
       apiKey: "AIzaSyBbTe4CZM8mUqsJUyFBIjcSc3w4rvIbmzc",
       authDomain: "robuxvex.firebaseapp.com",
       projectId: "robuxvex",
-      storageBucket: "robuxvex.appspot.com"
+      storageBucket: "robuxvex.firebasestorage.app",
       messagingSenderId: "291500837886",
       appId: "1:291500837886:web:08ae60ca6454c209328eaf",
       measurementId: "G-LWRKTMPXEN"
@@ -816,22 +803,16 @@ tbody tr:hover td{
 
     // ===== TOP Deposits (always load, no login required) =====
     async function loadTopDeposits(){
-      // Chỉ lấy các giao dịch nạp thành công
-const qy = query(
-  collection(db, "napthe"),
-  where("status", "==", "completed")   // hoặc "completed" tùy bạn lưu trong Firestore
-);
-const s = await getDocs(qy);
+      const qy = query(collection(db,"napthe"));
+      const s = await getDocs(qy);
+      const sum = new Map(); // uid -> total money
+      s.forEach(d=>{
+        const v = d.data();
+        const uid = v.uid; if (!uid) return;
+        const money = Number(v.amount||0);
+        sum.set(uid, (sum.get(uid)||0) + money);
+      });
 
-const sum = new Map(); // uid -> total money
-s.forEach(d => {
-  const v = d.data();
-  const uid = v.uid; 
-  if (!uid) return;
-
-  const money = Number(v.amount || 0);
-  sum.set(uid, (sum.get(uid) || 0) + money);
-});
       const entries = Array.from(sum.entries());
       const names = {};
       await Promise.all(entries.map(async([uid])=>{
