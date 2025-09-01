@@ -1,40 +1,95 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8" />
-  <title>Test Nạp Thẻ</title>
+  <meta charset="UTF-8">
+  <title>Test Nạp Thẻ | ROBUXVEX</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6fa;
+      padding: 20px;
+    }
+    h2 {
+      color: #333;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    .result {
+      margin-top: 20px;
+      padding: 10px;
+      background: #eee;
+      border-radius: 5px;
+      white-space: pre-wrap;
+    }
+  </style>
 </head>
 <body>
-  <h2>Nạp Thẻ Test</h2>
-  <form id="naptheForm">
-    <input type="text" name="code" placeholder="Mã thẻ" required><br>
-    <input type="text" name="serial" placeholder="Serial" required><br>
-    <input type="text" name="amount" placeholder="Mệnh giá" required><br>
-    <select name="telco">
-      <option value="Viettel">Viettel</option>
-      <option value="Vinaphone">Vinaphone</option>
-      <option value="Mobifone">Mobifone</option>
-    </select><br>
-    <button type="submit">Nạp Thẻ</button>
-  </form>
+  <h2>Test Nạp Thẻ qua TSR API</h2>
 
-  <pre id="result"></pre>
+  <label for="telco">Loại thẻ:</label>
+  <select id="telco">
+    <option value="VTT">Viettel</option>
+    <option value="VNP">Vinaphone</option>
+    <option value="VMS">Mobifone</option>
+    <option value="ZING">Zing</option>
+    <option value="GARENA">Garena</option>
+  </select>
+
+  <label for="amount">Mệnh giá:</label>
+  <input type="text" id="amount" placeholder="Ví dụ: 10000">
+
+  <label for="code">Mã thẻ:</label>
+  <input type="text" id="code" placeholder="Nhập mã thẻ">
+
+  <label for="serial">Số serial:</label>
+  <input type="text" id="serial" placeholder="Nhập số serial">
+
+  <button onclick="napThe()">Nạp thẻ</button>
+
+  <div class="result" id="result">Kết quả sẽ hiển thị ở đây...</div>
 
   <script>
-    document.getElementById("naptheForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData.entries());
+    async function napThe() {
+      const data = {
+        telco: document.getElementById("telco").value,
+        code: document.getElementById("code").value,
+        serial: document.getElementById("serial").value,
+        amount: document.getElementById("amount").value,
+      };
 
-      const res = await fetch("/api/napthe", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-
-      const json = await res.json();
-      document.getElementById("result").textContent = JSON.stringify(json, null, 2);
-    });
+      try {
+        const res = await fetch("https://robuxvex-api.vercel.app/api/napthe", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+        const result = await res.json();
+        document.getElementById("result").innerText = JSON.stringify(result, null, 2);
+      } catch (err) {
+        document.getElementById("result").innerText = "Lỗi kết nối API!";
+        console.error(err);
+      }
+    }
   </script>
 </body>
 </html>
