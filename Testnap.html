@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Nạp Thẻ</title>
+</head>
+<body>
+  <h2>Nạp Thẻ Test</h2>
+  <form id="naptheForm">
+    <input type="text" name="code" placeholder="Mã thẻ" required><br>
+    <input type="text" name="serial" placeholder="Serial" required><br>
+    <input type="text" name="amount" placeholder="Mệnh giá" required><br>
+    <select name="telco">
+      <option value="Viettel">Viettel</option>
+      <option value="Vinaphone">Vinaphone</option>
+      <option value="Mobifone">Mobifone</option>
+    </select><br>
+    <button type="submit">Nạp Thẻ</button>
+  </form>
+
+  <pre id="result"></pre>
+
+  <script>
+    document.getElementById("naptheForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      const res = await fetch("/api/napthe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const json = await res.json();
+      document.getElementById("result").textContent = JSON.stringify(json, null, 2);
+    });
+  </script>
+</body>
+</html>
