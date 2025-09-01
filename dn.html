@@ -135,6 +135,16 @@
           .then((userCredential) => {
             const user = userCredential.user;
 
+// ✅ Kiểm tra email đã xác minh chưa
+if (!user.emailVerified) {
+  firebase.auth().signOut(); // Đăng xuất ngay
+  spinner.classList.add("d-none");
+  loadingMessage.style.display = "none";
+  loginError.textContent = "⚠️ Bạn cần xác minh email trước khi đăng nhập.";
+  loginError.style.display = "block";
+  return; // Dừng ở đây, không cho vào web
+}
+
             // Lưu user vào localStorage nếu muốn
             localStorage.setItem("user", JSON.stringify({
               name: user.displayName || "Người dùng",
