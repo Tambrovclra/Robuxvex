@@ -74,9 +74,6 @@
             <div class="card-footer py-3 border-0">
               <div class="text-center">
                 Bạn đã có tài khoản? <a href="dn.html" class="text-dark">Đăng nhập ngay</a>
-               <div class="text-center"> mở hộp thư ra ( có thể là thư rác) bấm vào 
-                 link xác minh và sau đó đến trang đăng nhập
-                 để đăng nhập vào tài khoản của bạn.
               </div>
             </div>
           </div>
@@ -105,11 +102,7 @@
     firebase.initializeApp(firebaseConfig);
 
     // Kích hoạt App Check với reCAPTCHA v3
-    const appCheck = firebase.appCheck();
-    appCheck.activate(
-      '6Lfb2J8rAAAAAAIjhbZyid92-_Bm_jJ1fvlzcGJE', // Site key của bạn
-      true // bật tự refresh token
-    );
+    
 
     const db = firebase.firestore();
   </script>
@@ -190,14 +183,13 @@
                   displayName: name,
                   balance: 0,
                   createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                }).then(() => user.sendEmailVerification());
+                });
               });
             })
             .then(() => {
               spinner.classList.add("d-none");
               loadingMessage.style.display = "none";
-              successMessage.innerHTML = "📩 Đăng ký thành công! Vui lòng kiểm tra email để xác minh trước khi đăng nhập.";
-              successMessage.style.display = "block";
+              window.location.href = "https://robuxvex.vercel.app";
             })
             .catch((error) => {
               spinner.classList.add("d-none");
